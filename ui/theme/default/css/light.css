@@ -1,0 +1,56 @@
+body {
+
+    background-color: #ffffff;
+
+}
+
+.nav > li.active > ul {
+    background: none repeat scroll 0 0 #fafafa;
+}
+
+.nav > li > a {
+    color: #6a6c6f;
+}
+
+.nav > li.active, .nav > li:focus {
+    background: none repeat scroll 0 0 #fdfdfd;
+    outline: none;
+}
+
+.nav > li.active > a {
+    color: #7e7177;
+}
+
+.navbar-default .nav > li > a:hover {
+    background-color: rgba(162, 162, 162, 0.09);
+    color: #7e7177;
+}
+
+.nav > li.active {
+    border-left: 0;
+}
+
+.navbar-default .nav > li > a:focus {
+    background-color: rgba(162, 162, 162, 0.09);
+    color: #7e7177;
+}
+
+.page-heading {
+     box-shadow: none;
+    border-left: 1px solid rgba(0, 0, 0, 0.11);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.11);
+}
+
+.border-bottom {
+    border-bottom: 0;
+}
+
+
+.mini-navbar .nav-second-level {
+
+    background-color: #fdfdfd;
+
+}
+
+
+

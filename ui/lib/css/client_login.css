@@ -1,0 +1,30 @@
+
+html {
+    height: 100%;
+    overflow-x: hidden;
+    background: #ececec;
+}
+
+body {
+    background-color: #ececec;
+
+}
+
+.login-logo {
+    text-align: center;
+    display: block;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.block {
+    display: block   !important;
+}
+
+.md-card {
+    background: #fff;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
+    border: none;
+}
+

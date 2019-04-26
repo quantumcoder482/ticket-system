@@ -1,0 +1,128 @@
+body {
+    background-color: #003366;
+}
+
+#ib_navbar .nav-header{
+    background: #003366;
+}
+
+.navbar-default {
+    background: #003366;
+
+}
+
+
+
+.nav-highlight > li.active {
+    border-left: none;
+}
+
+.navbar-default .nav > li > a:hover {
+    background:  transparent;
+    color: #fa8c16;
+    outline: none;
+}
+
+.nav-highlight>li.active, .nav>li:focus {
+    background:  transparent;
+    outline: 0;
+}
+
+.profile-text {
+    color: #ffffff !important;
+    width: 100%;
+    padding: 6px 30px;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: block;
+}
+
+.profile-img {
+
+    margin-left: 30px;
+    margin-bottom: 15px;
+
+}
+
+.nav-highlight > li.active > ul {
+    background:  transparent;
+}
+
+.nav > li > a {
+    color: #038fdd;
+}
+
+.page-bg {
+    background-color: #EEF5F9;
+    -webkit-box-shadow: inset 1px 0px 20px rgba(0, 0, 0, 0.08);
+
+}
+
+.navbar-fixed-top {
+    background: #fff;
+    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    -ms-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    -o-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.4);
+}
+
+
+
+.navbar-default .nav > li > a:focus {
+    background:  transparent;
+    color: #fa8c16;
+}
+
+
+
+
+
+.fixed-nav .minimalize-styl-2 {
+    color: #676c7b;
+}
+
+.nav.navbar-right>li>a {
+    color: #676c7b;
+}
+
+.chart-statistic-box .chart-txt {
+
+    background-color: #002940;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+
+}
+
+
+
+.modal-header {
+    background: linear-gradient(to right, #2196F3, #1E88E5);
+    color: #ffffff;
+    border-bottom: 1px solid #eee;
+}
+
+.nav > li.active > a {
+    color: #fa8c16;
+}
+
+.ibox, .panel {
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.03);
+    border-radius: 10px;
+}
+
+.dashboard-stat.red {
+    background-color: #f5222d;
+}
+
+.dashboard-stat{
+    border-radius: 10px;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-stat.green {
+    background-color: #20c997;
+}
+
+.dashboard-stat.purple {
+    background-color: #fa8c16;
+}

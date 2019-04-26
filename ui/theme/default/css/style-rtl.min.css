@@ -1,0 +1,22 @@
+body.body-small.fixed-sidebar.mini-navbar #page-wrapper {
+    margin: 0 220px 0 0;
+
+}
+
+.footer.fixed {
+
+    margin-right: 220px;
+}
+
+body.fixed-sidebar.body-small.mini-navbar .footer.fixed {
+    margin: 0 220px 0 0;
+}
+
+@media (min-width: 768px) {
+    #page-wrapper {
+
+        margin: 0 220px 0 0;
+
+    }
+
+}

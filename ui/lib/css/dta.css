@@ -1,0 +1,101 @@
+/***
+Extended pagination
+***/
+.paging_bootstrap_extended {
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    font-size: 13px;
+}
+
+.dataTables_extended_wrapper .seperator {
+    padding: 0 2px;
+}
+
+.dataTables_extended_wrapper div.dataTables_paginate,
+.dataTables_extended_wrapper div.dataTables_length,
+.dataTables_extended_wrapper div.dataTables_info {
+    display: inline-block;
+    float: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: static !important;
+}
+
+@media (max-width: 480px) {
+    .dataTables_extended_wrapper div.dataTables_paginate,
+    .dataTables_extended_wrapper div.dataTables_length,
+    .dataTables_extended_wrapper div.dataTables_info {
+        display: block;
+        margin-bottom: 10px !important;
+    }
+
+    .dataTables_extended_wrapper .seperator {
+        display: none !important;
+    }
+}
+.dataTables_extended_wrapper div.dataTables_length label {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 13px;
+    float: none !important;
+    display: inline-block !important;
+}
+
+.table-container .table-actions-wrapper {
+    display: none;
+}
+
+
+
+
+.table-scrollable {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid #dddddd;
+    margin: 10px 0 !important;
+}
+.table-scrollable.table-scrollable-borderless {
+    border: 0;
+}
+.table-scrollable > .table {
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 0;
+    background-color: #fff;
+}
+.table-scrollable > .table > thead > tr > th,
+.table-scrollable > .table > tbody > tr > th,
+.table-scrollable > .table > tfoot > tr > th,
+.table-scrollable > .table > tfoot > tr > th,
+.table-scrollable > .table > tfoot > tr > td {
+    white-space: nowrap;
+}
+.table-scrollable > .table-bordered {
+    border: 0;
+}
+.table-scrollable > .table-bordered > thead > tr > th:first-child,
+.table-scrollable > .table-bordered > tbody > tr > th:first-child,
+.table-scrollable > .table-bordered > tfoot > tr > th:first-child,
+.table-scrollable > .table-bordered > thead > tr > td:first-child,
+.table-scrollable > .table-bordered > tbody > tr > td:first-child,
+.table-scrollable > .table-bordered > tfoot > tr > td:first-child {
+    border-left: 0;
+}
+.table-scrollable > .table-bordered > thead > tr > th:last-child,
+.table-scrollable > .table-bordered > tbody > tr > th:last-child,
+.table-scrollable > .table-bordered > tfoot > tr > th:last-child,
+.table-scrollable > .table-bordered > thead > tr > td:last-child,
+.table-scrollable > .table-bordered > tbody > tr > td:last-child,
+.table-scrollable > .table-bordered > tfoot > tr > td:last-child {
+    border-right: 0;
+}
+.table-scrollable > .table-bordered > thead > tr:last-child > th,
+.table-scrollable > .table-bordered > tbody > tr:last-child > th,
+.table-scrollable > .table-bordered > tfoot > tr:last-child > th,
+.table-scrollable > .table-bordered > thead > tr:last-child > td,
+.table-scrollable > .table-bordered > tbody > tr:last-child > td,
+.table-scrollable > .table-bordered > tfoot > tr:last-child > td {
+    border-bottom: 0;
+}

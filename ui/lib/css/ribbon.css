@@ -1,0 +1,165 @@
+#ribbon-container {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    overflow: visible; /* so we can see the pseudo-elements we're going to add to the anchor */
+    font-size: 16px; /* font-size and line-height must be equal so we can account for the height of the banner */
+    line-height: 16px;
+}
+
+#ribbon-container:before {
+    content:"";
+    height: 0;
+    width: 0;
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 0;
+    border-top: 20px solid rgba(0,0,0,.3); /* These 4 border properties create the first part of our drop-shadow */
+    border-bottom: 20px solid rgba(0,0,0,.3);
+    border-right: 20px solid rgba(0,0,0,.3);
+    border-left: 20px solid transparent;
+}
+
+#ribbon-container:after { /* This adds the second part of our dropshadow */
+    content:"";
+    height: 3px;
+    background: rgba(0,0,0,.3);
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 40px;
+    right:3px;
+}
+
+#ribbon-container a {
+    display:block;
+    padding:12px;
+    position:relative; /* allows us to position our pseudo-elements properly */
+    background:#0089d0;
+    overflow:visible;
+    height:40px;
+    margin-left:29px;
+    color:#fff;
+    text-decoration:none;
+}
+
+#ribbon-container a:after { /* this creates the "folded" part of our ribbon */
+    content:"";
+    height: 0;
+    width: 0;
+    display:block;
+    position:absolute;
+    bottom:-15px;
+    right:0;
+    border-top: 15px solid #004a70;
+    border-right: 15px solid transparent;
+}
+
+#ribbon-container a:before { /* this creates the "forked" part of our ribbon */
+    content:"";
+    height: 0;
+    width: 0;
+    display:block;
+    position:absolute;
+    top:0;
+    left:-20px;
+    border-top: 20px solid #0089d0;
+    border-bottom: 20px solid #0089d0;
+    border-right: 20px solid transparent;
+    border-left: 20px solid transparent;
+}
+
+#ribbon-container a:hover {
+    background:#009ff1;
+}
+
+#ribbon-container a:hover:before { /* this makes sure that the "forked" part of the ribbon changes color with the anchor on :hover */
+    border-top: 20px solid #009ff1;
+    border-bottom: 20px solid #009ff1;
+}
+
+
+/* Alert */
+
+
+#ribbon-alert-container {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    overflow: visible; /* so we can see the pseudo-elements we're going to add to the anchor */
+    font-size: 16px; /* font-size and line-height must be equal so we can account for the height of the banner */
+    line-height: 16px;
+}
+
+#ribbon-alert-container:before {
+    content:"";
+    height: 0;
+    width: 0;
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 0;
+    border-top: 20px solid rgba(0,0,0,.3); /* These 4 border properties create the first part of our drop-shadow */
+    border-bottom: 20px solid rgba(0,0,0,.3);
+    border-right: 20px solid rgba(0,0,0,.3);
+    border-left: 20px solid transparent;
+}
+
+#ribbon-alert-container:after { /* This adds the second part of our dropshadow */
+    content:"";
+    height: 3px;
+    background: rgba(0,0,0,.3);
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 40px;
+    right:3px;
+}
+
+#ribbon-alert-container a {
+    display:block;
+    padding:12px;
+    position:relative; /* allows us to position our pseudo-elements properly */
+    background:#EC4758;
+    overflow:visible;
+    height:40px;
+    margin-left:29px;
+    color:#fff;
+    text-decoration:none;
+}
+
+#ribbon-alert-container a:after { /* this creates the "folded" part of our ribbon */
+    content:"";
+    height: 0;
+    width: 0;
+    display:block;
+    position:absolute;
+    bottom:-15px;
+    right:0;
+    border-top: 15px solid #004a70;
+    border-right: 15px solid transparent;
+}
+
+#ribbon-alert-container a:before { /* this creates the "forked" part of our ribbon */
+    content:"";
+    height: 0;
+    width: 0;
+    display:block;
+    position:absolute;
+    top:0;
+    left:-20px;
+    border-top: 20px solid #EC4758;
+    border-bottom: 20px solid #EC4758;
+    border-right: 20px solid transparent;
+    border-left: 20px solid transparent;
+}
+
+#ribbon-alert-container a:hover {
+    background:#EC4758;
+}
+
+#ribbon-alert-container a:hover:before { /* this makes sure that the "forked" part of the ribbon changes color with the anchor on :hover */
+    border-top: 20px solid #EC4758;
+    border-bottom: 20px solid #EC4758;
+}

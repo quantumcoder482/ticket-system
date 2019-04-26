@@ -1,0 +1,60 @@
+/*---------------------------------------------
+      UI Calendar
+----------------------------------------------*/
+
+.fc-button {
+    min-height: 34px;
+}
+.fc-state-default {
+    background-color: #f5f5f5;
+    background-image: none;
+    border-color: #eaeaea;
+    color: #333;
+    text-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -moz-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -webkit-border-radius: 0 0 0 0;
+}
+.fc-state-default.fc-corner-left {
+    -webkit-border-top-left-radius: 0;
+    -moz-border-radius-topleft: 0;
+    border-top-left-radius: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    border-bottom-left-radius: 0;
+}
+.fc-state-default.fc-corner-right {
+    -webkit-border-top-right-radius: 0;
+    -moz-border-radius-topright: 0;
+    border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    border-bottom-right-radius: 0;
+}
+.fc-unthemed th, .fc-unthemed td, .fc-unthemed hr, .fc-unthemed thead, .fc-unthemed tbody, .fc-unthemed .fc-row, .fc-unthemed .fc-popover {
+    border-color: #eaeaea;
+}
+.fc th {
+    padding: 5px;
+    font-weight: 400;
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #2196f3;
+}
+.fc .fc-content-skeleton td {
+    padding: 3px 5px 0px 5px;
+}
+
+.fc-row table td {
+    min-height: 120px;
+}
+.fc-unthemed .fc-today {
+    background: rgba(153, 114, 181, 0.1);
+}
+
+.fc-scroller {
+    overflow-y: hidden !important;
+}

@@ -1,0 +1,72 @@
+.ib_avatar {
+    display:inline-block;
+    font-size:1em;
+    width:2.5em;
+    height:2.5em;
+    line-height:2.5em;
+    text-align:center;
+    border-radius:50%;
+    background:#2196f3;
+    vertical-align:middle;
+    color:white;
+}
+
+.ib_bg_red{
+    background: #f44336;
+}
+
+.ib_bg_pink{
+    background: #E91E63;
+}
+
+.ib_bg_purple{
+    background: #9C27B0;
+}
+
+.ib_bg_deep_purple{
+    background: #673AB7;
+}
+
+.ib_bg_indigo{
+    background: #3F51B5;
+}
+
+.ib_bg_blue{
+    background: #2196F3;
+}
+
+.ib_bg_light_blue{
+    background: #03A9F4;
+}
+
+.ib_bg_cyan{
+    background: #00BCD4;
+}
+
+.ib_bg_teal{
+    background: #009688;
+}
+
+.ib_bg_green{
+    background: #4CAF50;
+}
+
+.ib_bg_light_green{
+    background: #8BC34A;
+}
+
+.ib_bg_deep_orange{
+    background: #FF5722;
+}
+
+.ib_bg_brown{
+    background: #795548;
+}
+
+.ib_bg_grey{
+    background: #9E9E9E;
+}
+
+.ib_bg_blue_grey{
+    background: #607D8B;
+}

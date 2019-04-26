@@ -1,0 +1,9 @@
+/.idea
+/.app
+/.vscode
+/.well-known
+/apps/*
+/dev
+/vendor
+/install
+.DS_Store

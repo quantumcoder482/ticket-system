@@ -1,0 +1,4 @@
+========
+admin.tpl
+purchases.php
+en.php

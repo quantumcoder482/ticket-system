@@ -1,0 +1,8 @@
+[2018-07-31 19:28:51] clx.INFO: Files backup started... [] []
+[2018-07-31 19:28:51] clx.INFO: Creating random temporary directory [] []
+[2018-07-31 19:32:03] clx.INFO: Files backup started... [] []
+[2018-07-31 19:32:03] clx.INFO: Creating random temporary directory [] []
+[2018-07-31 19:32:03] clx.ERROR: mkdir(): File exists [] []
+[2018-07-31 19:32:43] clx.INFO: Files backup started... [] []
+[2018-07-31 19:32:43] clx.INFO: Creating random temporary directory [] []
+[2018-07-31 19:32:43] clx.ERROR: mkdir(): File exists [] []
