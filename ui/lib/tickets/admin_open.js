@@ -25,7 +25,7 @@ $(function() {
         {
             url: _url + "tickets/admin/upload_file/",
             maxFiles: 10,
-            acceptedFiles: "image/jpeg,image/png,image/gif"
+            accpetedFiles: "image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         }
     );
 

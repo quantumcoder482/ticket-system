@@ -424,7 +424,7 @@ switch ($action){
         $uploader   =   new Uploader();
         $uploader->setDir('storage/tickets/');
         $uploader->sameName(false);
-        $uploader->setExtensions(array('zip','jpg','jpeg','png','gif'));  //allowed extensions list//
+        $uploader->setExtensions(array('zip','jpg','jpeg','png','gif','pdf','doc','docx'));  //allowed extensions list//
         if($uploader->uploadFile('file')){   //txtFile is the filebrowse element name //
             $uploaded  =   $uploader->getUploadName(); //get uploaded file name, renames on upload//
 
@@ -629,6 +629,37 @@ switch ($action){
 
             $predefined_replies = TicketPredefinedReply::orderBy('sorder','asc')
                 ->select(['id','title'])->get();
+
+
+            $attachment_files = array();
+            foreach ($replies as $rep) {
+                if ($rep['attachments'] != '') {
+                    $attach_array = explode(',', $rep['attachments']);
+                    foreach ($attach_array as $key => $a) {
+                        $f = explode('.', $a);
+                        if ($key != 0) {
+                            $message = $rep['message'] . '[' . $key . ']';
+                        } else {
+                            $message = $rep['message'];
+                        }
+                        $attachment_files[] = array(
+                            "id" => $rep['id'],
+                            "userid" => $rep['userid'],
+                            "account" => $rep['account'],
+                            "created_at" => $rep['created_at'],
+                            'message' => $message,
+                            "replied_by" => $rep['replied_by'],
+                            "attachment" => $a,
+                            "file_mime_type" => $f[1]
+                        );
+                    }
+                }
+            }
+
+            $ui->assign('attachment_files', $attachment_files);
+
+            $attachment_path = APP_URL . '/storage/tickets/';
+            $ui->assign('attachment_path', $attachment_path);
 
             view('tickets_admin_view',[
                 'invoice' => $invoice,

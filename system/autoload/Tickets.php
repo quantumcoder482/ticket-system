@@ -43,15 +43,22 @@ Class Tickets{
         $ib_now = date('Y-m-d H:i:s');
 
 
-
-
-        if(!$ticket_prefix)
+        /*        if(!$ticket_prefix)
         {
 	        $ticket_prefix = strtoupper(Ib_Str::random_alpha(3));
         }
 
 
         $tid = $ticket_prefix.'-'._raid(8);
+*/
+        $d = ORM::for_table('sys_tickets')->order_by_desc('id')->find_one();
+
+        if(!$d || is_numeric($d->tid) == false){
+            $tid = 1;
+        }else {
+            $tid = $d->tid + 1;
+        }
+        
 
 
         if(isset($data['did']))
@@ -209,8 +216,6 @@ Class Tickets{
             $subject = ib_post('subject');
         }
 
-
-
         if($subject == ''){
             $msg .= 'Subject is required. <br>';
         }
@@ -219,6 +224,9 @@ Class Tickets{
             $msg .= 'Message is required. <br>';
         }
 
+        if( ib_post('attachments') == ''){
+            $msg .= 'Attachments is required. <br>';
+        }
 
         if(isset($data['urgency']))
         {

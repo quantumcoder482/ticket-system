@@ -6,4 +6,5 @@
 /dev
 /vendor
 /install
+/storage
 .DS_Store

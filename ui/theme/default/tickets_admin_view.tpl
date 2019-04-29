@@ -11,7 +11,7 @@
 
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <a href="{$_url}tickets/admin/list/" class="btn btn-primary btn-sm" style="margin-bottom: 15px;"><i
                         class="fa fa-long-arrow-left"></i> Back to the List</a>
 
@@ -26,12 +26,13 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#details"><i class="fa fa-th"></i> Details</a></li>
                         <li><a data-toggle="tab" href="#tasks"><i class="fa fa-tasks"></i> Tasks</a></li>
-
+                        <li><a data-toggle="tab" href="#uploads"><i class="fa fa-upload"></i> Uploads</a></li>
+                        <li><a data-toggle="tab" href="#downloads"><i class="fa fa-download"></i> Downloads</a></li>
+                        <li><a data-toggle="tab" href="#comments"><i class="fa fa-comments"></i> Comments</a></li>
                     </ul>
 
                     <div class="tab-content">
                         <div id="details" class="tab-pane fade in active ib-tab-box">
-
 
                             <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency} </span> &nbsp;
 
@@ -123,16 +124,13 @@
                                 <div class="col-xs-12">
                                     <div class="form-material floating">
                                         <div class="form-group">
-                                            <label>Assigned to</label>
+                                            <label for="editable_assigned_to">Assigned to</label>
                                             <select class="form-control" id="editable_assigned_to" name="editable_assigned_to" size="1">
                                                 <option value="None">None</option>
                                                 {foreach $ads as $ad}
                                                     <option value="{$ad['id']}" {if $d->aid eq $ad['id']} selected{/if}>{$ad['fullname']} State | City | Expertise</option>
                                                 {/foreach}
                                             </select>
-
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -270,7 +268,6 @@
 
                         </div>
 
-
                         <div id="tasks" class="tab-pane fade ib-tab-box">
 
 
@@ -318,244 +315,460 @@
 
                         </div>
 
+                        <div id="uploads" class="tab-pane fade ib-tab-box">
+                            <div class="row" style="padding:20px 20px">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                 <a data-toggle="modal" href="#modal_upload_file"
+                                                     class="btn btn-primary upload_file waves-effect waves-light"
+                                                     id="upload_file"><i class="fa fa-plus"></i> {$_L['New File Upload']}</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <form class="form-horizontal" method="post" action="">
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <span class="fa fa-search"></span>
+                                                                </div>
+                                                                <input type="text" name="name" id="foo_filter"
+                                                                    class="form-control"
+                                                                    placeholder="{$_L['Search']}..." />
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <table class="table table-bordered table-hover sys_table footable"
+                                                    id="footable_tbl" data-filter="#foo_filter" data-page-size="20">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th class="text-right" data-sort-ignore="true"
+                                                                width="20px;">
+                                                                {$_L['Type']}</th>
+
+                                                            <th data-sort-ignore="true">{$_L['Title']}</th>
+
+                                                            <th width="200px" data-sort-ignore="true">{$_L['Created At']}
+                                                            </th>
+
+                                                            <th class="text-center" data-sort-ignore="true"
+                                                                width="100px;">
+                                                                {$_L['Manage']}</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        {foreach $attachment_files as $at}
+
+                                                        <tr>
+
+                                                            <td style="text-align:center">
+                                                                <h3>
+                                                                    {if $at['file_mime_type'] eq 'jpg' ||
+                                                                    $at['file_mime_type']
+                                                                    eq 'png' || $at['file_mime_type'] eq 'gif'}
+                                                                    <i class="fa fa-file-image-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'pdf'}
+                                                                    <i class="fa fa-file-pdf-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'zip'}
+                                                                    <i class="fa fa-file-archive-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'doc' ||
+                                                                    $at['file_mime_type'] eq 'docx'}
+                                                                    <i class="fa fa-file-word-o"></i>
+                                                                    {else}
+                                                                    <i class="fa fa-file"></i>
+                                                                    {/if}
+                                                                </h3>
+                                                            </td>
+                                                            <td>
+                                                                {$at['message']}
+                                                            </td>
+                                                            <td>
+                                                                <span class="mmnt">
+                                                                    {strtotime($at['created_at'])}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="{$attachment_path}{$at['attachment']}" class="btn btn-success btn-xs" target="_blank"><i class="fa fa-search"></i> </a>
+                                                                <!-- <a href="{$_url}client/tickets/download/{$at['id']}/{$at['attachment']}" class="btn btn-success btn-xs"><i class="fa fa-download"></i> </a> -->
+                                                                <a href="#" class="btn btn-danger btn-xs reply_delete" id="{$at['id']}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+
+                                                            </td>
+                                                        </tr>
+
+                                                        {/foreach}
+
+                                                    </tbody>
+
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="4">
+                                                                <ul class="pagination">
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div id="downloads" class="tab-pane fade ib-tab-box">
+                            <div class="row" style="padding:20px 20px">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <form class="form-horizontal" method="post" action="">
+                                                    <div class="form-group">
+                                                        <div class="col-md-12">
+                                                            <div class="input-group">
+                                                                <div class="input-group-addon">
+                                                                    <span class="fa fa-search"></span>
+                                                                </div>
+                                                                <input type="text" name="name" id="foo_filter"
+                                                                    class="form-control"
+                                                                    placeholder="{$_L['Search']}..." />
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <table class="table table-bordered table-hover sys_table footable"
+                                                    id="footable_tbl" data-filter="#foo_filter" data-page-size="20">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th class="text-right" data-sort-ignore="true"
+                                                                width="20px;">
+                                                                {$_L['Type']}</th>
+
+                                                            <th data-sort-ignore="true">{$_L['Title']}</th>
+
+                                                            <th width="200px" data-sort-ignore="true">{$_L['Created At']}
+                                                            </th>
+
+                                                            <th class="text-center" data-sort-ignore="true"
+                                                                width="100px;">
+                                                                {$_L['Manage']}</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        {foreach $attachment_files as $at}
+
+                                                        <tr>
+
+                                                            <td style="text-align:center">
+                                                                <h3>
+                                                                    {if $at['file_mime_type'] eq 'jpg' ||
+                                                                    $at['file_mime_type']
+                                                                    eq 'png' || $at['file_mime_type'] eq 'gif'}
+                                                                    <i class="fa fa-file-image-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'pdf'}
+                                                                    <i class="fa fa-file-pdf-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'zip'}
+                                                                    <i class="fa fa-file-archive-o"></i>
+                                                                    {elseif $at['file_mime_type'] eq 'doc' ||
+                                                                    $at['file_mime_type'] eq 'docx'}
+                                                                    <i class="fa fa-file-word-o"></i>
+                                                                    {else}
+                                                                    <i class="fa fa-file"></i>
+                                                                    {/if}
+                                                                </h3>
+                                                            </td>
+                                                            <td>
+                                                                {$at['message']}
+                                                            </td>
+                                                            <td>
+                                                                <span class="mmnt">
+                                                                    {strtotime($at['created_at'])}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="{$attachment_path}{$at['attachment']}" class="btn btn-success btn-xs" target="_blank"><i class="fa fa-search"></i></a>
+                                                                <!-- <a href="{$_url}client/tickets/download/{$at['id']}/{$at['attachment']}" class="btn btn-success btn-xs"><i class="fa fa-download"></i></a> -->
+                                                                <a href="#" class="btn btn-danger btn-xs reply_delete" id="{$at['id']}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                            </td>
+                                                        </tr>
+
+                                                        {/foreach}
+
+                                                    </tbody>
+
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="4">
+                                                                <ul class="pagination">
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                        <div id="comments" class="tab-pane fade ib-tab-box">
+                            <div class="row" style="background:#EEEEEF; padding:20px 20px" id="create_ticket">
+                                <!-- The time line -->
+                                <ul class="timeline">
+                                    <!-- timeline time label -->
+                                    <li class="time-label">
+                                        <span class="mmnt">
+                                            {strtotime($d->created_at)}
+                                        </span>
+                                    </li>
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+                                    <li>
+                                        {*<i class="fa fa-envelope bg-blue"></i>*}
+
+
+                                        {if $d->admin neq '0'}
+                                            {if $user['img'] eq 'gravatar'}
+                                                <img src="http://www.gravatar.com/avatar/{($user['email'])|md5}?s=30"
+                                                    class="img-time-line" alt="{$user['fullname']}">
+                                            {elseif $user['img'] eq ''}
+                                                <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
+                                            {else}
+                                                <img src="{$user['img']}" class="img-time-line" alt="{$user['account']}">
+                                            {/if}
+
+                                        {elseif ($c)}
+
+                                            {if $c->img eq 'gravatar'}
+                                                <img src="http://www.gravatar.com/avatar/{($user['email'])|md5}?s=30"
+                                                    class="img-time-line" alt="{$user['fullname']}">
+                                            {elseif $c->img eq ''}
+                                                <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
+                                            {else}
+                                                <img src="{$c->img}" class="img-time-line" alt="{$user['account']}">
+                                            {/if}
+
+                                        {else}
+
+
+
+                                        {/if}
+
+
+                                        <div class="timeline-item">
+                                            {*<span class="time"><i class="fa fa-clock-o"></i> 12:05</span>*}
+
+
+                                            <h3 class="timeline-header"><a href="javascript:void(0)">{$d->account}</a></h3>
+
+                                            <div class="timeline-body">
+                                                {$d->message}
+                                                <hr>
+
+                                                <a href="#" class="btn btn-warning btn-xs t_edit" data-toggle="tooltip"
+                                                data-placement="top" title="" data-original-title="{$_L['Edit']}" id="et{$d->id}"><i
+                                                            class="glyphicon glyphicon-pencil"></i> </a>
+                                            </div>
+
+                                            {if ($d->attachments) neq ''}
+                                                <div class="timeline-footer">
+                                                    {Tickets::gen_link_attachments($d->attachments)}
+                                                </div>
+                                            {/if}
+
+
+                                        </div>
+                                    </li>
+
+                                    {foreach $replies as $reply}
+                                        <li class="time-label">
+                            <span class="mmnt">
+                                {strtotime($reply['created_at'])}
+                            </span>
+                                        </li>
+                                        <li>
+                                            {*<i class="fa fa-envelope bg-blue"></i>*}
+
+
+                                            {if $reply['admin'] neq '0'}
+                                                <img src="{getAdminImage($reply['admin'],30)}" class="img-time-line">
+                                            {elseif ($c)}
+
+                                                {if $c->img eq ''}
+                                                    <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png"
+                                                        alt="">
+                                                {else}
+                                                    <img src="{$c->img}" class="img-time-line" alt="{$user['account']}">
+                                                {/if}
+
+                                            {else}
+
+
+
+                                            {/if}
+
+                                            <div class="timeline-item">
+                                                {*<span class="time"><i class="fa fa-clock-o"></i> 12:05</span>*}
+
+                                                <h3 class="timeline-header"><a href="javascript:void(0)">{$reply['replied_by']}</a></h3>
+
+                                                <div class="timeline-body" {if $reply['reply_type'] eq 'internal'} style="background: #FFF6D9;" {/if}>
+                                                    {$reply['message']}
+
+                                                    <hr>
+
+                                                    <a href="#" class="btn btn-warning btn-xs no-shadow reply_edit"
+                                                    data-toggle="tooltip" data-placement="top" title=""
+                                                    data-original-title="{$_L['Edit']}" id="er{$reply['id']}"><i
+                                                                class="glyphicon glyphicon-pencil"></i> </a> &nbsp;
+                                                    <a href="#" class="btn btn-danger btn-xs no-shadow reply_delete"
+                                                    data-toggle="tooltip" data-placement="top" title=""
+                                                    data-original-title="{$_L['Delete']}" id="dr{$reply['id']}"><i
+                                                                class="glyphicon glyphicon-trash"></i> </a> &nbsp;
+
+                                                    {if $reply['reply_type'] eq 'internal'} <a href="#" class="btn btn-primary btn-xs no-shadow reply_make_public"
+                                                                                            data-toggle="tooltip" data-placement="top" title=""
+                                                                                            data-original-title="{$_L['Public']}" id="rp{$reply['id']}"><i
+                                                                class="fa fa-globe"></i> </a> {/if}
+
+                                                </div>
+
+                                                {if ($reply['attachments']) neq ''}
+                                                    <div class="timeline-footer">
+                                                        {Tickets::gen_link_attachments($reply['attachments'])}
+                                                    </div>
+                                                {/if}
+
+
+                                            </div>
+                                        </li>
+                                    {/foreach}
+
+                                    <!-- END timeline item -->
+                                    <!-- timeline item -->
+                                    <li class="time-label">
+                            <span class="bg-green" id="section_add_reply">
+                            Add Reply
+                            </span>
+                                    </li>
+                                    <li>
+                                        {if $user['img'] eq ''}
+                                            <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
+                                        {else}
+                                            <img src="{$user['img']}" class="img-time-line" alt="{$user['account']}">
+                                        {/if}
+
+                                        <div class="timeline-item">
+
+
+                                            <div class="timeline-body">
+                                                <form class="form-horizontal push-10-t push-10" method="post">
+
+                                                    <ul class="nav nav-pills">
+                                                        <li class="active" id="reply_public"><a href="#">Public</a></li>
+                                                        <li id="reply_internal"><a href="#">Internal</a></li>
+
+                                                    </ul>
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12">
+
+                                                        <textarea id="content" class="form-control sysedit"
+                                                                name="content"></textarea>
+                                                            <div class="help-block">
+                                                                <a data-toggle="modal" href="#modal_add_item"><i
+                                                                            class="fa fa-paperclip"></i> Attach File</a>
+                                                                | <a data-toggle="modal" href="#modal_predefined_replies"><i
+                                                                            class="fa fa-align-left"></i> Predefined reply</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {*<div class="form-group">*}
+                                                    {*<div class="col-xs-12">*}
+                                                    {*<label for="exampleInputPassword1">Status</label>*}
+                                                    {*<select class="form-control">*}
+                                                    {*<option>Closed</option>*}
+                                                    {*<option>Pending</option>*}
+                                                    {*<option>Active</option>*}
+                                                    {*</select>*}
+                                                    {*</div>*}
+                                                    {*</div>*}
+
+
+                                                    <div class="form-group">
+                                                        <div class="col-xs-12">
+
+                                                            <input type="hidden" name="attachments" id="attachments" value="">
+                                                            <input type="hidden" name="f_tid" id="f_tid" value="{$d->id}">
+                                                            <input type="hidden" name="cid" id="cid" value="{$d->userid}">
+
+                                                            <button class="btn btn-primary" id="ib_form_submit" type="submit"><i
+                                                                        class="fa fa-send push-5-r"></i> Submit
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            {*<div class="timeline-footer">*}
+                                            {*<a class="btn btn-primary btn-xs">Read more</a>*}
+                                            {*<a class="btn btn-danger btn-xs">Delete</a>*}
+                                            {*</div>*}
+                                        </div>
+                                    </li>
+                                    <!-- END timeline item -->
+                                    <!-- timeline item -->
+
+                                    <!-- END timeline item -->
+                                    <!-- timeline time label -->
+
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+
+                                    <!-- END timeline item -->
+                                    <!-- timeline item -->
+
+                                    <!-- END timeline item -->
+                                    <li>
+                                        <i class="fa fa-life-ring bg-gray"></i>
+                                    </li>
+                                </ul>
+                                <!-- /.col -->
+                            </div>
+                        </div>
+
                     </div>
 
-
-
-
-
                 </div>
 
-            </div>
-
-        </div>
-        <div class="col-md-8">
-            <div class="row">
-                <div class="col-md-12" id="create_ticket">
-
-
-                    <!-- The time line -->
-                    <ul class="timeline">
-                        <!-- timeline time label -->
-                        <li class="time-label">
-                  <span class="mmnt">
-                    {strtotime($d->created_at)}
-                  </span>
-                        </li>
-                        <!-- /.timeline-label -->
-                        <!-- timeline item -->
-                        <li>
-                            {*<i class="fa fa-envelope bg-blue"></i>*}
-
-
-                            {if $d->admin neq '0'}
-                                {if $user['img'] eq 'gravatar'}
-                                    <img src="http://www.gravatar.com/avatar/{($user['email'])|md5}?s=30"
-                                         class="img-time-line" alt="{$user['fullname']}">
-                                {elseif $user['img'] eq ''}
-                                    <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
-                                {else}
-                                    <img src="{$user['img']}" class="img-time-line" alt="{$user['account']}">
-                                {/if}
-
-                            {elseif ($c)}
-
-                                {if $c->img eq 'gravatar'}
-                                    <img src="http://www.gravatar.com/avatar/{($user['email'])|md5}?s=30"
-                                         class="img-time-line" alt="{$user['fullname']}">
-                                {elseif $c->img eq ''}
-                                    <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
-                                {else}
-                                    <img src="{$c->img}" class="img-time-line" alt="{$user['account']}">
-                                {/if}
-
-                            {else}
-
-
-
-                            {/if}
-
-
-                            <div class="timeline-item">
-                                {*<span class="time"><i class="fa fa-clock-o"></i> 12:05</span>*}
-
-
-                                <h3 class="timeline-header"><a href="javascript:void(0)">{$d->account}</a></h3>
-
-                                <div class="timeline-body">
-                                    {$d->message}
-                                    <hr>
-
-                                    <a href="#" class="btn btn-warning btn-xs t_edit" data-toggle="tooltip"
-                                       data-placement="top" title="" data-original-title="{$_L['Edit']}" id="et{$d->id}"><i
-                                                class="glyphicon glyphicon-pencil"></i> </a>
-                                </div>
-
-                                {if ($d->attachments) neq ''}
-                                    <div class="timeline-footer">
-                                        {Tickets::gen_link_attachments($d->attachments)}
-                                    </div>
-                                {/if}
-
-
-                            </div>
-                        </li>
-
-                        {foreach $replies as $reply}
-                            <li class="time-label">
-                  <span class="mmnt">
-                    {strtotime($reply['created_at'])}
-                  </span>
-                            </li>
-                            <li>
-                                {*<i class="fa fa-envelope bg-blue"></i>*}
-
-
-                                {if $reply['admin'] neq '0'}
-                                    <img src="{getAdminImage($reply['admin'],30)}" class="img-time-line">
-                                {elseif ($c)}
-
-                                    {if $c->img eq ''}
-                                        <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png"
-                                             alt="">
-                                    {else}
-                                        <img src="{$c->img}" class="img-time-line" alt="{$user['account']}">
-                                    {/if}
-
-                                {else}
-
-
-
-                                {/if}
-
-                                <div class="timeline-item">
-                                    {*<span class="time"><i class="fa fa-clock-o"></i> 12:05</span>*}
-
-                                    <h3 class="timeline-header"><a href="javascript:void(0)">{$reply['replied_by']}</a></h3>
-
-                                    <div class="timeline-body" {if $reply['reply_type'] eq 'internal'} style="background: #FFF6D9;" {/if}>
-                                        {$reply['message']}
-
-                                        <hr>
-
-                                        <a href="#" class="btn btn-warning btn-xs no-shadow reply_edit"
-                                           data-toggle="tooltip" data-placement="top" title=""
-                                           data-original-title="{$_L['Edit']}" id="er{$reply['id']}"><i
-                                                    class="glyphicon glyphicon-pencil"></i> </a> &nbsp;
-                                        <a href="#" class="btn btn-danger btn-xs no-shadow reply_delete"
-                                           data-toggle="tooltip" data-placement="top" title=""
-                                           data-original-title="{$_L['Delete']}" id="dr{$reply['id']}"><i
-                                                    class="glyphicon glyphicon-trash"></i> </a> &nbsp;
-
-                                        {if $reply['reply_type'] eq 'internal'} <a href="#" class="btn btn-primary btn-xs no-shadow reply_make_public"
-                                                                                   data-toggle="tooltip" data-placement="top" title=""
-                                                                                   data-original-title="{$_L['Public']}" id="rp{$reply['id']}"><i
-                                                    class="fa fa-globe"></i> </a> {/if}
-
-                                    </div>
-
-                                    {if ($reply['attachments']) neq ''}
-                                        <div class="timeline-footer">
-                                            {Tickets::gen_link_attachments($reply['attachments'])}
-                                        </div>
-                                    {/if}
-
-
-                                </div>
-                            </li>
-                        {/foreach}
-
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-                        <li class="time-label">
-                  <span class="bg-green" id="section_add_reply">
-                   Add Reply
-                  </span>
-                        </li>
-                        <li>
-                            {if $user['img'] eq ''}
-                                <img class="img-time-line" src="{$app_url}ui/lib/imgs/default-user-avatar.png" alt="">
-                            {else}
-                                <img src="{$user['img']}" class="img-time-line" alt="{$user['account']}">
-                            {/if}
-
-                            <div class="timeline-item">
-
-
-                                <div class="timeline-body">
-                                    <form class="form-horizontal push-10-t push-10" method="post">
-
-                                        <ul class="nav nav-pills">
-                                            <li class="active" id="reply_public"><a href="#">Public</a></li>
-                                            <li id="reply_internal"><a href="#">Internal</a></li>
-
-                                        </ul>
-
-                                        <div class="form-group">
-                                            <div class="col-xs-12">
-
-                                            <textarea id="content" class="form-control sysedit"
-                                                      name="content"></textarea>
-                                                <div class="help-block">
-                                                    <a data-toggle="modal" href="#modal_add_item"><i
-                                                                class="fa fa-paperclip"></i> Attach File</a>
-                                                    | <a data-toggle="modal" href="#modal_predefined_replies"><i
-                                                                class="fa fa-align-left"></i> Predefined reply</a>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {*<div class="form-group">*}
-                                        {*<div class="col-xs-12">*}
-                                        {*<label for="exampleInputPassword1">Status</label>*}
-                                        {*<select class="form-control">*}
-                                        {*<option>Closed</option>*}
-                                        {*<option>Pending</option>*}
-                                        {*<option>Active</option>*}
-                                        {*</select>*}
-                                        {*</div>*}
-                                        {*</div>*}
-
-
-                                        <div class="form-group">
-                                            <div class="col-xs-12">
-
-                                                <input type="hidden" name="attachments" id="attachments" value="">
-                                                <input type="hidden" name="f_tid" id="f_tid" value="{$d->id}">
-                                                <input type="hidden" name="cid" id="cid" value="{$d->userid}">
-
-                                                <button class="btn btn-primary" id="ib_form_submit" type="submit"><i
-                                                            class="fa fa-send push-5-r"></i> Submit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                {*<div class="timeline-footer">*}
-                                {*<a class="btn btn-primary btn-xs">Read more</a>*}
-                                {*<a class="btn btn-danger btn-xs">Delete</a>*}
-                                {*</div>*}
-                            </div>
-                        </li>
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-
-                        <!-- END timeline item -->
-                        <!-- timeline time label -->
-
-                        <!-- /.timeline-label -->
-                        <!-- timeline item -->
-
-                        <!-- END timeline item -->
-                        <!-- timeline item -->
-
-                        <!-- END timeline item -->
-                        <li>
-                            <i class="fa fa-life-ring bg-gray"></i>
-                        </li>
-                    </ul>
-                </div>
-                <!-- /.col -->
             </div>
         </div>
     </div>
@@ -658,6 +871,50 @@
         </div>
     </div>
 
+    <div id="modal_upload_file" class="modal fade" tabindex="-2" data-width="760" style="display: none;">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title"><i class="fa fa-upload"></i> {$_L['New File Upload']}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="fileupload_form">
+                        <div class="form-group">
+                            <label for="doc_title">{$_L['Title']}</label>
+                            <input type="text" class="form-control" id="doc_title" name="doc_title"
+                                onfocusout="check_title()">
+                        </div>
+
+                    </form>
+                    <span id="filetitle_error_msg" style="display:block; color:red; display:none"><i
+                            class="fa fa-exclamation-triangle" aria-hidden="true"></i> Please input title </span>
+                    <hr>
+                    <form action="" class="dropzone" id="fileupload_container">
+                        <div class="dz-message">
+                            <h3> <i class="fa fa-cloud-upload"></i> {$_L['Drop File Here']}</h3>
+                            <br />
+                            <span class="note">{$_L['Click to Upload']}</span>
+                        </div>
+
+                    </form>
+                    <hr>
+                    <span id="fileuplod_error_msg" style="display:block; color:red; display:none"><i
+                            class="fa fa-exclamation-triangle" aria-hidden="true"></i> Please select file </span>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" name="file_link" id="file_link" value="">
+            <input type="hidden" name="file_tid" id="file_tid" value="{$d->id}">
+            <button type="button" data-dismiss="modal" class="btn btn-danger">{$_L['Close']}</button>
+            <button type="button" id="btn_add_file" class="btn btn-primary">{$_L['Submit']}</button>
+        </div>
+
+    </div>
+
+
 {/block}
 
 {block name="script"}
@@ -693,7 +950,7 @@
                 {
                     url: _url + "tickets/client/upload_file/",
                     maxFiles: 10,
-                    acceptedFiles: "image/jpeg,image/png,image/gif"
+                    accpetedFiles: "image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 }
             );
 
@@ -743,12 +1000,6 @@
                     toastr.error(upload_resp.msg);
                 }
 
-
-
-
-
-
-
             });
 
 
@@ -772,6 +1023,96 @@
 
 
             });
+
+
+            //
+
+            $('#fileuplod_error_msg').hide();
+            $('#filetitle_error_msg').hide();
+
+            var fileupload_resp;
+            var $btn_add_file = $('#btn_add_file');
+            var $fileupload_form = $('#fileupload_form');
+
+
+            var ib_file_upload = new Dropzone("#fileupload_container",
+                {
+                    url: _url + "tickets/client/upload_file/",
+                    maxFiles: 10,
+                    accpetedFiles:
+                        "image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                }
+            );
+
+            ib_file_upload.on("sending", function () {
+
+                $btn_add_file.prop('disabled', true);
+
+            });
+
+            ib_file_upload.on("success", function (file, response) {
+
+                $btn_add_file.prop('disabled', false);
+
+                fileupload_resp = response;
+
+                if (fileupload_resp.success == 'Yes') {
+
+                    toastr.success(fileupload_resp.msg);
+                    // $file_link.val(upload_resp.file);
+                    // files.push(upload_resp.file);
+                    //
+                    // console.log(files);
+
+                    $('#file_link').val(function (i, val) {
+                        return val + (!val ? '' : ',') + fileupload_resp.file;
+                    });
+
+                    $('#fileuplod_error_msg').hide();
+
+
+                }
+                else {
+                    toastr.error(upload_resp.msg);
+                }
+            });
+
+
+
+            $btn_add_file.on('click', function (e) {
+                e.preventDefault();
+
+                if ($('#file_link').val() != '' && $('#doc_title').val() != '') {
+                    $fileupload_form.block({ message: block_msg });
+                    $.post(_url + "tickets/admin/add_reply/", { message: $('#doc_title').val(), reply_type:reply_type, attachments: $('#file_link').val(), f_tid: $("#file_tid").val() })
+                        .done(function (data) {
+
+                            if (data.success == "Yes") {
+                                location.reload();
+                            }
+
+                            else {
+                                $create_ticket.unblock();
+                                toastr.error(data.msg);
+                            }
+
+                        });
+
+                } else {
+                    if ($('#file_link').val() == '') {
+                        $('#fileuplod_error_msg').show();
+                    }
+
+                    if ($('#doc_title').val() == '') {
+                        $('#filetitle_error_msg').show();
+                    }
+                }
+
+
+            });
+
+
+            // End of fileuplaod         
 
 
             $("#add_reply").on('click', function(e) {
@@ -1358,6 +1699,14 @@
             });
 
 
+        }
+
+        var check_title = function () {
+            if ($('#doc_title').val() == '') {
+                $('#filetitle_error_msg').show();
+            } else {
+                $('#filetitle_error_msg').hide();
+            }
         }
 
     </script>

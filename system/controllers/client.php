@@ -3438,11 +3438,12 @@ vMax: \'9999999999999999.00\',
 
 
             case 'upload_file':
+
                 $c = Contacts::details();
                 $uploader   =   new Uploader();
                 $uploader->setDir('storage/tickets/');
                 $uploader->sameName(false);
-                $uploader->setExtensions(array('zip','jpg','jpeg','png','gif'));  //allowed extensions list//
+                $uploader->setExtensions(array('zip','jpg','jpeg','png','gif','doc','docx','pdf'));  //allowed extensions list//
                 if($uploader->uploadFile('file')){   //txtFile is the filebrowse element name //
                     $uploaded  =   $uploader->getUploadName(); //get uploaded file name, renames on upload//
 
@@ -3470,6 +3471,50 @@ vMax: \'9999999999999999.00\',
 
                 break;
 
+            case 'download':
+
+                require 'system/lib/mime.php';
+
+                $title = route(3);
+                $file_name = route(4);
+
+                // $doc = ORM::for_table('sys_documents')->find_one($id);
+
+ 
+                $file = APP_URL.'/storage/tickets/'.$file_name;
+
+                $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+                $file_name = $title;
+                $file_name = str_replace(' ', '_', $file_name);
+                $file_name = strtolower($file_name);
+                $dl_file_name = $file_name . '.' . $ext;
+
+                // $c_type = mime_content_type($file);
+// echo $file;
+//  exit;
+                if (file_exists($file)) {
+                    $basename = basename($file);
+
+
+                    // $mime = ($mime = getimagesize($file)) ? $mime['mime'] : $mime;
+                    $mime = mime_content_type($file);
+                    $size = filesize($file);
+                    $fp   = fopen($file, "rb");
+                    if (!($mime && $size && $fp)) {
+                        // Error.
+                        i_close('Not Found');
+                        return;
+                    }
+
+                    header("Content-type: " . $mime);
+                    header("Content-Length: " . $size);
+                    header("Content-Disposition: attachment; filename=" . $dl_file_name);
+                    header('Content-Transfer-Encoding: binary');
+                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                    fpassthru($fp);
+                }
+            
+                break;
 
             case 'add_post':
 
@@ -3505,40 +3550,164 @@ vMax: \'9999999999999999.00\',
 
                 if($d){
 
+                    // Admin details data
+
+                    if ($d->ttotal == '') {
+                        $timeSpent = 0;
+
+                        $hh = '00';
+                        $mm = '00';
+                    } else {
+                        $timeSpent = strtotime($d->ttotal) - strtotime('TODAY');
+                        $timeSpent = (int)$timeSpent;
+
+                        $hhmmss = $d->ttotal;
+                        $hhmmss_split = explode(':', $hhmmss);
+                        $hh = $hhmmss_split[0];
+                        $mm = $hhmmss_split[1];
+                    }
+
+                    if ($d->admin != '0') {
+                        $a = db_find_one('sys_users', $d->admin);
+                    } else {
+                        $a = false;
+                    }
+                    $ui->assign('a', $a);
+
+
+                    $departments = ORM::for_table('sys_ticketdepartments')->select('id')->select('dname')->find_array();
+                    $ui->assign('departments', $departments);
+                    $deps = array();
+                    $d_x = 0;
+                    foreach ($departments as $dep) {
+                        $deps[$d_x]['value'] = $dep['id'];
+                        $deps[$d_x]['text'] = $dep['dname'];
+                        $d_x++;
+                    }
+                    $jed = json_encode($deps);
+
+                    $ads = ORM::for_table('sys_users')->select('id')->select('fullname')->find_array();
+
+                    $ui->assign('ads', $ads);
+
+                    $aas = array();
+                    $a_x = 0;
+                    foreach ($ads as $ad) {
+                        $aas[$a_x]['value'] = $ad['id'];
+                        $aas[$a_x]['text'] = $ad['fullname'];
+                        $a_x++;
+                    }
+
+
+                    $jaa = json_encode($aas);
+
+                    $dd = ORM::for_table('sys_ticketdepartments')->select('dname')->find_one($d->did);
+
+                    if ($dd) {
+                        $department = $dd->dname;
+                    } else {
+                        $department = '';
+                    }
+
+                    $ui->assign('department', $department);
+
+
 
                     $ui->assign('_st', $_L['Ticket'].' #'.$d->tid);
 
                     $ui->assign('d',$d);
+
 
                     // find all replies for this ticket
 
                     $replies = ORM::for_table('sys_ticketreplies')->where('tid',$d->id)->where('reply_type','Public')->find_array();
                     $ui->assign('replies',$replies);
 
-                    $ui->assign('xheader', Asset::css(array('dropzone/dropzone','sn/summernote','sn/summernote-bs3','sn/summernote-application','modal')));
+                    $attachment_files = array();
+                    foreach($replies as $rep){
+                        if($rep['attachments'] != ''){
+                            $attach_array = explode(',', $rep['attachments']);
+                            foreach ($attach_array as $key=>$a){
+                                $f = explode('.', $a);
+                                if($key != 0){
+                                    $message = $rep['message'].'['.$key.']';
+                                }else{
+                                    $message = $rep['message'];
+                                }
+                                $attachment_files[] = array(
+                                    "id" => $rep['id'],
+                                    "userid" => $rep['userid'],
+                                    "account" => $rep['account'],
+                                    "created_at" => $rep['created_at'],
+                                    'message' => $message,
+                                    "replied_by" => $rep['replied_by'],
+                                    "attachment" => $a,
+                                    "file_mime_type" => $f[1]
+                                );
+                            }
+                        }
+                        
+                    }
+
+                    $ui->assign('attachment_files', $attachment_files);
+
+                    $attachment_path = APP_URL. '/storage/tickets/';
+                    $ui->assign('attachment_path', $attachment_path);
+                
+
+                    $ui->assign('xheader', Asset::css(array( 'footable/css/footable.core.min','redactor/redactor', 'dropzone/dropzone','sn/summernote','sn/summernote-bs3','sn/summernote-application','modal')));
 
                     $ui->assign('xfooter',
-                        Asset::js(array('modal','dropzone/dropzone','sn/summernote.min','tickets/view'))
+                        Asset::js(array( 'footable/js/footable.all.min','redactor/redactor', 'modal','dropzone/dropzone','sn/summernote.min','tickets/view', 'tinymce/tinymce.min', 'js/editor'))
                     );
 
                     $ui->assign('xjq','
         
-        $( ".mmnt" ).each(function() {
-                    //   alert($( this ).html());
-                    var ut = $( this ).html();
-                    $( this ).html(moment.unix(ut).fromNow());
-                });
-        
-        ');
+                    $( ".mmnt" ).each(function() {
+                                //   alert($( this ).html());
+                                var ut = $( this ).html();
+                                $( this ).html(moment.unix(ut).fromNow());
+                            });
+                    
+                    ');
 
                     $ui->assign('jsvar','var files = [];');
 
+                    $ui->assign('jsvar', '
+                        var tid = ' . $d->id . ';
+                        var departments = ' . $jed . ';
+                        var agents = ' . $jaa . ';
+                        var files = [];
+                        ');
+
                     // find all replies
 
-                  //  $ui->assign('_include','view');
+                    //  $ui->assign('_include','view');
 
-                    $ui->display('tickets_view.tpl');
+                    $o_tickets = ORM::for_table('sys_tickets')->where('email', $d->email)->select('status')->select('subject')->select('urgency')->select('created_at')->select('id')->find_array();
+                    $ui->assign('o_tickets', $o_tickets);
 
+
+                    // check invoice exist for this ticket
+
+                    $invoice = Invoice::where('ticket_id', $d->id)->first();
+
+                    $predefined_replies = TicketPredefinedReply::orderBy('sorder', 'asc')
+                        ->select(['id', 'title'])->get();
+
+
+
+
+                    view( 'tickets_view', [
+                        'invoice' => $invoice,
+                        'ticket' => $d,
+                        'timeSpent' => $timeSpent,
+                        'predefined_replies' => $predefined_replies,
+                        'hh' => $hh,
+                        'mm' => $mm
+                    ]);
+
+                    // $ui->display('tickets_view.tpl');
 
 
                 }

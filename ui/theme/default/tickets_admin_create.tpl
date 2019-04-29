@@ -64,10 +64,8 @@
                             <div class="col-xs-6">
                                 <div class="form-material floating">
                                     <select class="form-control" id="urgency" name="urgency" size="1">
-                                        <option value="High">High</option>
-                                        <option value="Medium" selected>Medium</option>
-                                        <option value="Low">Low</option>
-
+                                     <option value="Normal">{$_L['Normal']}</option>
+                                     <option value="Fast" selected>{$_L['Fast']}</option>
                                     </select>
                                     <label for="urgency">Priority</label>
                                 </div>

@@ -143,15 +143,10 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
 
                         <li {if $_application_menu eq 'transactions'}class="active"{/if}><a href="{$_url}client/transactions/"><i class="icon-database"></i> <span class="nav-label">{$_L['Transactions']}</span></a></li>
+ 
 
 
-
-                    {if ($config['kb'])}
-
-                        <li {if $_application_menu eq 'kb'}class="active"{/if}><a href="{$_url}kb/c/"><i class="fa fa-file-text-o"></i> <span class="nav-label">{$_L['Knowledgebase']}</span></a></li>
-
-                    {/if}
-
+               
                     {if ($config['support'] eq '1')}
 
 
@@ -165,6 +160,12 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
                     {/if}
 
+                    
+                    {if ($config['kb'])}
+
+                        <li {if $_application_menu eq 'kb'}class="active"{/if}><a href="{$_url}kb/c/"><i class="fa fa-file-text-o"></i> <span class="nav-label">{$_L['Knowledgebase']}</span></a></li>
+
+                    {/if}
 
 
                     {$client_extra_nav[4]}

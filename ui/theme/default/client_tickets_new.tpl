@@ -54,10 +54,8 @@
 
                                     <label for="urgency">{$_L['Priority']}</label>
                                     <select class="form-control" id="urgency" name="urgency" size="1">
-                                        <option value="High">{$_L['High']}</option>
-                                        <option value="Medium" selected>{$_L['Medium']}</option>
-                                        <option value="Low">{$_L['Low']}</option>
-
+                                        <option value="Normal">{$_L['Normal']}</option>
+                                        <option value="Fast" selected>{$_L['Fast']}</option>
                                     </select>
 
                             </div>
@@ -165,7 +163,7 @@
                 {
                     url: _url + "client/tickets/upload_file/",
                     maxFiles: 10,
-                    acceptedFiles: "image/jpeg,image/png,image/gif"
+                    accpetedFiles: "image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 }
             );
 

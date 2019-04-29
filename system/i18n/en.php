@@ -1166,4 +1166,8 @@ $_L = [
     'Expertise' => 'Expertise',
     'Secondary Email' => 'Secondary Email',
     'Assigned To' => 'Assigned To',
+    'Normal' => 'Normal',
+    'Fast' => 'Fast',
+    'New File Upload' => 'New File Upload',
+    'Created At' => 'Created At'
 ];
