@@ -273,6 +273,9 @@ Class Tickets{
             $d->c1 = _post('c1');
             $d->c2 = _post('c2');
 
+            $dep = ORM::for_table('sys_ticketdepartments')->find_one($did);
+            $dname = $dep['dname'];
+
             if($extras)
             {
                 foreach ($extras as $key => $value)
@@ -361,6 +364,7 @@ Class Tickets{
                 $eml_subject->set('business_name', $config['CompanyName']);
                 $eml_subject->set('subject', $subject);
                 $eml_subject->set('ticket_subject', $subject);
+                $eml_subject->set('ticket_id', '#'.$tid);
                 $subj = $eml_subject->output();
 
                 $eml_message = new Template($eml->message);
@@ -379,6 +383,8 @@ Class Tickets{
                 $eml_message->set('message', $message);
                 $eml_message->set('business_name', $config['CompanyName']);
                 $eml_message->set('ticket_link',$client_view_link);
+                $eml_message->set('department', $dname);
+                $eml_message->set('processing', $urgency);
                 $message_o = $eml_message->output();
 
                 Notify_Email::_send($account, $email, $subj, $message_o, $cid);
@@ -396,6 +402,7 @@ Class Tickets{
                 $eml_subject->set('business_name', $config['CompanyName']);
                 $eml_subject->set('subject', $subject);
                 $eml_subject->set('ticket_subject', $subject);
+                $eml_subject->set('ticket_id', '#' . $tid);
                 $subj = $eml_subject->output();
 
                 $eml_message = new Template($eml->message);
@@ -411,6 +418,8 @@ Class Tickets{
                 $eml_message->set('message', $message);
                 $eml_message->set('business_name', $config['CompanyName']);
                 $eml_message->set('admin_view_link',$admin_view_link);
+                $eml_message->set('department', $dname);
+                $eml_message->set('processing', $urgency);
                 $message_o = $eml_message->output();
 
                 // $mail = Notify_Email::_init();
@@ -501,7 +510,7 @@ Class Tickets{
         $email = '';
         $last_reply = false;
         $replied_by = '';
-        $reply_type = _post('reply_type','Public');
+        $reply_type = _post('reply_type','public');
 
 
         $message = ib_post('message');
@@ -600,6 +609,7 @@ Class Tickets{
                         $eml_subject->set('business_name', $config['CompanyName']);
                         $eml_subject->set('subject', $t->subject);
                         $eml_subject->set('ticket_subject', $t->subject);
+                        $eml_subject->set('ticket_id', '#' . $tid);
                         $subj = $eml_subject->output();
 
                         $eml_message = new Template($eml->message);
@@ -616,6 +626,8 @@ Class Tickets{
                         $eml_message->set('ticket_message', $message);
                         $eml_message->set('business_name', $config['CompanyName']);
                         $eml_message->set('ticket_link',$client_view_link);
+                        // $eml_message->set('department', $dname);
+                        // $eml_message->set('processing', $urgency);
                         $message_o = $eml_message->output();
 
                         if($reply_type != 'internal')
@@ -655,6 +667,7 @@ Class Tickets{
                         $eml_subject->set('business_name', $config['CompanyName']);
                         $eml_subject->set('subject', $t->subject);
                         $eml_subject->set('ticket_subject', $t->subject);
+                        $eml_subject->set('ticket_id', '#' . $tid);
                         $subj = $eml_subject->output();
 
                         $eml_message = new Template($eml->message);

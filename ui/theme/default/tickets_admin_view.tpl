@@ -34,77 +34,34 @@
                     <div class="tab-content">
                         <div id="details" class="tab-pane fade in active ib-tab-box">
 
-                            <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency} </span> &nbsp;
+                            <span class="label label-default inline-block"> {$_L['Priority']}: <span id='priority_status'>{$d->urgency}</span> </span> &nbsp;
 
                             <span class="label label-default inline-block"> {$_L['Status']}: <span id="inline_status">{$d->status}</span></span>
                             <hr>
                             <p><strong>Ticket:</strong> {$d->tid}</p>
                             <p><strong>Customer:</strong> <a href="{$_url}contacts/view/{$d->userid}">{$d->account}</a></p>
+                            <p><strong>Created on:</strong> {$d->created_at}</p>
+                            <p><strong>Updated on:</strong> {$d->updated_at}</p>
+
+                            <hr>
 
 
-                            <p>
-                                <strong>Time:</strong> <span id="timeSpent">{if $ticket->ttotal eq ''}00:00:00{else}{$ticket->ttotal}{/if}</span>
-                            </p>
-
-
-
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        {*<input class="form-control" type="text" id="editable_hour" name="editable_hour" value="{$hh}">*}
-                                        <label>HH</label>
-                                        <select class="form-control">
-                                            <option>1</option>
-                                            <option>3</option>
-                                        </select>
-
+                            <div class="form-group" style="margin-bottom:10px">
+                                <div class="col-md-3">
+                                    <div class="form-material floating">
+                                        <div class="form-material floating">
+                                            <select class="form-control" id="priority" name="priority" size="1">
+                                                <option value="Normal" {if $d->urgency eq 'Normal'} selected {/if}>Normal</option>
+                                                <option value="Fast" {if $d->urgency eq 'Fast'} selected {/if}>Fast </option>
+                                            </select> 
+                                            <label for="priority">{$_L['Priority']}</label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label>MM</label>
-                                        <select class="form-control">
-                                            <option>5</option>
-                                            <option>10</option>
-                                            <option>15</option>
-                                        </select>
-                                    </div>
-                                </div>
-
                             </div>
+                            <br>
 
-
-
-                            {*<div class="btn-group" role="group" aria-label="...">*}
-                                {*<button id="startButton" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Start timer"><i class="fa fa-play"></i></button>*}
-                                {*<button id="pauseButton" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Pause timer"><i class="fa fa-pause"></i></button>*}
-                                {*<button id="stopButton" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Stop timer">*}
-                                {*<i class="fa fa-stop"></i>*}
-                                {*</button>*}
-                            {*</div>*}
-
-                            <hr>
-
-
-
-
-                            <a class="btn btn-primary" href="#" id="add_reply">Add Reply</a>
-
-                            {if $can_edit_sales}
-                                {if $invoice}
-                                    <a class="btn btn-success" href="{$_url}invoices/view/{$invoice->id}" id="add_reply">View invoice</a>
-                                {else}
-                                    <a class="btn btn-success" id="convertToInvoice" href="javascript:;">Create invoice</a>
-                                {/if}
-                            {/if}
-
-
-                            <a class="cdelete btn btn-danger" href="#" id="t{$d->id}"><i class="icon-trash"></i> </a>
-
-                            <hr>
-
-                            <div class="form-group">
+                            <div class="form-group">    
                                 <div class="col-xs-12">
                                     <div class="form-material floating">
                                         <div class="form-material floating">
@@ -128,7 +85,7 @@
                                             <select class="form-control" id="editable_assigned_to" name="editable_assigned_to" size="1">
                                                 <option value="None">None</option>
                                                 {foreach $ads as $ad}
-                                                    <option value="{$ad['id']}" {if $d->aid eq $ad['id']} selected{/if}>{$ad['fullname']} State | City | Expertise</option>
+                                                    <option value="{$ad['id']}" {if $d->aid eq $ad['id']} selected{/if}>{$ad['fullname']} </option>
                                                 {/foreach}
                                             </select>
                                         </div>
@@ -372,7 +329,7 @@
                                                     </thead>
                                                     <tbody>
 
-                                                        {foreach $attachment_files as $at}
+                                                        {foreach $upload_files as $at}
 
                                                         <tr>
 
@@ -398,8 +355,8 @@
                                                                 {$at['message']}
                                                             </td>
                                                             <td>
-                                                                <span class="mmnt">
-                                                                    {strtotime($at['created_at'])}
+                                                                <span class="">
+                                                                    {$at['created_at']}
                                                                 </span>
                                                             </td>
                                                             <td class="text-center">
@@ -479,7 +436,7 @@
                                                     </thead>
                                                     <tbody>
 
-                                                        {foreach $attachment_files as $at}
+                                                        {foreach $download_files as $at}
 
                                                         <tr>
 
@@ -505,8 +462,8 @@
                                                                 {$at['message']}
                                                             </td>
                                                             <td>
-                                                                <span class="mmnt">
-                                                                    {strtotime($at['created_at'])}
+                                                                <span class="">
+                                                                    {$at['created_at']}
                                                                 </span>
                                                             </td>
                                                             <td class="text-center">
@@ -545,8 +502,8 @@
                                 <ul class="timeline">
                                     <!-- timeline time label -->
                                     <li class="time-label">
-                                        <span class="mmnt">
-                                            {strtotime($d->created_at)}
+                                        <span class="">
+                                            {$d->created_at}
                                         </span>
                                     </li>
                                     <!-- /.timeline-label -->
@@ -598,21 +555,19 @@
                                                             class="glyphicon glyphicon-pencil"></i> </a>
                                             </div>
 
-                                            {if ($d->attachments) neq ''}
-                                                <div class="timeline-footer">
-                                                    {Tickets::gen_link_attachments($d->attachments)}
-                                                </div>
-                                            {/if}
-
 
                                         </div>
                                     </li>
 
                                     {foreach $replies as $reply}
+                                    
+                                    {if $reply['attachments'] neq ''}
+                                    {continue}
+                                    {/if}
                                         <li class="time-label">
-                            <span class="mmnt">
-                                {strtotime($reply['created_at'])}
-                            </span>
+                                            <span class="">
+                                                {$reply['created_at']}
+                                            </span>
                                         </li>
                                         <li>
                                             {*<i class="fa fa-envelope bg-blue"></i>*}
@@ -675,9 +630,9 @@
                                     <!-- END timeline item -->
                                     <!-- timeline item -->
                                     <li class="time-label">
-                            <span class="bg-green" id="section_add_reply">
-                            Add Reply
-                            </span>
+                                        <span class="bg-green" id="section_add_reply">
+                                            Add Reply
+                                        </span>
                                     </li>
                                     <li>
                                         {if $user['img'] eq ''}
@@ -704,9 +659,9 @@
                                                         <textarea id="content" class="form-control sysedit"
                                                                 name="content"></textarea>
                                                             <div class="help-block">
-                                                                <a data-toggle="modal" href="#modal_add_item"><i
-                                                                            class="fa fa-paperclip"></i> Attach File</a>
-                                                                | <a data-toggle="modal" href="#modal_predefined_replies"><i
+                                                                <!-- <a data-toggle="modal" href="#modal_add_item"><i
+                                                                            class="fa fa-paperclip"></i> Attach File</a> -->
+                                                                <a data-toggle="modal" href="#modal_predefined_replies"><i
                                                                             class="fa fa-align-left"></i> Predefined reply</a>
                                                             </div>
                                                         </div>
@@ -1118,6 +1073,9 @@
             $("#add_reply").on('click', function(e) {
                 e.preventDefault();
 
+                // $('.nav-tabs a:last').tab('show');
+                $('.nav-tabs a[href="#comments"]').tab('show');
+                
                 $('html, body').animate({
                     scrollTop: $("#section_add_reply").offset().top - 60
                 }, 500);
@@ -1372,6 +1330,22 @@
                 })
             });
 
+
+
+            $("#priority").on("change",function(e){
+                $.post(base_url + 'tickets/admin/update_priority',{id: tid, value: $(this).val()},function (data) {
+                    if (data == 'Normal' || data == 'Fast') {
+                        $('#priority_status').text(data);
+                        toastr.success(_L['Saved Successfully']);
+
+                    }
+
+                    else {
+
+                        toastr.error(data);
+                    }
+                })
+            });
 
             $('#editable_assigned_to').select2({
                 theme: "bootstrap",

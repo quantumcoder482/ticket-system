@@ -54,10 +54,10 @@
 
                                     <label for="urgency">{$_L['Priority']}</label>
                                     <select class="form-control" id="urgency" name="urgency" size="1">
-                                        <option value="Normal">{$_L['Normal']}</option>
-                                        <option value="Fast" selected>{$_L['Fast']}</option>
+                                        <option value="Normal" selected>{$_L['Normal']}</option>
+                                        <option value="Fast" >{$_L['Fast']}</option>
                                     </select>
-
+                                    <div class="help-block" id="alert_urgency"><span style="color:red">Fast track processing fee: Rs. 15,000</span></div>
                             </div>
                         </div>
                     </div>
@@ -130,6 +130,7 @@
     <script>
         Dropzone.autoDiscover = false;
         $(function() {
+            $('#alert_urgency').hide();
 
             var _url = $("#_url").val();
 
@@ -227,6 +228,16 @@
                     });
 
 
+            });
+
+            $('#urgency').on('change', function(e){
+                e.preventDefault();
+                // console.log($(this).val());
+                if($(this).val() == 'Fast'){
+                    $('#alert_urgency').show();
+                }else{
+                    $('#alert_urgency').hide();
+                }
             });
 
 

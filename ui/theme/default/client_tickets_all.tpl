@@ -11,6 +11,13 @@
                 </div>
                 <div class="ibox-content">
                     <table class="table table-hover table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width:140px">ID</th>
+                                <th class="text-center" style="width:100px">Status</th>
+                                <th> Title </th>
+                            </tr>
+                        </thead>
                         <tbody>
 
                         {foreach $ds as $d}

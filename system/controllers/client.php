@@ -1975,11 +1975,25 @@ switch ($action) {
 
         // Orders
 
-    $orders = Order::where('cid',$c->id)->orderBy('id','desc')->limit(5)->get();
+        $orders = Order::where('cid',$c->id)->orderBy('id','desc')->limit(5)->get();
 
         //  aSign: \''.$config['currency_code'].' \',
 
         $js_add_fund = '';
+
+        $ds = ORM::for_table('sys_tickets')->where('userid', $c->id)->order_by_desc('id')->find_array();
+        $ui->assign('ds', $ds);
+
+        $ui->assign('xjq', '
+        
+        $( ".mmnt" ).each(function() {
+                    //   alert($( this ).html());
+                    var ut = $( this ).html();
+                    $( this ).html(moment.unix(ut).fromNow());
+                });
+        
+        ');
+        
 
         if($config['add_fund'] == '1'){
             $js_add_fund = ' $(".add_fund").click(function (e) {
@@ -3623,7 +3637,34 @@ vMax: \'9999999999999999.00\',
                     $replies = ORM::for_table('sys_ticketreplies')->where('tid',$d->id)->where('reply_type','Public')->find_array();
                     $ui->assign('replies',$replies);
 
-                    $attachment_files = array();
+                    $upload_files = array();
+                    $download_files = array();
+
+                    $ticket_files = $d->attachments;
+                    if($ticket_files){
+                        $ticket_file_array = explode(',', $ticket_files);
+                        foreach($ticket_file_array as $key=>$tf){
+                            $t = explode('.', $tf);
+                            if ($key != 0) {
+                                $message = 'Submission attachfile [' . $key . ']';
+                            } else {
+                                $message = 'Submission attachfile';
+                            }
+                            $attachment_file = array(
+                                "id" => $d['id'],
+                                "userid" => $d['userid'],
+                                "account" => $d['account'],
+                                "created_at" => $d['created_at'],
+                                'message' => $message,
+                                "replied_by" => '',
+                                "attachment" => $tf,
+                                "file_mime_type" => $t[1]
+                            ); 
+                            $upload_files[] = $attachment_file;
+                        }
+                    }
+                    
+
                     foreach($replies as $rep){
                         if($rep['attachments'] != ''){
                             $attach_array = explode(',', $rep['attachments']);
@@ -3634,7 +3675,7 @@ vMax: \'9999999999999999.00\',
                                 }else{
                                     $message = $rep['message'];
                                 }
-                                $attachment_files[] = array(
+                                $attachment_file = array(
                                     "id" => $rep['id'],
                                     "userid" => $rep['userid'],
                                     "account" => $rep['account'],
@@ -3644,12 +3685,19 @@ vMax: \'9999999999999999.00\',
                                     "attachment" => $a,
                                     "file_mime_type" => $f[1]
                                 );
+                                if($rep['admin'] == 0){
+                                    $upload_files[] = $attachment_file;    
+                                }else{
+                                    $download_files[] = $attachment_file;
+                                }
                             }
                         }
                         
                     }
 
-                    $ui->assign('attachment_files', $attachment_files);
+                    $ui->assign('upload_files', $upload_files);
+                    $ui->assign('download_files', $download_files);
+
 
                     $attachment_path = APP_URL. '/storage/tickets/';
                     $ui->assign('attachment_path', $attachment_path);
@@ -3750,13 +3798,51 @@ vMax: \'9999999999999999.00\',
 
                 $tickets = new Tickets();
 
-                $t = $tickets->add_reply($c->id);
+                $t = $tickets->add_reply();
 
 
                 header('Content-Type: application/json');
 
                 echo json_encode($t);
 
+
+                break;
+
+            case 'tasks_list':
+
+                $tid = route(3);
+
+                $tasks = ORM::for_table('sys_tasks')->where('rel_type', 'Ticket')->where('rel_id', $tid)->select('title')->select('id')->select('status')->order_by_desc('id')->find_array();
+
+
+                $table_data = "<table class='table table-bordered table-hover sys_table'>
+                                <thead>
+                                    <tr>
+                                        <th width='30px'>#</th>
+                                        <th width='70%'>Task Name</th>
+                                        <th style='text-align:center'> Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>";
+
+                foreach ($tasks as $key=>$task) {
+                    if($task['status'] == 'Completed'){
+                        $table_data .= "<tr><td>".($key+1)."</td><td>".$task['title']."</td><td style='color:green; text-align:center'>".$task['status']."</td></tr>";
+                    }elseif($task['status'] == 'In Progress'){
+                        $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td><td style='color:blue; text-align:center'>" . $task['status'] . "</td></tr>";
+                    }else{
+                        $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td><td style='color:red;text-align:center'>" . $task['status'] . "</td></tr>";
+                    }
+                   
+                }
+
+                $table_data.="</tbody></table>";
+
+                if ($tasks) {
+                   echo $table_data;
+                } else {
+                                       
+                }
 
                 break;
 

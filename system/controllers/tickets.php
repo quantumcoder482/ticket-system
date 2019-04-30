@@ -22,7 +22,7 @@ switch ($action){
         $ui->assign('xheader', Asset::css(array('modal')));
 
         $ui->assign('xfooter',
-            Asset::js(array('modal'))
+            Asset::js(array('modal', 'tickets/departments'))
         );
 
         $ds = ORM::for_table('sys_ticketdepartments')->order_by_asc('sorder')->find_array();
@@ -631,7 +631,33 @@ switch ($action){
                 ->select(['id','title'])->get();
 
 
-            $attachment_files = array();
+            $upload_files = array();
+            $download_files = array();
+
+            $ticket_files = $d->attachments;
+            if ($ticket_files) {
+                $ticket_file_array = explode(',', $ticket_files);
+                foreach ($ticket_file_array as $key => $tf) {
+                    $t = explode('.', $tf);
+                    if ($key != 0) {
+                        $message = 'Submission attachfile [' . $key . ']';
+                    } else {
+                        $message = 'Submission attachfile';
+                    }
+                    $attachment_file = array(
+                        "id" => $d['id'],
+                        "userid" => $d['userid'],
+                        "account" => $d['account'],
+                        "created_at" => $d['created_at'],
+                        'message' => $message,
+                        "replied_by" => '',
+                        "attachment" => $tf,
+                        "file_mime_type" => $t[1]
+                    );
+                    $download_files[] = $attachment_file;
+                }
+            }
+
             foreach ($replies as $rep) {
                 if ($rep['attachments'] != '') {
                     $attach_array = explode(',', $rep['attachments']);
@@ -642,7 +668,7 @@ switch ($action){
                         } else {
                             $message = $rep['message'];
                         }
-                        $attachment_files[] = array(
+                        $attachment_file = array(
                             "id" => $rep['id'],
                             "userid" => $rep['userid'],
                             "account" => $rep['account'],
@@ -652,11 +678,18 @@ switch ($action){
                             "attachment" => $a,
                             "file_mime_type" => $f[1]
                         );
+
+                        if($rep['admin'] == 0){
+                            $download_files[] = $attachment_file; 
+                        }else{
+                            $upload_files[] = $attachment_file;
+                        }
                     }
                 }
             }
 
-            $ui->assign('attachment_files', $attachment_files);
+            $ui->assign('upload_files', $upload_files);
+            $ui->assign('download_files', $download_files);
 
             $attachment_path = APP_URL . '/storage/tickets/';
             $ui->assign('attachment_path', $attachment_path);
@@ -1277,6 +1310,25 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
 
         break;
 
+    case 'update_priority':
+        
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets',$id);
+
+        $value =  _post('value');
+
+
+
+        if($d){
+            $d->urgency = $value;
+            $d->save();
+
+        }
+
+        echo $value;
+
+        break;
 
     case 'update_assigned_to':
 

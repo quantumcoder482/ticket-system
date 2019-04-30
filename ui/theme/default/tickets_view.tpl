@@ -40,13 +40,9 @@
                                         <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency}
                                         </span>
                                     </p>
-                                    <hr>
-
-                                    <p>
-                                        <strong>Time:</strong> <span id="timeSpent">{if $ticket->ttotal eq ''} 00:00:00
-                                            {else}{ $ticket->ttotal }{/if}</span>
-                                    </p>
-
+                                    <br>
+                                    <p><strong>Created on:</strong> {$d->created_at}</p>
+                                    <p><strong>Updated on:</strong> {$d->updated_at}</p>
                                 </div>
 
                             </div>
@@ -83,6 +79,7 @@
                                             <p>
                                                 <a href="#">{$o_ticket['subject']}</a>
                                             </p>
+
                                             <span class="label label-default inline-block"> {$_L['Status']}:
                                                 {$d->status} </span> &nbsp;
                                             <span class="label label-default inline-block"> {$_L['Priority']}:
@@ -104,12 +101,24 @@
                     </div>
 
                     <div id="tasks" class="tab-pane fade ib-tab-box">
-
-                        <h3>All Tasks</h3>
-
-                        <hr>
-
-                        <div id="tasks_list">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-8">
+                                <h3>All Tasks</h3>
+                                <hr>
+                                <div id="tasks_list" class="table-responsive"></div>
+                            </div>
+                            <div class="col-md-4 col-sm-4">
+                                <div style="float:right; margin-right:30px">
+                                    <p style="">
+                                        <h3>Task Overview</h3>
+                                    </p>
+                                    <p>1. Editorial Review</p>
+                                    <p>2. Plagiarism Check</p>
+                                    <p>3. Peer-review</p>
+                                    <p>4. Proofreading</p>
+                                    <p>5. Layout Editing</p>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -168,7 +177,7 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    {foreach $attachment_files as $at}
+                                                    {foreach $upload_files as $at}
 
                                                     <tr>
 
@@ -194,8 +203,8 @@
                                                             {$at['message']}
                                                         </td>
                                                         <td>
-                                                            <span class="mmnt">
-                                                                {strtotime($at['created_at'])}
+                                                            <span class="">
+                                                                {$at['created_at']}
                                                             </span>
                                                         </td>
                                                         <td class="text-center">
@@ -270,7 +279,7 @@
                                                 </thead>
                                                 <tbody>
 
-                                                    {foreach $attachment_files as $at}
+                                                    {foreach $download_files as $at}
 
                                                     <tr>
 
@@ -296,8 +305,8 @@
                                                             {$at['message']}
                                                         </td>
                                                         <td>
-                                                            <span class="mmnt">
-                                                                {strtotime($at['created_at'])}
+                                                            <span class="">
+                                                                {$at['created_at']}
                                                             </span>
                                                         </td>
                                                         <td class="text-center">
@@ -334,8 +343,8 @@
                             <ul class="timeline">
                                 <!-- timeline time label -->
                                 <li class="time-label">
-                                    <span class="mmnt">
-                                        {strtotime($d->created_at)}
+                                    <span class="">
+                                        {$d->created_at}
                                     </span>
                                 </li>
                                 <!-- /.timeline-label -->
@@ -361,20 +370,18 @@
                                             {$d->message}
                                         </div>
 
-                                        {if ($d->attachments) neq ''}
-                                        <div class="timeline-footer">
-                                            {Tickets::gen_link_attachments($d->attachments)}
-                                        </div>
-                                        {/if}
-
-
                                     </div>
                                 </li>
 
                                 {foreach $replies as $reply}
+                                
+                                {if $reply['attachments'] neq ''}
+                                {continue}
+                                {/if}
+                                
                                 <li class="time-label">
-                                    <span class="mmnt">
-                                        {strtotime($reply['created_at'])}
+                                    <span class="">
+                                        {$reply['created_at']}
                                     </span>
                                 </li>
                                 <li>
@@ -427,9 +434,9 @@
                                                     <div class="col-xs-12">
                                                         <textarea id="content" class="form-control sysedit"
                                                             name="content"></textarea>
-                                                        <div class="help-block"><a data-toggle="modal"
+                                                        <!-- <div class="help-block"><a data-toggle="modal"
                                                                 href="#modal_add_item"><i class="fa fa-paperclip"></i>
-                                                                {$_L['Attach File']}</a> </div>
+                                                                {$_L['Attach File']}</a> </div> -->
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -575,22 +582,22 @@
 
         $("#tasks_list").html(block_msg);
 
-        $.get(base_url + "tickets/admin/tasks_list/" + tid, function (data) {
+        $.get(base_url + "client/tickets/tasks_list/" + tid, function (data) {
 
             $("#tasks_list").html(data);
-
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'icheckbox_square-blue',
-                increaseArea: '20%' // optional
-            });
-            $('.i-checks').iCheck('disable');
 
         });
     }
 
-
     loadTasks();
+    
+    setInterval(function(){
+        loadTasks();
+    }, 60000);
+    
+
+
+
 </script>
 
 {/block}

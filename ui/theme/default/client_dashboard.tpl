@@ -73,43 +73,52 @@
 
         <div class="col-md-8">
 
-            <div class="ibox float-e-margins">
+             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>{$_L['Recent Transactions']}</h5>
-
+                    <h5>{$_L['List Tickets']}</h5>
+                    <a href="{$_url}client/tickets/new/" class="btn btn-xs pull-right btn-primary"><i class="icon-mail"></i> {$_L['Open New Ticket']}</a>
                 </div>
                 <div class="ibox-content">
+                    <table class="table table-hover table-vcenter">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width:140px">ID</th>
+                                <th class="text-center" style="width:100px">Status</th>
+                                <th> Title </th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered sys_table">
-                            <th>{$_L['Date']}</th>
-                            <th>{$_L['Account']}</th>
+                        {foreach $ds as $d}
+                            <tr>
+                                <td class="text-center" style="width: 140px;"><a href="{$_url}client/tickets/view/{$d['tid']}/">#{$d['tid']}</a></td>
+                                <td class="hidden-xs hidden-sm hidden-md text-center" style="width: 100px;">
+                                    <span class="label label-success">{if isset($_L[$d['status']])}
+                                    {$_L[$d['status']]}
+                                    {else}
+                                    {$d['status']}
+                                    {/if}</span>
+                                </td>
+                                <td>
+                                    <a href="{$_url}client/tickets/view/{$d['tid']}/">{$d['subject']}</a>
+                                    <div class="text-muted">
+                                        <em>{$_L['Updated']} </em> <em class="">{$d['updated_at']}</em> by <a href="{$_url}tickets/client/view/{$d['tid']}/">{$d['last_reply']}</a>
+                                    </div>
+                                </td>
 
 
-                            <th class="text-right">{$_L['Amount']}</th>
+                            </tr>
 
-                            <th>{$_L['Description']}</th>
+                            {foreachelse}
+                            <tr><td align="center" style="border-top: none">{$_L['You do not have any Tickets']}</td></tr>
+                        {/foreach}
 
-                            {foreach $t as $ds}
-                                <tr class="{if $ds['cr'] eq '0.00'}warning {else}info{/if}">
-                                    <td>{date( $config['df'], strtotime($ds['date']))}</td>
-                                    <td>{$ds['account']}</td>
-
-                                    <td class="text-right amount">{$ds['amount']}</td>
-                                    <td>{$ds['description']}</td>
-
-                                </tr>
-                            {/foreach}
-
-
-
-                        </table>
-                    </div>
-
-
-
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
+
 
         </div>
 
