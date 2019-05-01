@@ -1993,7 +1993,7 @@ switch ($action) {
                 });
         
         ');
-        
+
 
         if($config['add_fund'] == '1'){
             $js_add_fund = ' $(".add_fund").click(function (e) {
@@ -3550,6 +3550,7 @@ vMax: \'9999999999999999.00\',
             case 'view':
 
                 $tid = route(3);
+                $tab = route(4)?:'details';
 
                 $app->emit('client/tickets/view',[
                     'tid' => $tid
@@ -3559,7 +3560,7 @@ vMax: \'9999999999999999.00\',
                 $ui->assign('user',$c);
 
 
-                $d = ORM::for_table('sys_tickets')->where('tid',$tid)->where('userid',$c->id)->find_one();
+                $d = ORM::for_table('sys_tickets')->where('id',$tid)->where('userid',$c->id)->find_one();
 
 
                 if($d){
@@ -3747,6 +3748,7 @@ vMax: \'9999999999999999.00\',
 
 
                     view( 'tickets_view', [
+                        'tab' => $tab,
                         'invoice' => $invoice,
                         'ticket' => $d,
                         'timeSpent' => $timeSpent,

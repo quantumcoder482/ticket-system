@@ -15,14 +15,14 @@
 
                         {foreach $ds as $d}
                             <tr>
-                                <td class="text-center" style="width: 140px;"><a href="{$_url}tickets/client/view/{$d['tid']}/">#{$d['tid']}</a></td>
+                                <td class="text-center" style="width: 140px;"><a href="{$_url}tickets/client/view/{$d['id']}/">#{$d['tid']}</a></td>
                                 <td class="hidden-xs hidden-sm hidden-md text-center" style="width: 100px;">
                                     <span class="label label-success">{$d['status']}</span>
                                 </td>
                                 <td>
-                                    <a href="{$_url}tickets/client/view/{$d['tid']}/">{$d['subject']}</a>
+                                    <a href="{$_url}tickets/client/view/{$d['id']}/">{$d['subject']}</a>
                                     <div class="text-muted">
-                                        <em>Updated </em> <em class="mmnt">{strtotime($d['updated_at'])}</em> by <a href="{$_url}tickets/client/view/{$d['tid']}/">{$d['last_reply']}</a>
+                                        <em>Updated </em> <em class="mmnt">{strtotime($d['updated_at'])}</em> by <a href="{$_url}tickets/client/view/{$d['id']}/">{$d['last_reply']}</a>
                                     </div>
                                 </td>
 

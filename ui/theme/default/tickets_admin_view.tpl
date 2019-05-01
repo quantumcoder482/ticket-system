@@ -7,9 +7,6 @@
 
 {block name="content"}
 
-
-
-
     <div class="row">
         <div class="col-md-12">
             <a href="{$_url}tickets/admin/list/" class="btn btn-primary btn-sm" style="margin-bottom: 15px;"><i
@@ -22,7 +19,6 @@
                 <div class="panel-body">
                     <h3>{$d->subject}</h3>
                     <hr>
-
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#details"><i class="fa fa-th"></i> Details</a></li>
                         <li><a data-toggle="tab" href="#tasks"><i class="fa fa-tasks"></i> Tasks</a></li>
@@ -870,6 +866,13 @@
     </div>
 
 
+    <!-- Page Variables -->
+
+    <input type="hidden" name="tab_name" id="tab_name" value="{$tab}">
+    <input type="hidden" name="t_id" id="t_id" value="{$d->id}">
+
+
+
 {/block}
 
 {block name="script"}
@@ -883,6 +886,29 @@
 
         Dropzone.autoDiscover = false;
         $(function() {
+
+
+            // Tab 
+
+            $tab = $('#tab_name').val();
+            switch($tab){
+                case 'details':
+                   $('.nav-tabs a[href="#details"]').tab('show');
+                   break;
+                case 'tasks':
+                    $('.nav-tabs a[href="#tasks"]').tab('show');
+                    break;
+                case 'uploads':
+                    $('.nav-tabs a[href="#uploads"]').tab('show');
+                    break;
+                case 'downloads':
+                  $('.nav-tabs a[href="#downloads"]').tab('show');
+                    break;
+                case 'comments':
+                  $('.nav-tabs a[href="#comments"]').tab('show');
+                    break;
+            }
+
 
             var _url = $("#_url").val();
 
@@ -961,12 +987,13 @@
 
             $ib_form_submit.on('click', function(e) {
                 e.preventDefault();
+                var tid = $('#t_id').val();
                 $create_ticket.block({ message: block_msg });
                 $.post( _url + "tickets/admin/add_reply/", {  message: tinyMCE.activeEditor.getContent(), reply_type: reply_type, attachments: $("#attachments").val(), f_tid: $("#f_tid").val()} )
                     .done(function( data ) {
 
                         if(data.success == "Yes"){
-                            location.reload();
+                            location.href = _url +'tickets/admin/view/'+tid+'/comments';
                         }
 
                         else {
@@ -980,7 +1007,7 @@
             });
 
 
-            //
+            //  File upload
 
             $('#fileuplod_error_msg').hide();
             $('#filetitle_error_msg').hide();
@@ -1032,10 +1059,9 @@
                 }
             });
 
-
-
             $btn_add_file.on('click', function (e) {
                 e.preventDefault();
+                var tid = $('#t_id').val();
 
                 if ($('#file_link').val() != '' && $('#doc_title').val() != '') {
                     $fileupload_form.block({ message: block_msg });
@@ -1043,7 +1069,7 @@
                         .done(function (data) {
 
                             if (data.success == "Yes") {
-                                location.reload();
+                                location.href = _url+'tickets/admin/view/'+tid+'/uploads';
                             }
 
                             else {
@@ -1353,12 +1379,11 @@
                 .on("change", function (e) {
 
                     $.post(base_url + 'tickets/admin/update_assigned_to',{id: tid, value: $("#editable_assigned_to option:selected").val()},function (data) {
-                        if ($.isNumeric(data)) {
+                        if (data.success == true) {
 
                             toastr.success(_L['Saved Successfully']);
 
                         }
-
                         else {
 
                             toastr.error(data);

@@ -4,6 +4,7 @@ $(function() {
     var _url = $("#_url").val();
     var $ib_form_submit = $("#ib_form_submit");
     var $create_ticket = $("#create_ticket");
+    var tid = $('#t_id').val();
 
     $('#fileuplod_error_msg').hide();
     $('#filetitle_error_msg').hide();
@@ -78,7 +79,8 @@ $(function() {
             .done(function( data ) {
 
                 if(data.success == "Yes"){
-                    location.reload();
+                    // location.reload();
+                    location.href = _url + 'client/tickets/view/' + tid + '/comments';
                 }
 
                 else {
@@ -152,7 +154,8 @@ $(function() {
                 .done(function (data) {
 
                     if (data.success == "Yes") {
-                        location.reload();
+                        // location.reload();
+                        location.href = _url + 'client/tickets/view/' + tid + '/uploads';
                     }
 
                     else {

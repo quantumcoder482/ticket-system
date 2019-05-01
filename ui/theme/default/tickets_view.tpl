@@ -33,12 +33,10 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <p>
-                                        <span class="label label-default inline-block"> {$_L['Status']}: <span
-                                                id="inline_status">{$d->status}</span></span>
+                                        <span class="label label-default inline-block"> {$_L['Status']}: <span id="inline_status">{$d->status}</span></span>
                                     </p>
                                     <p>
-                                        <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency}
-                                        </span>
+                                        <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency} </span>
                                     </p>
                                     <br>
                                     <p><strong>Created on:</strong> {$d->created_at}</p>
@@ -559,6 +557,9 @@
         <button type="button" id="btn_add_file" class="btn btn-primary">{$_L['Submit']}</button>
     </div>
 
+    <input type="hidden" name="tab_name" id="tab_name" value="{$tab}">
+    <input type="hidden" name="t_id" id="t_id" value="{$d->id}">
+
 </div>
 
 
@@ -569,31 +570,57 @@
 <script src="{$app_url}ui/lib/easytimer.min.js"></script>
 <script type="text/javascript" src="{$app_url}ui/lib/s2/js/select2.min.js"></script>
 <script type="text/javascript">
-    $('#notes').redactor({
-        minHeight: 300, // pixels
-        plugins: ['fontcolor'],
-        toolbar: false,
-    });
 
-    var footable_tbl = $("#footable_tbl");
-    footable_tbl.footable();
+    $(function(){
 
-    function loadTasks() {
+        $tab = $('#tab_name').val();
+        switch($tab){
+            case 'details':
+                $('.nav-tabs a[href="#details"]').tab('show');
+                break;
+            case 'tasks':
+                $('.nav-tabs a[href="#tasks"]').tab('show');
+                break;
+            case 'uploads':
+                $('.nav-tabs a[href="#uploads"]').tab('show');
+                break;
+            case 'downloads':
+                $('.nav-tabs a[href="#downloads"]').tab('show');
+                break;
+            case 'comments':
+                $('.nav-tabs a[href="#comments"]').tab('show');
+                break;
+        }
 
-        $("#tasks_list").html(block_msg);
-
-        $.get(base_url + "client/tickets/tasks_list/" + tid, function (data) {
-
-            $("#tasks_list").html(data);
-
+        $('#notes').redactor({
+            minHeight: 300, // pixels
+            plugins: ['fontcolor'],
+            toolbar: false,
         });
-    }
 
-    loadTasks();
-    
-    setInterval(function(){
+        var footable_tbl = $("#footable_tbl");
+        footable_tbl.footable();
+
+        function loadTasks() {
+
+            $("#tasks_list").html(block_msg);
+
+            $.get(base_url + "client/tickets/tasks_list/" + tid, function (data) {
+
+                $("#tasks_list").html(data);
+
+            });
+        }
+
         loadTasks();
-    }, 60000);
+        
+        setInterval(function(){
+            loadTasks();
+        }, 60000);
+
+
+
+    });
     
 
 

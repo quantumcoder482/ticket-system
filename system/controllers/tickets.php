@@ -484,9 +484,9 @@ switch ($action){
 
     case 'view':
 
-	    $id = route(3);
+        $id = route(3);
 
-
+        $tab = route(4)?:'details';
 
 	    $app->emit('tickets/admin/view',[
 		    'tid' => $id
@@ -610,14 +610,11 @@ switch ($action){
         ');
 
             $ui->assign('jsvar','
-            var tid = '.$d->id.';
-            var departments = '.$jed.';
-            var agents = '.$jaa.';
-            var files = [];
+                var tid = '.$d->id.';
+                var departments = '.$jed.';
+                var agents = '.$jaa.';
+                var files = [];
             ');
-
-
-
 
             $o_tickets = ORM::for_table('sys_tickets')->where('email',$d->email)->select('status')->select('subject')->select('urgency')->select('created_at')->select('id')->find_array();
             $ui->assign('o_tickets',$o_tickets);
@@ -695,6 +692,7 @@ switch ($action){
             $ui->assign('attachment_path', $attachment_path);
 
             view('tickets_admin_view',[
+                'tab' => $tab,
                 'invoice' => $invoice,
                 'ticket' => $d,
                 'timeSpent' => $timeSpent,
@@ -1342,53 +1340,53 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
 
         // Find the user
 
-    $staff = User::find($value);
+        $staff = User::find($value);
 
-    if($staff)
-    {
-        // send email
-
-        // Assign task to this staff
-
-        // check tasks already exist for this staff
-
-        $task = Task::where('aid',$staff->id)
-            ->where('tid',$d->id)
-            ->first();
-
-        if(!$task)
+        if($staff)
         {
+            // send email
 
-            Tasks::create([
-                'title' => $d->tid,
-                'rel_type' => 'Ticket',
-                'rel_id' => $d->id,
-                'aid' => $staff->id,
-                'tid' => $d->id,
-            ]);
-        }
+            // Assign task to this staff
 
-        Notify_Email::_send('', $staff->username, 'Ticket assigned: '.$d->tid, 'View Ticket- '.U.'tickets/admin/view/'.$d->id);
+            // check tasks already exist for this staff
 
-        // Send sms notification when ticket is assigned
+            $task = Task::where('aid',$staff->id)
+                ->where('tid',$d->id)
+                ->first();
 
-        if(isset($config['tickets_assigned_sms_notification']) && $config['tickets_assigned_sms_notification'] == 1 && $staff->phonenumber != '')
-        {
-            require 'system/lib/misc/smsdriver.php';
+            // if(!$task)
+            // {
 
-            $tpl = SMSTemplate::where('tpl','Ticket Assigned: Admin Notification')->first();
+            //     Tasks::create([
+            //         'title' => $d->tid,
+            //         'rel_type' => 'Ticket',
+            //         'rel_id' => $d->id,
+            //         'aid' => $staff->id,
+            //         'tid' => $d->id,
+            //     ]);
+            // }
 
-            if($tpl)
+            Notify_Email::_send('', $staff->username, 'Ticket assigned: '.$d->tid, 'View Ticket- '.U.'tickets/admin/view/'.$d->id);
+
+            // Send sms notification when ticket is assigned
+
+            if(isset($config['tickets_assigned_sms_notification']) && $config['tickets_assigned_sms_notification'] == 1 && $staff->phonenumber != '')
             {
-                $message = new Template($tpl->sms);
-                $message->set('ticket_id', $d->tid);
-                $message_o = $message->output();
-                spSendSMS($staff->phonenumber,$message_o);
-            }
-        }
+                require 'system/lib/misc/smsdriver.php';
 
-        //
-    }
+                $tpl = SMSTemplate::where('tpl','Ticket Assigned: Admin Notification')->first();
+
+                if($tpl)
+                {
+                    $message = new Template($tpl->sms);
+                    $message->set('ticket_id', $d->tid);
+                    $message_o = $message->output();
+                    spSendSMS($staff->phonenumber,$message_o);
+                }
+            }
+
+            //
+        }
 
         if($d){
             $d->aid = $value;
