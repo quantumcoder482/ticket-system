@@ -2802,7 +2802,6 @@ vMax: \'9999999999999999.00\',
         $ui->assign('d',$d);
 
 
-
         $ui->assign('xjq',' $(\'.amount\').autoNumeric(\'init\', {
 
     

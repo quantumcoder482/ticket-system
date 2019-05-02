@@ -245,14 +245,108 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             $data = ib_posted_data();
 
-
-
             $data['aid'] = $user->id;
             $data['created_by'] = $user->fullname;
 
             $task = Tasks::create($data);
 
             if($task){
+              
+                $t_data = ORM::for_table('sys_tasks')->find_one($task);
+                $client_phone_number = '';
+
+                if($t_data->rel_type == 'Ticket'){
+
+                    if ($t_data->cid != 0) {
+                        $client = ORM::for_table('crm_accounts')->find_one($t_data->cid);
+                       
+                        if($client){
+                            
+                            $client_phone_number = $client->phone;
+                            
+                            if ($client->fname != '' && $client->lname != '') {
+                                $client_name = trim($client->fname) . ' ' . trim($client->lname);
+                            } else {
+                                $client_name = $client->account;
+                            }
+                        }
+                    }else{
+                        $client_name = '';
+                    }
+
+                    if ($t_data->tid != 0){
+                        $ticket = ORM::for_table('sys_tickets')->find_one($t_data->tid);
+                        if($ticket){
+                            $ticket_id = $ticket->tid;
+                            $ticket_subject = $ticket->subject;
+                            $ticket_priority = $ticket->urgency;
+                            $department = $ticket->dname;
+                            
+                        }
+                    }
+
+                    $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket New Task Created - Client')->where('send', 'Yes')->find_one();
+
+                    $email = $ticket->email;
+
+                    if ($eml) {
+
+                        $client_view_link = U . 'client/tickets/view/' . $ticket->id . '/';
+                        $eml_subject = new Template($eml->subject);
+                        $eml_subject->set('business_name', $config['CompanyName']);
+                        $eml_subject->set('subject', $ticket->subjet);
+                        $eml_subject->set('ticket_subject', $ticket->subject);
+                        $eml_subject->set('ticket_id', '#' . $ticket->tid);
+                        $subj = $eml_subject->output();
+
+                        $eml_message = new Template($eml->message);
+                        $eml_message->set('client_name', $client_name);
+                        $eml_message->set('client_email', $email);
+                        $eml_message->set('priority', $ticket->priority);
+                        $eml_message->set('urgency', $ticket->urgency);
+                        $eml_message->set('ticket_subject', $ticket->subject);
+                        $eml_message->set('status', $ticket->urgency);
+                        $eml_message->set('ticket_status', $ticket->status);
+                        $eml_message->set('ticket_urgency', $ticket->urgency);
+                        $eml_message->set('ticket_priority', $ticket->urgency);
+                        $eml_message->set('ticket_id', $ticket->tid);
+                        $eml_message->set('ticket_message', $ticket->message);
+                        $eml_message->set('business_name', $config['CompanyName']);
+                        $eml_message->set('ticket_link', $client_view_link);
+                        $eml_message->set('department', $ticket->dname);
+
+                        $eml_message->set('task_name', $t_data->title);
+                        $eml_message->set('task_status', $t_data->status);
+                        $eml_message->set('task_comments', $t_data->description);
+
+                        // $eml_message->set('processing', $urgency);
+                        $message_o = $eml_message->output();
+
+                        if ($reply_type != 'internal') {
+                            Notify_Email::_send($ticket->account, $email, $subj, $message_o, $cid = $ticket->userid);
+                        }
+
+                        // SMS 
+
+                        if ($client_phone_number != '') {
+                            require 'system/lib/misc/smsdriver.php';
+
+                            $tpl = SMSTemplate::where('tpl', 'Ticket task created: Client Notification')->first();
+
+                            if ($tpl) {
+                                $message = new Template($tpl->sms);
+                                $message->set('ticket_id', $t_data->tid);
+                                $message->set('task_name', $t_data->title);
+                                $message->set('task_status', $t_data->status);
+                                $message_o = $message->output();
+                                spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
+                            }
+                        }
+
+                    }
+
+                }
+
 
                 echo $task;
 
@@ -344,13 +438,104 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             $d->save();
 
+
+            // Email function
+
+            $t_data = ORM::for_table('sys_tasks')->find_one($d->id());
+            $client_phone_number = '';
+
+            if ($t_data->rel_type == 'Ticket') {
+
+                if ($t_data->cid != 0) {
+                    $client = ORM::for_table('crm_accounts')->find_one($t_data->cid);
+                    if ($client) {
+                        
+                        $client_phone_number = $client->phone;
+
+                        if ($client->fname != '' && $client->lname != '') {
+                            $client_name = trim($client->fname) . ' ' . trim($client->lname);
+                        } else {
+                            $client_name = $client->account;
+                        }
+                    }
+                } else {
+                    $client_name = '';
+                }
+
+                if ($t_data->tid != 0) {
+                    $ticket = ORM::for_table('sys_tickets')->find_one($t_data->tid);
+                    if ($ticket) {
+                        $ticket_id = $ticket->tid;
+                        $ticket_subject = $ticket->subject;
+                        $ticket_priority = $ticket->urgency;
+                        $department = $ticket->dname;
+                    }
+                }
+
+                $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Task Updated - Client')->where('send', 'Yes')->find_one();
+
+                $email = $ticket->email;
+
+                if ($eml) {
+
+                    $client_view_link = U . 'client/tickets/view/' . $ticket->id . '/';
+                    $eml_subject = new Template($eml->subject);
+                    $eml_subject->set('business_name', $config['CompanyName']);
+                    $eml_subject->set('subject', $ticket->subjet);
+                    $eml_subject->set('ticket_subject', $ticket->subject);
+                    $eml_subject->set('ticket_id', '#' . $ticket->tid);
+                    $subj = $eml_subject->output();
+
+                    $eml_message = new Template($eml->message);
+                    $eml_message->set('client_name', $client_name);
+                    $eml_message->set('client_email', $email);
+                    $eml_message->set('priority', $ticket->priority);
+                    $eml_message->set('urgency', $ticket->urgency);
+                    $eml_message->set('ticket_subject', $ticket->subject);
+                    $eml_message->set('status', $ticket->urgency);
+                    $eml_message->set('ticket_status', $ticket->status);
+                    $eml_message->set('ticket_urgency', $ticket->urgency);
+                    $eml_message->set('ticket_priority', $ticket->urgency);
+                    $eml_message->set('ticket_id', $ticket->tid);
+                    $eml_message->set('ticket_message', $ticket->message);
+                    $eml_message->set('business_name', $config['CompanyName']);
+                    $eml_message->set('ticket_link', $client_view_link);
+                    $eml_message->set('department', $ticket->dname);
+
+                    $eml_message->set('task_name', $t_data->title);
+                    $eml_message->set('task_status', $t_data->status);
+                    $eml_message->set('task_comments', $t_data->description);
+
+                    // $eml_message->set('processing', $urgency);
+                    $message_o = $eml_message->output();
+
+                    if ($reply_type != 'internal') {
+                        
+                        Notify_Email::_send($ticket->account, $email, $subj, $message_o, $cid = $ticket->userid);
+                        // SMS 
+
+                        if ($client_phone_number != '') {
+                            require 'system/lib/misc/smsdriver.php';
+
+                            $tpl = SMSTemplate::where('tpl', 'Task Status: Client Notification')->first();
+
+                            if ($tpl) {
+                                $message = new Template($tpl->sms);
+                                $message->set('ticket_id', $t_data->tid);
+                                $message->set('task_name', $t_data->title);
+                                $message->set('task_status', $t_data->status);
+                                $message_o = $message->output();
+                                spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
+                            }
+                        }
+                    }
+                    
+                }
+            }
+
             echo $d->id();
 
         }
-
-
-
-
 
 
 

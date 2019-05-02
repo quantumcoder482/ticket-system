@@ -314,6 +314,7 @@ function spSendSMS($to,$message,$from='',$iid=0,$sms_type = 'text',$sms_route=''
 
             $curl = curl_init();
             $sender = $from;
+            
 
             if($sms_route == '')
             {
@@ -322,7 +323,7 @@ function spSendSMS($to,$message,$from='',$iid=0,$sms_type = 'text',$sms_route=''
 
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "http://api.msg91.com/api/sendhttp.php?country=91&sender=$sender&mobiles=$to&authkey=$api_username&route=$sms_route&message=$message",
+                CURLOPT_URL => "http://api.msg91.com/api/sendhttp.php?country=91&sender=$sender&mobiles=$to&authkey=$api_username&route=$sms_route&message=$message&unicode=1",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,

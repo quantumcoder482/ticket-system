@@ -216,7 +216,7 @@
                     .done(function( data ) {
 
                         if(data.success == "Yes"){
-                            window.location.href = _url + "client/tickets/view/" + data.tid + "/";
+                            window.location.href = _url + "client/tickets/view/" + data.id + "/";
                         }
 
                         else {

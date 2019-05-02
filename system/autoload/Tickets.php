@@ -14,7 +14,6 @@ Class Tickets{
 
         return $dname;
 
-
     }
 
     public static function sendReplyNotification($tid,$message){
@@ -36,21 +35,20 @@ Class Tickets{
 
 
     public function create($cid=0,$admin=0,$flag=0,$source='Web',$data=false,$extras = false,$ticket_prefix=false){
+
         global $config;
         $msg = '';
 
-
         $ib_now = date('Y-m-d H:i:s');
 
-
         /*        if(!$ticket_prefix)
-        {
-	        $ticket_prefix = strtoupper(Ib_Str::random_alpha(3));
-        }
+            {
+                $ticket_prefix = strtoupper(Ib_Str::random_alpha(3));
+            }
 
+            $tid = $ticket_prefix.'-'._raid(8);
+        */
 
-        $tid = $ticket_prefix.'-'._raid(8);
-*/
         $d = ORM::for_table('sys_tickets')->order_by_desc('id')->find_one();
 
         if(!$d || is_numeric($d->tid) == false){
@@ -58,8 +56,6 @@ Class Tickets{
         }else {
             $tid = $d->tid + 1;
         }
-        
-
 
         if(isset($data['did']))
         {
@@ -69,7 +65,6 @@ Class Tickets{
 	        }
 	        else{
 		        $did = $data['did'];
-
 	        }
 
         }
@@ -77,15 +72,12 @@ Class Tickets{
             $did = _post('department');
         }
 
-
-
-
         $dname = $this->get_department($did);
 
         $account = '';
         $email = '';
         $last_reply = '';
-
+        $client_phone_number = '';
 
 
         if($cid != 0){
@@ -95,10 +87,12 @@ Class Tickets{
                 $account = $d->account;
                 $email = $d->email;
                 $last_reply = $d->account;
+                $client_phone_number = $d->phone;
+
             }
         }
-
         else{
+
             // create lead
 
             $account = _post('account');
@@ -110,17 +104,15 @@ Class Tickets{
 
             $email = _post('email');
             $last_reply = $account;
+          
             if($account == ''){
-//                $msg .= 'Full Name is required. <br>';
-//                return array(
-//                    "success" => "No",
-//                    "msg" => $msg
-//                );
-
+            // $msg .= 'Full Name is required. <br>';
+            // return array(
+            // "success" => "No",
+            // "msg" => $msg
+            // );
 
                 $account = Ib_Str::randomName();
-
-
             }
 
             $account_e = explode(' ',$account);
@@ -144,13 +136,13 @@ Class Tickets{
             }
 
 
-//            if($email == ''){
-//                $msg .= 'Email is required. <br>';
-//                return array(
-//                    "success" => "No",
-//                    "msg" => $msg
-//                );
-//            }
+            //            if($email == ''){
+            //                $msg .= 'Email is required. <br>';
+            //                return array(
+            //                    "success" => "No",
+            //                    "msg" => $msg
+            //                );
+            //            }
 
             $e_user = ORM::for_table('crm_accounts')->where('email',$email)->find_one();
 
@@ -158,15 +150,15 @@ Class Tickets{
                 $cid = $e_user->id;
             }
             else{
-//                if($account == ''){
-//                    $msg .= 'Full Name is required. <br>';
-//                }
-//                if($email == ''){
-//                    $msg .= 'Email is required. <br>';
-//                }
+                //                if($account == ''){
+                //                    $msg .= 'Full Name is required. <br>';
+                //                }
+                //                if($email == ''){
+                //                    $msg .= 'Email is required. <br>';
+                //                }
 
-//                $c_add['account'] = $account;
-//                $c_add['email'] = $email;
+                //                $c_add['account'] = $account;
+                //                $c_add['email'] = $email;
 
                 $l_add['first_name'] = $first_name;
                 $l_add['last_name'] = $last_name;
@@ -177,21 +169,21 @@ Class Tickets{
 
 
 
-//                if($msg == ''){
-//                    $cid = Contacts::add($c_add,true,true);
-//                    if(!is_numeric($cid)){
-//                        return array(
-//                            "success" => "No",
-//                            "msg" => $cid
-//                        );
-//                    }
-//                }
-//                else{
-//                    return array(
-//                        "success" => "No",
-//                        "msg" => $msg
-//                    );
-//                }
+                //                if($msg == ''){
+                //                    $cid = Contacts::add($c_add,true,true);
+                //                    if(!is_numeric($cid)){
+                //                        return array(
+                //                            "success" => "No",
+                //                            "msg" => $cid
+                //                        );
+                //                    }
+                //                }
+                //                else{
+                //                    return array(
+                //                        "success" => "No",
+                //                        "msg" => $msg
+                //                    );
+                //                }
 
 
 
@@ -237,10 +229,7 @@ Class Tickets{
         }
 
 
-
         if($msg == ''){
-
-
 
             $d = ORM::for_table('sys_tickets')->create();
             $d->tid = $tid;
@@ -289,18 +278,18 @@ Class Tickets{
             $ticket_id = $d->id();
             // create tasks if enabled
 
-            if(isset($config['create_task_from_ticket']) && $config['create_task_from_ticket'] == 1)
-            {
-                Tasks::create([
-                    'title' => $subject,
-                    'description' => $message,
-                    'cid' => $cid,
-                    'priority' => $urgency,
-                    'rel_type' => 'Ticket',
-                    'rel_id' => $ticket_id,
-                    'tid' => $ticket_id
-                ]);
-            }
+            // if(isset($config['create_task_from_ticket']) && $config['create_task_from_ticket'] == 1)
+            // {
+            //     Tasks::create([
+            //         'title' => $subject,
+            //         'description' => $message,
+            //         'cid' => $cid,
+            //         'priority' => $urgency,
+            //         'rel_type' => 'Ticket',
+            //         'rel_id' => $ticket_id,
+            //         'tid' => $ticket_id
+            //     ]);
+            // }
 
             $ret_val = array(
 
@@ -315,50 +304,48 @@ Class Tickets{
 
             );
 
-            // Send Email to Client
+                            // Send Email to Client
 
 
-//            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
-//            if($eml){
-//
-//
-//
-//                $eml_subject = new Template($eml->subject);
-//                $eml_subject->set('business_name', $config['CompanyName']);
-//                $eml_subject->set('subject', $subject);
-//                $eml_subject->set('ticket_subject', $subject);
-//                $subj = $eml_subject->output();
-//
-//                $eml_message = new Template($eml->message);
-//                $eml_message->set('client_name', $account);
-//                $eml_message->set('client_email', $email);
-//                $eml_message->set('priority', $urgency);
-//                $eml_message->set('urgency', $urgency);
-//                $eml_message->set('ticket_urgency', $urgency);
-//                $eml_message->set('ticket_priority', $urgency);
-//                $eml_message->set('ticket_id', '#'.$tid);
-//                $eml_message->set('message', $message);
-//                $eml_message->set('business_name', $config['CompanyName']);
-//                $message_o = $eml_message->output();
-//
-//                $mail = Notify_Email::_init();
-//                $mail->AddAddress($email, $account);
-//                $mail->Subject = $subj;
-//                $mail->MsgHTML($message_o);
-//
-//                if(APP_STAGE == 'Live'){
-//                    $mail->Send();
-//                }
-//
-//
-//            }
+                //            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
+                //            if($eml){
+                //
+                //
+                //
+                //                $eml_subject = new Template($eml->subject);
+                //                $eml_subject->set('business_name', $config['CompanyName']);
+                //                $eml_subject->set('subject', $subject);
+                //                $eml_subject->set('ticket_subject', $subject);
+                //                $subj = $eml_subject->output();
+                //
+                //                $eml_message = new Template($eml->message);
+                //                $eml_message->set('client_name', $account);
+                //                $eml_message->set('client_email', $email);
+                //                $eml_message->set('priority', $urgency);
+                //                $eml_message->set('urgency', $urgency);
+                //                $eml_message->set('ticket_urgency', $urgency);
+                //                $eml_message->set('ticket_priority', $urgency);
+                //                $eml_message->set('ticket_id', '#'.$tid);
+                //                $eml_message->set('message', $message);
+                //                $eml_message->set('business_name', $config['CompanyName']);
+                //                $message_o = $eml_message->output();
+                //
+                //                $mail = Notify_Email::_init();
+                //                $mail->AddAddress($email, $account);
+                //                $mail->Subject = $subj;
+                //                $mail->MsgHTML($message_o);
+                //
+                //                if(APP_STAGE == 'Live'){
+                //                    $mail->Send();
+                //                }
+                //
+                //
+                //            }
 
             $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
             if($eml){
 
-
-
-                $client_view_link = U.'client/tickets/view/'.$d->tid.'/';
+                $client_view_link = U.'client/tickets/view/'.$d->id.'/';
 
                 $eml_subject = new Template($eml->subject);
                 $eml_subject->set('business_name', $config['CompanyName']);
@@ -433,9 +420,29 @@ Class Tickets{
                 }
             }
 
+            // SMS to Client
+
+            
+
+            if ($client_phone_number != '') {
+
+                require 'system/lib/misc/smsdriver.php';
+
+                $tpl = SMSTemplate::where('tpl', 'Ticket Created: Client Notification')->first();
+
+                if ($tpl) {
+                    $message = new Template($tpl->sms);
+                    $message->set('ticket_id', $tid);
+                    $message_o = $message->output();
+                    spSendSMS($client_phone_number, $message_o, 'PSCOPE',0,'text',4);
+                }
+            }
+
+
 
             // Create a default Task if enabled
 
+            /*
             if(isset($config['ticket_create_task_automatically']) && $config['ticket_create_task_automatically'] == 1)
             {
                 $data['aid'] = $admin;
@@ -449,8 +456,7 @@ Class Tickets{
 
                 $task = Tasks::create($data);
             }
-
-            //
+            */
 
             Event::trigger('tickets/created/',$ret_val);
 
@@ -585,23 +591,15 @@ Class Tickets{
 
             if ($sendEmail) {
 
-
-
                 if ($is_admin) {
 
                     // Send reply to client
-
-
 
                     $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Admin Response')->where('send','Yes')->find_one();
 
                     $email = $t->email;
 
-
-
                     if($eml){
-
-
 
                         $client_view_link = U.'client/tickets/view/'.$t->tid.'/';
 
@@ -671,7 +669,7 @@ Class Tickets{
                         $subj = $eml_subject->output();
 
                         $eml_message = new Template($eml->message);
-                        $eml_message->set('client_name', $account);
+                        $eml_message->set('client_name', $t->account);
                         $eml_message->set('client_email', $email);
                         $eml_message->set('priority', $t->urgency);
                         $eml_message->set('urgency', $t->urgency);
@@ -688,12 +686,11 @@ Class Tickets{
 
                         // Find all admins
 
-//                        $admins = ORM::for_table('sys_users')->find_many();
-//
-//                        foreach ($admins as $admin)
-//                        {
-//                            Notify_Email::_send($admin->fullname, $admin->username, $subj, $message_o, $cid);
-//                        }
+                        // $admins = ORM::for_table('sys_users')->find_many();
+                        // foreach ($admins as $admin)
+                        // {
+                        //    Notify_Email::_send($admin->fullname, $admin->username, $subj, $message_o, $cid);
+                        // }
 
                         $d = ORM::for_table('sys_ticketdepartments')->find_one($t->did);
 
@@ -703,33 +700,20 @@ Class Tickets{
                             Notify_Email::_send($d->dname, $d->email, $subj, $message_o, $cid);
                         }
 
-                        //
-
-
                     }
 
                 }
 
-
-
-
-
                 // Ib_Email::_send($account,$email,'['.$t->tid.'] '.$t->subject,$message,$cid,'0',$t->cc,$t->bcc);
 
-
-
-
-//                Mailer::send(array($t->email => $t->account),'[TID '.$t->tid.'] '.$t->subject,$message,'Ticket',$d->id());
+                // Mailer::send(array($t->email => $t->account),'[TID '.$t->tid.'] '.$t->subject,$message,'Ticket',$d->id());
 
             }
 
         } else {
             $ret_val = array(
-
                 "success" => "No",
                 "msg" => $msg
-
-
             );
         }
 
@@ -742,10 +726,7 @@ Class Tickets{
     public static function addPredefinedReply($data=array()){
 
         $msg = '';
-
-
         $id = '';
-
         $success = 'No';
 
         if(!isset($data['title']) || $data['title'] == ''){
@@ -778,17 +759,10 @@ Class Tickets{
 
 
         return array(
-
             "success" => $success,
             "msg" => $msg,
             "id" => $id
-
-
         );
-
-
-
-
     }
 
 
