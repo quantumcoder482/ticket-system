@@ -1349,7 +1349,28 @@ switch ($action){
 
         break;
 
+    case 'admin_read':
 
+        $id = _post('id');
+
+        $ticket_replies = ORM::for_table('sys_ticketreplies')
+            ->where('tid', $id)
+            ->where('attachments','')
+            ->where_not_equal('admin_read', 'yes')
+            ->where('admin', 0)
+            ->find_many();
+
+        if($ticket_replies){
+            foreach ($ticket_replies as $t) {
+                $t->admin_read = 'yes';
+                $t->save();
+            }
+        }
+        
+        echo '1';
+
+        break;
+    
     case 'update_department':
 
 

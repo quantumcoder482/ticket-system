@@ -589,7 +589,31 @@
                 break;
             case 'comments':
                 $('.nav-tabs a[href="#comments"]').tab('show');
+                read_client();
                 break;
+        }
+
+        
+        $('a[data-toggle="tab"]').on('click', function(e){
+            var tab_name = $(e.target).attr('href');
+            if(tab_name == "#comments"){
+                read_client();
+            }
+        });
+
+        function read_client(){
+
+            $.post( base_url + "client/tickets/client_read/", { "id":tid } )
+                .done(function( data ) {
+
+                    if($.isNumeric(data)){
+                        console.log('change read status');
+                    }
+                    else {
+                    
+                    }
+                });
+
         }
 
         $('#notes').redactor({

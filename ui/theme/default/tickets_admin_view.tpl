@@ -887,6 +887,8 @@
         Dropzone.autoDiscover = false;
         $(function() {
 
+            var _url = $("#_url").val();
+
 
             // Tab 
 
@@ -902,15 +904,36 @@
                     $('.nav-tabs a[href="#uploads"]').tab('show');
                     break;
                 case 'downloads':
-                  $('.nav-tabs a[href="#downloads"]').tab('show');
+                    $('.nav-tabs a[href="#downloads"]').tab('show');
                     break;
                 case 'comments':
-                  $('.nav-tabs a[href="#comments"]').tab('show');
+                    $('.nav-tabs a[href="#comments"]').tab('show');
+                    read_admin();                  
                     break;
             }
 
+            $('a[data-toggle="tab"]').on('click', function(e){
+                var tab_name = $(e.target).attr('href');
+                if(tab_name == "#comments"){
+                    read_admin();
+                }
+            });
 
-            var _url = $("#_url").val();
+            function read_admin(){
+
+                  $.post( _url + "tickets/admin/admin_read/", { "id":tid } )
+                    .done(function( data ) {
+
+                        if($.isNumeric(data)){
+                            console.log('change read status');
+                        }
+                        else {
+                         
+                        }
+                    });
+
+            }
+           
 
             var $ib_form_submit = $("#ib_form_submit");
 
@@ -922,7 +945,6 @@
             var $modal = $('#ajax-modal');
 
             var reply_type = 'public';
-
 
             var upload_resp;
 

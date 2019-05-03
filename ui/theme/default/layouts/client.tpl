@@ -34,6 +34,24 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
     <link href="{$theme}default/css/{$config['nstyle']}.css" rel="stylesheet">
 
+     <style>
+         .notification-counter {
+             border-radius: 50%;
+             position: absolute;
+             top: 7px;
+             right: 0px;
+             font-size: 10px;
+             font-weight: normal;
+             width: 15px;
+             height: 15px;
+             line-height: 1.0em;
+             text-align: center;
+             padding: 2px;
+             background-color: red;
+             border: none;
+             color: white;
+         }
+    </style>
 
     {foreach $plugin_ui_header_admin as $plugin_ui_header_add}
         {$plugin_ui_header_add}
@@ -116,6 +134,7 @@ License: You must have a valid license purchased only from cloudonex.com in orde
                         <ul class="nav nav-second-level">
                             <li><a href="{$_url}client/tickets/new">{$_L['Open New Ticket']}</a></li>
                             <li><a href="{$_url}client/tickets/all">{$_L['Tickets']}</a></li>
+                            <li><a href="{$_url}client/tickets/client_notification/">{$_L['Notifications']}</a></li>
                         </ul>
                     </li>
 
@@ -194,7 +213,19 @@ License: You must have a valid license purchased only from cloudonex.com in orde
                     </div>
                     <ul class="nav navbar-top-links navbar-right pull-right">
 
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" id="get_notification" href="#" aria-expanded="true">
+                                    <i class="fa fa-bell"></i>
+                                    <span class="label label-warning notification-counter"></span>
+                                </a>
 
+                                <ul class="dropdown-menu dropdown-alerts" id="notification_loaded">
+
+                                    <li style="text-align: center;">
+                                        <div class="md-preloader text-center"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="32" width="32" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="6"/></svg></div>
+                                    </li>
+                                </ul>
+                            </li>
 
 
 
@@ -351,6 +382,38 @@ License: You must have a valid license purchased only from cloudonex.com in orde
         {if isset($xjq)}
         {$xjq}
         {/if}
+
+
+        var _url = $("#_url").val();
+
+        // $('.notification-counter').text('5');
+
+        function notification(){
+            $.get(_url+'client/tickets/notification_count', function(data){
+                if(data != 0){
+                    $('.notification-counter').text(data);
+                }else{
+                    $('.notification-counter').text('');
+                }
+            });
+        }
+
+        notification();
+
+        setInterval(function(){
+            notification();
+        }, 10000);
+
+            
+        $("#get_notification").click(function (e) {
+            var _url = $("#_url").val();
+            $.post(_url + 'client/tickets/activity-ajax/', {
+            })
+                .done(function (data) {
+                    $("#notification_loaded").html(data);
+                });
+        });
+
 
 
 

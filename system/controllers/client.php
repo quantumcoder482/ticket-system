@@ -3809,6 +3809,147 @@ vMax: \'9999999999999999.00\',
 
                 break;
 
+            case 'client_read':
+
+                $id = _post('id');
+
+                $ticket_replies = ORM::for_table('sys_ticketreplies')
+                    ->where('tid', $id)
+                    ->where('attachments', '')
+                    ->where_not_equal('client_read', 'yes')
+                    ->where_not_equal('admin', 0)
+                    ->find_many();
+
+                if ($ticket_replies) {
+                    foreach ($ticket_replies as $t) {
+                        $t->client_read = 'yes';
+                        $t->save();
+                    }
+                }
+
+                echo '1';
+
+                break;
+
+
+            case 'activity-ajax':
+
+                $c = Contacts::details();
+                $c_id = $c['id'];
+
+                $d = ORM::for_table('sys_ticketreplies')
+                    ->where('userid', $c_id)
+                    ->where('attachments', '')
+                    ->where_not_equal('admin', 0)
+                    ->where_not_equal('client_read','yes')
+                    ->order_by_desc('id')
+                    ->limit(5)
+                    ->find_many();
+
+                $html = '';
+                $df = $config['df'].' H:i:s';
+
+                foreach($d as $ds){
+                    $html .= ' <li>
+                                    <a href="'.U. 'client/tickets/view/'.$ds['tid'].'/comments'.'">
+                                        <div>
+                                            <span style="color:#2196F3">'.$ds['replied_by']. '</span> has replied to your submission
+                                            <span class="pull-right text-muted small">'.date( $df, strtotime($ds['updated_at'])).'</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>';
+                }
+
+                $html .= '<li>
+                                <div class="text-center link-block">
+                                    <a href="'.U.'client/tickets/client_notification/">
+                                        <strong>'.$_L['See All Activity'].' </strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </li>';
+
+                echo $html;
+
+                break;
+
+
+            case 'client_notification':
+
+                $c = Contacts::details();
+                $c_id = $c['id'];
+                $ui->assign('user', $c);
+
+                $notifications = ORM::for_table('sys_ticketreplies')
+                    ->left_outer_join('sys_users', array('sys_users.id', '=', 'sys_ticketreplies.admin'))
+                    ->select('sys_ticketreplies.*')
+                    ->select('sys_users.img', 'img')
+                    ->where('userid', $c_id)
+                    ->where('attachments', '')
+                    ->where_not_equal('admin', 0)
+                    ->order_by_desc('id')
+                    ->find_many();
+
+
+                $ui->assign('xheader', Asset::css(array('modal', 'dp/dist/datepicker.min', 'footable/css/footable.core.min', 'dropzone/dropzone', 'redactor/redactor', 's2/css/select2.min')));
+                $ui->assign('xfooter', Asset::js(array(
+                    'modal', 'dp/dist/datepicker.min', 'footable/js/footable.all.min', 'dropzone/dropzone', 'redactor/redactor.min', 'numeric', 's2/js/select2.min',
+                    's2/js/i18n/' . lan(),
+                )));
+
+
+                view('client-notification', [
+                    'notifications' => $notifications
+                ]);
+
+
+                break;
+
+            case 'mark_all_read':
+
+                $c = Contacts::details();
+                $c_id = $c['id'];
+
+                $ticket_replies = ORM::for_table('sys_ticketreplies')
+                    ->where('userid', $c_id)
+                    ->where('attachments', '')
+                    ->where_not_equal('client_read', 'yes')
+                    ->where_not_equal('admin', 0)
+                    ->find_many();
+
+                if ($ticket_replies) {
+                    foreach ($ticket_replies as $t) {
+                        $t->client_read = 'yes';
+                        $t->save();
+                    }
+                }
+
+                echo '1';
+
+                break;
+
+
+            case 'notification_count':
+
+                $c = Contacts::details();
+                $c_id = $c['id'];
+
+                $d = ORM::for_table('sys_ticketreplies')
+                    ->where('userid', $c_id)
+                    ->where('attachments', '')
+                    ->where_not_equal('admin', 0)
+                    ->where_not_equal('client_read', 'yes')
+                    ->count();
+
+                $count = array('count' => $d);
+
+                echo $d;
+
+                break;
+
+
+
             case 'tasks_list':
 
                 $tid = route(3);

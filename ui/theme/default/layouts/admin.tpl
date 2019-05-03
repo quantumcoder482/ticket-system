@@ -32,6 +32,24 @@
 
     <link href="{$theme}default/css/{$config['nstyle']}.css" rel="stylesheet">
 
+    <style>
+    .notification-counter {
+        border-radius: 50%;
+        position: absolute;
+        top: 7px;
+        right: 0px;
+        font-size: 10px;
+        font-weight: normal;
+        width: 15px;
+        height: 15px;
+        line-height: 1.0em;
+        text-align: center;
+        padding: 2px;
+        background-color: red;
+        border: none;
+        color: white;
+    }
+    </style>
     <script>
         window.clx = {
             base_url: '{$_url}',
@@ -607,6 +625,7 @@
                                 <li><a href="{$_url}util/activity/">{$_L['Activity Log']}</a></li>
                                 <li><a href="{$_url}util/sent-emails/">{$_L['Email Message Log']}</a></li>
                                 <li><a href="{$_url}util/invoice_access_log/">{$_L['Invoice Access Log']}</a></li>
+                                <li><a href="{$_url}util/admin_notification/">{$_L['Notifications']}</a></li>
                                 <li><a href="{$_url}util/backups/">{$_L['Backup']}</a></li>
                                 <li><a href="{$_url}util/dbstatus/">{$_L['Database Status']}</a></li>
                                 <li><a href="{$_url}util/cronlogs/">{$_L['CRON Log']}</a></li>
@@ -752,8 +771,9 @@
                         {if has_access($user->roleid,'reports')}
 
                             <li class="dropdown">
-                                <a class="dropdown-toggle count-info" data-toggle="dropdown" id="get_activity" href="#" aria-expanded="true">
+                                <a class="dropdown-toggle" data-toggle="dropdown" id="get_activity" href="#" aria-expanded="true">
                                     <i class="fa fa-bell"></i>
+                                    <span class="label label-warning notification-counter"></span>
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-alerts" id="activity_loaded">
@@ -1044,8 +1064,28 @@
         {$xjq}
         {/if}
 
+        var _url = $("#_url").val();
 
+        // $('.notification-counter').text('5');
+
+        function notification(){
+            $.get(_url+'util/notification_count', function(data){
+                if(data != 0){
+                    $('.notification-counter').text(data);
+                }else{
+                    $('.notification-counter').text('');
+                }
+            });
+        }
+
+        notification();
+
+        setInterval(function(){
+            notification();
+        }, 10000);
     });
+
+    
 
 </script>
 

@@ -14,6 +14,7 @@ $user = User::_info();
 $ui->assign('user', $user);
 
 use Intervention\Image\ImageManager;
+use function GuzzleHttp\json_encode;
 
 if(!has_access($user->roleid,'utilities')){
     permissionDenied();
@@ -25,19 +26,19 @@ switch ($action) {
 
 
         $ui->assign('xjq', '
-	 $("#clear_logs").click(function (e) {
-        e.preventDefault();
-        bootbox.confirm("This will delete all logs older than 30 days. Are you sure?", function(result) {
-           if(result){
-               var _url = $("#_url").val();
-               $.get( _url+"util/clear_logs", function( data ) {
-location.reload();
-});
-           }
-        });
-    });
+        $("#clear_logs").click(function (e) {
+            e.preventDefault();
+            bootbox.confirm("This will delete all logs older than 30 days. Are you sure?", function(result) {
+            if(result){
+                var _url = $("#_url").val();
+                $.get( _url+"util/clear_logs", function( data ) {
+                    location.reload();
+                    });
+                }
+                });
+            });
 
- ');
+        ');
 
         $paginator = Paginator::bootstrap('sys_logs');
         $d = ORM::for_table('sys_logs')->offset($paginator['startpoint'])->limit($paginator['limit'])->order_by_desc('date')->find_many();
@@ -46,6 +47,69 @@ location.reload();
 
 
         view('util-activity');
+        break;
+
+
+    case 'admin_notification':
+
+        $notifications = ORM::for_table('sys_ticketreplies')
+            ->left_outer_join('crm_accounts', array('crm_accounts.id', '=', 'sys_ticketreplies.userid'))
+            ->select('sys_ticketreplies.*')
+            ->select('crm_accounts.img', 'img')
+            ->where('attachments', '')
+            ->where('admin', 0)
+            ->order_by_desc('id')
+            ->find_many();
+
+
+        $ui->assign('xheader', Asset::css(array('modal', 'dp/dist/datepicker.min', 'footable/css/footable.core.min', 'dropzone/dropzone', 'redactor/redactor', 's2/css/select2.min')));
+        $ui->assign('xfooter', Asset::js(array(
+            'modal', 'dp/dist/datepicker.min', 'footable/js/footable.all.min', 'dropzone/dropzone', 'redactor/redactor.min', 'numeric', 's2/js/select2.min',
+            's2/js/i18n/' . lan(),
+        )));
+
+
+        view('util-admin-notification', [
+            'notifications' => $notifications
+        ]);
+
+
+        break;
+
+    case 'mark_all_read':
+
+        $ticket_replies = ORM::for_table('sys_ticketreplies')
+            ->where('attachments', '')
+            ->where_not_equal('admin_read', 'yes')
+            ->where('admin', 0)
+            ->find_many();
+
+        if ($ticket_replies) {
+            foreach ($ticket_replies as $t) {
+                $t->admin_read = 'yes';
+                $t->save();
+            }
+        }
+
+        echo '1';
+
+        break;  
+
+
+    case 'notification_count':
+
+
+        $d = ORM::for_table('sys_ticketreplies')
+            ->where('attachments', '')
+            ->where('admin', 0)
+            ->where_not_equal('admin_read', 'yes')
+            ->count();
+
+        $count = array('count' => $d);
+        echo $d;
+        exit;
+        echo json_encode($count);
+
         break;
 
     case 'ajax_logs':
@@ -365,29 +429,38 @@ location.reload();
 
     case 'activity-ajax':
 
-        $d = ORM::for_table('sys_logs')->order_by_desc('id')->limit(5)->find_many();
+        $d = ORM::for_table('sys_ticketreplies')
+            ->where('attachments', '')
+            ->where('admin', 0)
+            ->where_not_equal('admin_read','yes')
+            ->order_by_desc('id')
+            ->limit(5)
+            ->find_many();
+
         $html = '';
         $df = $config['df'].' H:i:s';
+
         foreach($d as $ds){
             $html .= ' <li>
-                                <a href="javascript:void(0)">
-                                    <div>
-                                        '.$ds['description'].'
-                                        <span class="pull-right text-muted small">'.date( $df, strtotime($ds['date'])).'</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>';
+                            <a href="'.U. 'tickets/admin/view/'.$ds['tid'].'/comments'.'">
+                                <div>
+                                    <span style="color:#2196F3">'.$ds['account']. '</span> has replied to your submission
+                                    <span class="pull-right text-muted small">'.date( $df, strtotime($ds['updated_at'])).'</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>';
         }
 
         $html .= '<li>
-                                <div class="text-center link-block">
-                                    <a href="'.U.'util/activity/">
-                                        <strong>'.$_L['See All Activity'].' </strong>
-                                       <i class="fa fa-angle-right"></i>
-                                    </a>
-                                </div>
-                            </li>';
+                        <div class="text-center link-block">
+                            <a href="'.U.'util/admin_notification/">
+                                <strong>'.$_L['See All Activity'].' </strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </div>
+                    </li>';
+
         echo $html;
 
         break;
