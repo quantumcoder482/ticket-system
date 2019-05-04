@@ -62,9 +62,10 @@
                                     <select class="form-control" id="filter_status" name="filter_status" size="1">
                                         <option value="">All</option>
                                         <option value="Open">Open</option>
-                                        <option value="On Hold">On Hold</option>
-                                        <option value="Escalated">Escalated</option>
-                                        <option value="Closed">Closed</option>
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Accepted">Accepted</option>
+                                        <option value="Rejected">Rejected</option>
+                                        <option value="Published">Published</option>
 
                                     </select>
                                 </div>

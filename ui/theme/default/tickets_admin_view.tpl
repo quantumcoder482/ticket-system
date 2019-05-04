@@ -95,10 +95,10 @@
                                         <div class="form-material floating">
                                             <select class="form-control" id="editable_status" name="editable_status" size="1">
                                                 <option value="Open" {if $d->status eq 'Open'} selected{/if}>Open</option>
-                                                <option value="On Hold" {if $d->status eq 'On Hold'} selected{/if}>On Hold</option>
-                                                <option value="Escalated" {if $d->status eq 'Escalated'} selected{/if}>Escalated</option>
-                                                <option value="Closed" {if $d->status eq 'Closed'} selected{/if}>Closed</option>
-
+                                                <option value="In Progress" {if $d->status eq 'In Progress'} selected{/if}>In Progress</option>
+                                                <option value="Accepted" {if $d->status eq 'Accepted'} selected{/if}>Accetped</option>
+                                                <option value="Rejected" {if $d->status eq 'Rejected'} selected{/if}>Rejected</option>
+                                                <option value="Published" {if $d->status eq 'Published'} selected{/if}>Published</option>
                                             </select>
                                             <label for="editable_status">Status</label>
                                         </div>

@@ -3627,7 +3627,7 @@ vMax: \'9999999999999999.00\',
 
 
 
-                    $ui->assign('_st', $_L['Ticket'].' #'.$d->tid);
+                    $ui->assign('_st', $_L['Ticket'].' '.$d->tid);
 
                     $ui->assign('d',$d);
 

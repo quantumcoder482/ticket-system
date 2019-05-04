@@ -9,10 +9,10 @@
     <title>{$_title}</title>
 
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{$app_url}apple-touch-icon.png">
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="{$app_url}apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="{$app_url}favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="{$app_url}favicon-16x16.png">
-
+    <link rel="icon" type="image/png" sizes="16x16" href="{$app_url}favicon-16x16.png"> -->
+    <link rel="shortcut icon" href="{$app_url}storage/icon/favicon.ico" type="image/x-icon" />
     <link href="{$theme}default/css/app.css?v={$file_build}" rel="stylesheet">
 
     {*<link href="{$theme}default/css/bootstrap.min.css" rel="stylesheet">*}
@@ -1082,7 +1082,7 @@
 
         setInterval(function(){
             notification();
-        }, 10000);
+        }, 30000);
     });
 
     

@@ -402,7 +402,7 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
         setInterval(function(){
             notification();
-        }, 10000);
+        }, 30000);
 
             
         $("#get_notification").click(function (e) {

@@ -22,7 +22,7 @@
 
                         {foreach $ds as $d}
                             <tr>
-                                <td class="text-center" style="width: 140px;"><a href="{$_url}client/tickets/view/{$d['id']}/">#{$d['tid']}</a></td>
+                                <td class="text-center" style="width: 140px;"><a href="{$_url}client/tickets/view/{$d['id']}/">{$d['tid']}</a></td>
                                 <td class="hidden-xs hidden-sm hidden-md text-center" style="width: 100px;">
                                     <span class="label label-success">{if isset($_L[$d['status']])}
                                     {$_L[$d['status']]}

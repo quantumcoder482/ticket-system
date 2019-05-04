@@ -52,7 +52,7 @@ Class Tickets{
         $d = ORM::for_table('sys_tickets')->order_by_desc('id')->find_one();
 
         if(!$d || is_numeric($d->tid) == false){
-            $tid = 1;
+            $tid = 1001;
         }else {
             $tid = $d->tid + 1;
         }
@@ -595,19 +595,27 @@ Class Tickets{
 
                     // Send reply to client
 
-                    $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Admin Response')->where('send','Yes')->find_one();
+                    if(ib_post('attachments')){
+
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
+
+                    } else {
+
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Admin Response')->where('send', 'Yes')->find_one();
+
+                    }
 
                     $email = $t->email;
 
                     if($eml){
 
-                        $client_view_link = U.'client/tickets/view/'.$t->tid.'/';
+                        $client_view_link = U.'client/tickets/view/'.$tid.'/';
 
                         $eml_subject = new Template($eml->subject);
                         $eml_subject->set('business_name', $config['CompanyName']);
                         $eml_subject->set('subject', $t->subject);
                         $eml_subject->set('ticket_subject', $t->subject);
-                        $eml_subject->set('ticket_id', '#' . $tid);
+                        $eml_subject->set('ticket_id', '#' . $t->tid);
                         $subj = $eml_subject->output();
 
                         $eml_message = new Template($eml->message);
@@ -624,7 +632,7 @@ Class Tickets{
                         $eml_message->set('ticket_message', $message);
                         $eml_message->set('business_name', $config['CompanyName']);
                         $eml_message->set('ticket_link',$client_view_link);
-                        // $eml_message->set('department', $dname);
+                        $eml_message->set('department', $t->dname);
                         // $eml_message->set('processing', $urgency);
                         $message_o = $eml_message->output();
 
@@ -642,8 +650,16 @@ Class Tickets{
 
                     // Send notification to admin
 
+                    if (ib_post('attachments')) {
 
-                    $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Response')->where('send','Yes')->find_one();
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
+
+                    } else {
+
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Client Response')->where('send', 'Yes')->find_one();
+
+                    }
+
 
                     if(APP_STAGE == 'Dev')
                     {
@@ -657,7 +673,7 @@ Class Tickets{
                             Logger::write('Sending email to admin..');
                         }
 
-                        $client_view_link = U.'client/tickets/view/'.$t->tid.'/';
+                        $client_view_link = U.'client/tickets/view/'.$tid.'/';
 
                         $ticket_link = U.'tickets/admin/view/'.$t->id;
 
@@ -665,7 +681,7 @@ Class Tickets{
                         $eml_subject->set('business_name', $config['CompanyName']);
                         $eml_subject->set('subject', $t->subject);
                         $eml_subject->set('ticket_subject', $t->subject);
-                        $eml_subject->set('ticket_id', '#' . $tid);
+                        $eml_subject->set('ticket_id', '#' . $t->tid);
                         $subj = $eml_subject->output();
 
                         $eml_message = new Template($eml->message);
@@ -682,6 +698,7 @@ Class Tickets{
                         $eml_message->set('ticket_message', $message);
                         $eml_message->set('business_name', $config['CompanyName']);
                         $eml_message->set('ticket_link',$ticket_link);
+                        $eml_message->set('department', $t->dname);
                         $message_o = $eml_message->output();
 
                         // Find all admins
@@ -694,12 +711,19 @@ Class Tickets{
 
                         $d = ORM::for_table('sys_ticketdepartments')->find_one($t->did);
 
+                        if (ib_post('attachments')) {
 
-                        if($d && $d->email != '' && $reply_type == 'public')
-                        {
-                            Notify_Email::_send($d->dname, $d->email, $subj, $message_o, $cid);
+                            Notify_Email::_send($t->account, $t->email, $subj, $message_o, $cid);
+
+                        } else {
+
+                            if ($d && $d->email != '' && $reply_type == 'public') {
+                                Notify_Email::_send($d->dname, $d->email, $subj, $message_o, $cid);
+                            }
+
                         }
 
+                        
                     }
 
                 }

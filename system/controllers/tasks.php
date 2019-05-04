@@ -285,7 +285,12 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         }
                     }
 
-                    $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket New Task Created - Client')->where('send', 'Yes')->find_one();
+                    if($data['task_id']){
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Task Updated - Client')->where('send', 'Yes')->find_one();
+                    } else {
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket New Task Created - Client')->where('send', 'Yes')->find_one();
+                    }
+                    
 
                     $email = $ticket->email;
 
@@ -331,11 +336,16 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         if ($client_phone_number != '') {
                             require 'system/lib/misc/smsdriver.php';
 
-                            $tpl = SMSTemplate::where('tpl', 'Ticket task created: Client Notification')->first();
+                            if($data['task_id']){
+                                $tpl = SMSTemplate::where('tpl', 'Task Status: Client Notification')->first();
+                            } else {
+                                $tpl = SMSTemplate::where('tpl', 'Ticket task created: Client Notification')->first();
+                            }
+                            
 
                             if ($tpl) {
                                 $message = new Template($tpl->sms);
-                                $message->set('ticket_id', $t_data->tid);
+                                $message->set('ticket_id', $ticket->tid);
                                 $message->set('task_name', $t_data->title);
                                 $message->set('task_status', $t_data->status);
                                 $message_o = $message->output();
@@ -521,7 +531,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
                             if ($tpl) {
                                 $message = new Template($tpl->sms);
-                                $message->set('ticket_id', $t_data->tid);
+                                $message->set('ticket_id', $ticket->tid);
                                 $message->set('task_name', $t_data->title);
                                 $message->set('task_status', $t_data->status);
                                 $message_o = $message->output();

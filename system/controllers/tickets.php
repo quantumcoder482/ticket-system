@@ -1400,13 +1400,80 @@ switch ($action){
 
         $value =  _post('value');
 
-
-
         if($d){
             $d->urgency = $value;
             $d->save();
 
         }
+
+
+
+        // Emailing
+
+        $t = ORM::for_table('sys_tickets')->find_one($id);
+
+        // $dname = Ticket:: get_department($t->did);
+
+        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Priority - Client')->where('send', 'Yes')->find_one();
+
+        $email = $t->email;
+
+        if ($eml) {
+
+            $client_view_link = U . 'client/tickets/view/' . $t->id . '/';
+
+            $eml_subject = new Template($eml->subject);
+            $eml_subject->set('business_name', $config['CompanyName']);
+            $eml_subject->set('subject', $t->subject);
+            $eml_subject->set('ticket_subject', $t->subject);
+            $eml_subject->set('ticket_id', '#' . $t->tid);
+            $subj = $eml_subject->output();
+
+            $eml_message = new Template($eml->message);
+            $eml_message->set('client_name', $t->account);
+            $eml_message->set('client_email', $email);
+            $eml_message->set('priority', $t->urgency);
+            $eml_message->set('urgency', $t->urgency);
+            $eml_message->set('ticket_subject', $t->subject);
+            $eml_message->set('status', $t->urgency);
+            $eml_message->set('ticket_status', $t->status);
+            $eml_message->set('ticket_urgency', $t->urgency);
+            $eml_message->set('ticket_priority', $t->urgency);
+            $eml_message->set('ticket_id', $t->tid);
+            $eml_message->set('ticket_message', $t->message);
+            $eml_message->set('business_name', $config['CompanyName']);
+            $eml_message->set('ticket_link', $client_view_link);
+            $eml_message->set('department', $dname);
+            // $eml_message->set('processing', $urgency);
+            $message_o = $eml_message->output();
+
+            if ($reply_type != 'internal') {
+                Notify_Email::_send($t->account, $email, $subj, $message_o, $cid = $t->userid);
+
+
+                // SMS 
+                /*
+                $user_data = ORM::for_table('crm_accounts')->find_one($t->userid);
+                $client_phone_number = $user_data->phone;
+
+                if ($client_phone_number != '') {
+                    require 'system/lib/misc/smsdriver.php';
+
+                    $tpl = SMSTemplate::where('tpl', 'Ticket Status: Client Notification')->first();
+
+                    if ($tpl) {
+                        $message = new Template($tpl->sms);
+                        $message->set('ticket_id', $t->tid);
+                        $message->set('ticket_status', $t->status);
+                        $message_o = $message->output();
+                        spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
+                    }
+                }
+
+                */
+            }
+        }
+
 
         echo $value;
 
