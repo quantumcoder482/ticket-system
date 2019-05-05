@@ -1553,16 +1553,16 @@ switch ($action) {
             abort('404');
         }
 
-
-
         $extra_fields = array();
         $ui->assign('extra_fields',$extra_fields);
         Event::trigger('client/register/');
 
         Contacts::isLogged();
 
-        $ui->assign('xfooter',Asset::js(array('contacts/register')));
+        $ui->assign('xheader', Asset::css(array('modal', 's2/css/select2.min')));
+        $ui->assign('xfooter', Asset::js(array( 'contacts/register', 'modal', 's2/js/select2.min', 's2/js/i18n/' . lan())));
 
+        $ui->assign('countries',Countries::all());
 
         view('client_auth',[
             'type' => 'register'
@@ -1734,6 +1734,8 @@ switch ($action) {
         $data['email'] = _post('email');
         $data['password'] = _post('password');
         $data['password2'] = _post('password2');
+        $data['phone'] = _post('phone_number');
+        $data['country'] = _post('country_name');
 
         $o_password = $data['password'];
 
@@ -1774,6 +1776,15 @@ switch ($action) {
 
         }
 
+        if($data['phone'] == ''){
+            $msg .= 'Phone Number is required <br>';
+        }elseif(!is_numeric(str_replace('-', '', $data['phone']))){
+            $msg .= 'Phone Number is only numeric <br>';
+        }
+
+        if($data['country'] == ''){
+            $msg .= 'Country Name is required <br>';
+        }
         // API call for extra fields
 
 
@@ -1782,12 +1793,12 @@ switch ($action) {
 
         // optional params
 
-        $data['phone'] = _post('phone');
+        // $data['phone'] = _post('phone');
         $data['address'] = _post('address');
         $data['city'] = _post('city');
         $data['zip'] = _post('zip');
         $data['state'] = _post('');
-        $data['country'] = _post('country');
+        // $data['country'] = _post('country');
         $data['company'] = _post('company');
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');

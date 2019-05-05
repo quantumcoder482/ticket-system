@@ -14,6 +14,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@4.2.5/dist/css/ionicons.min.css">
     <link href="{$app_url}ui/theme/default/css/auth.css" rel="stylesheet">
+    <link href="{$app_url}ui/lib/select/select.min.css" rel="stylesheet">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -24,6 +26,14 @@
         body {
             background: #f8f9fa;
         }
+        .help-block {
+            display: block;
+            /* color:brown; */
+            margin-top: 5px;
+            margin-left:20px;
+            margin-bottom: 10px;
+        }
+
     </style>
 
     {if $type == 'register' && $config['recaptcha'] eq '1'}
@@ -145,6 +155,27 @@
                                     <input type="password" class="form-control form-control-lg" name="password2" placeholder="{$_L['Confirm_Password']}">
                                 </div>
 
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ion-ios-unlock"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-lg" name="phone_number"
+                                        placeholder="Phone Number">
+                                </div> 
+                                <span class="help-block">
+                                    * Enter Phone number without country code
+                                </span>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+
+                                    </div>
+                                    <select class="form-control" name="country_name" id="country_name">
+                                        <option value="" selected>{$_L['Select Country']}</option>
+                                        {$countries}
+                                    </select>
+                                     
+                                </div>
+
                                 {foreach $extra_fields as $field}
 
 
@@ -231,7 +262,6 @@
 
     var _L = [];
 
-
     _L['Save'] = '{$_L['Save']}';
     _L['Submit'] = '{$_L['Submit']}';
     _L['Loading'] = '{$_L['Loading']}';
@@ -253,8 +283,16 @@
     var config_animate = 'No';
     {/if}
     {$jsvar}
-</script>
 
+    $(document).ready(function () {
+        $('#country_name').select2({
+            theme:"bootstrap"
+        });
+    });
+
+
+</script>
+<script src="{$app_url}ui/lib/select/select.min.js"></script>
 <script src="{$app_url}ui/assets/js/app.js?v={$file_build}"></script>
 </body>
 
