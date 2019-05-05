@@ -24,6 +24,11 @@
                                 </tbody>
                             </table>
 
+                        </div>
+
+
+                        <div class="col-md-8">
+
                             <h3>{$_L['Total Unpaid Amount']}: <span class="amount">{$total_unpaid_amount}</span></h3>
 
                             {if $config['add_fund']}
@@ -31,13 +36,7 @@
                                 <h3>{$_L['Due']}: <span class="amount">{$due_amount}</span></h3>
                             {/if}
 
-                        </div>
-
-
-                        <div class="col-md-8">
-
-
-                            <div class="" style="height:350px" id="invoice_summary"></div>
+                            <div class="" id="invoice_summary"></div>
 
                         </div>
 

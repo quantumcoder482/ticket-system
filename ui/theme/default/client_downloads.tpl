@@ -15,7 +15,7 @@
             <div class="tabs-container">
                 <ul class="nav nav-tabs">
                     <li class="active"><a class="nav-link active show" href="{$_url}client/downloads">{$_L['Downloads']}</a></li>
-                    <li><a class="nav-link" href="{$_url}client/uploads">{$_L['Uploads']}</a></li>
+                    <!-- <li><a class="nav-link" href="{$_url}client/uploads">{$_L['Uploads']}</a></li> -->
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active show">

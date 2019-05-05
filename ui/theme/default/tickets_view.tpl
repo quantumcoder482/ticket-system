@@ -38,6 +38,9 @@
                                     <p>
                                         <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency} </span>
                                     </p>
+                                    <p>
+                                        <span class="label label-default inline-block"> Type of Submission: {$d->ttype} </span>
+                                    </p>
                                     <br>
                                     <p><strong>Created on:</strong> {$d->created_at}</p>
                                     <p><strong>Updated on:</strong> {$d->updated_at}</p>
@@ -47,14 +50,14 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <form>
+                                        <!-- <form>
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Abstract</label>
                                                 <hr>
                                                 <div >{$d->message}</div>
                                                     
                                             </div>
-                                        </form>
+                                        </form> -->
                                     </div>
                                 </div>
                             </div>

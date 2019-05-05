@@ -8,6 +8,8 @@ $(function() {
     var $create_ticket = $("#create_ticket");
     var $ib_box = $("#ib_box");
 
+    $('#file_attachment_success').hide();
+
 
 
     ib_editor("#content");
@@ -54,6 +56,8 @@ $(function() {
                 return val + (!val ? '' : ',') + upload_resp.file;
             });
 
+            $('#file_attachment_success').show();
+
 
         }
         else{
@@ -73,7 +77,7 @@ $(function() {
     $ib_form_submit.on('click', function(e) {
         e.preventDefault();
         $ib_box.block({ message: block_msg });
-        $.post( _url + "tickets/admin/add_post/", { cid: $("#cid").val(), subject: $("#subject").val(), department: $("#department").val(), urgency: $("#urgency").val(), message: tinyMCE.activeEditor.getContent(), attachments: $("#attachments").val()} )
+        $.post(_url + "tickets/admin/add_post/", { cid: $("#cid").val(), subject: $("#subject").val(), department: $("#department").val(), urgency: $("#urgency").val(), message: tinyMCE.activeEditor.getContent(), attachments: $("#attachments").val(), ttype: $("#ttype").val()} )
             .done(function( data ) {
 
                 if(data.success == "Yes"){

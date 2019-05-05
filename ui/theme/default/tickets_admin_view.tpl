@@ -73,6 +73,22 @@
                                 </div>
                             </div>
 
+
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <div class="form-material floating">
+                                        <select class="form-control" name="ttype" id="ttype" size="1">
+                                            <option value="Original Article" {if $d->ttype eq 'Original Article'} selected {/if}>Original Article</option>
+                                            <option value="Review Article" {if $d->ttype eq 'Review Article'} selected {/if}>Review Article</option>
+                                            <option value="Short Communication" {if $d->ttype eq 'Short Communication'} selected {/if}>Short Communication</option>
+                                            <option value="Case Report" {if $d->ttype eq 'Case Report'} selected {/if}>Case Report</option>
+                                            <option value="Editorial Note" {if $d->ttype eq 'Editorial Note'} selected {/if}>Editorial Note</option>
+                                        </select>
+                                        <label for="ttype">Type of Submission</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <div class="col-xs-12">
                                     <div class="form-material floating">
@@ -98,6 +114,7 @@
                                                 <option value="In Progress" {if $d->status eq 'In Progress'} selected{/if}>In Progress</option>
                                                 <option value="Accepted" {if $d->status eq 'Accepted'} selected{/if}>Accetped</option>
                                                 <option value="Rejected" {if $d->status eq 'Rejected'} selected{/if}>Rejected</option>
+                                                <option value="Withdrawn" {if $d->status eq 'Withdrawn'} selected{/if}>Withdrawn</option>
                                                 <option value="Published" {if $d->status eq 'Published'} selected{/if}>Published</option>
                                             </select>
                                             <label for="editable_status">Status</label>
@@ -1373,6 +1390,19 @@
 
                     else {
 
+                        toastr.error(data);
+                    }
+                })
+            });
+
+            $('#ttype').on('change', function(e){
+                // e.preventDefault();
+                $.post(base_url + 'tickets/admin/update_ttype', {id:tid, value: $(this).val()}, function(data){
+                    if($.isNumeric(data)){
+                        toastr.success(_L['Saved Successfully']);
+                    }
+                    else
+                    {
                         toastr.error(data);
                     }
                 })

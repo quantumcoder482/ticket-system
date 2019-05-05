@@ -63,11 +63,28 @@
 
                             <div class="col-xs-6">
                                 <div class="form-material floating">
-                                    <select class="form-control" id="urgency" name="urgency" size="1">
-                                     <option value="Normal" selected>{$_L['Normal']}</option>
-                                     <option value="Fast">{$_L['Fast']}</option>
+                                    <div class="form-material floating">
+                                        <select class="form-control" id="urgency" name="urgency" size="1">
+                                            <option value="Normal" selected>{$_L['Normal']}</option>
+                                            <option value="Fast">{$_L['Fast']}</option>
+                                        </select>
+                                        <label for="urgency">Priority</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <div class="form-material floating">
+                                    <select class="form-control" name="ttype" id="ttype" size="1">
+                                        <option value="Original Article" selected>Original Article</option>
+                                        <option value="Review Article">Review Article</option>
+                                        <option value="Short Communication">Short Communication</option>
+                                        <option value="Case Report">Case Report</option>
+                                        <option value="Editorial Note">Editorial Note</option>
                                     </select>
-                                    <label for="urgency">Priority</label>
+                                    <label for="ttype">Type of Submission</label>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +94,7 @@
                             <div class="col-xs-12">
                                 <label for="content">{$_L['Message']}</label>
                                 <textarea id="content"  class="form-control sysedit" name="content"></textarea>
-                                <div class="help-block"><a data-toggle="modal" href="#modal_add_item"><i class="fa fa-paperclip"></i> Attach File</a> </div>
+                                <div class="help-block"><a data-toggle="modal" href="#modal_add_item"><i class="fa fa-paperclip"></i> Attach File</a> <span class="" style="color:green; margin-left: 30px" id="file_attachment_success"> Manuscript attached successfully - Click submit</span></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -129,12 +146,9 @@
         </div>
         <div class="modal-footer">
 
-            <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary">Save</button>
 
         </div>
     </div>
 
 {/block}
-
-
-

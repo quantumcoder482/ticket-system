@@ -32,6 +32,12 @@
                             <form>
 
                                 <div class="form-group">
+                                    <label for="filter_id">ID</label>
+                                    <input type="text" id="filter_id" name="filter_id" class="form-control">
+                                </div>
+
+                                
+                                <div class="form-group">
                                     <label for="filter_account">{$_L['Customer']}</label>
                                     <input type="text" id="filter_account" name="filter_account" class="form-control">
                                 </div>
@@ -40,10 +46,6 @@
                                     <label for="filter_company">{$_L['Company']}</label>
                                     <input type="text" id="filter_company" name="filter_company" class="form-control">
                                 </div>
-
-
-
-
 
                                 <div class="form-group">
                                     <label for="filter_email">{$_L['Email']}</label>
@@ -65,6 +67,7 @@
                                         <option value="In Progress">In Progress</option>
                                         <option value="Accepted">Accepted</option>
                                         <option value="Rejected">Rejected</option>
+                                        <option value="Withdrawn">Withdrawn</option>
                                         <option value="Published">Published</option>
 
                                     </select>
@@ -161,7 +164,7 @@
                     "url": base_url + "tickets/admin/json_list/",
                     "type": "POST",
                     "data": function ( d ) {
-
+                        d.id = $('#filter_id').val()
                         d.account = $('#filter_account').val();
                         d.email = $('#filter_email').val();
                         d.company = $('#filter_company').val();

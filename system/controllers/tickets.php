@@ -688,7 +688,7 @@ switch ($action){
             $ui->assign('upload_files', $upload_files);
             $ui->assign('download_files', $download_files);
 
-            $attachment_path = APP_URL . '/storage/tickets/';
+            $attachment_path = APP_URL . '/storage/tickets/'.$d->tid.'/';
             $ui->assign('attachment_path', $attachment_path);
 
             view('tickets_admin_view',[
@@ -961,8 +961,10 @@ switch ($action){
 
 
 
-
-
+        $tid = _post('id');
+        if($tid != ''){
+            $d->where('tid', $tid);
+        }
 
 
         $account = _post('account');
@@ -1388,6 +1390,23 @@ switch ($action){
 
         }
 
+        echo '1';
+
+        break;
+
+    case 'update_ttype':
+
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        $value = _post('value');
+
+        if($d){
+            $d->ttype = $value;
+            $d->save();
+        }
+        
         echo '1';
 
         break;

@@ -231,6 +231,19 @@ Class Tickets{
 
         if($msg == ''){
 
+            // upload file path change
+
+            $upload_path = 'storage/tickets/'.$tid;
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+            $attachment_array = explode(',', ib_post('attachments'));
+            foreach($attachment_array as $a){
+                $origin_path = 'storage/tickets/'.$a;
+                $new_path = 'storage/tickets/' . $tid.'/'.$a;
+                $fileMoved = rename($origin_path, $new_path);
+            }
+
             $d = ORM::for_table('sys_tickets')->create();
             $d->tid = $tid;
             $d->did = $did;
@@ -564,6 +577,22 @@ Class Tickets{
         }
 
         if ($msg == '') {
+
+            if(ib_post('attachments')){
+
+                $upload_path = 'storage/tickets/' . $t->tid;
+                if (!is_dir($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+
+                $attachment_array = explode(',', ib_post('attachments'));
+                foreach ($attachment_array as $a) {
+                    $origin_path = 'storage/tickets/' . $a;
+                    $new_path = $upload_path . '/' . $a;
+                    $fileMoved = rename($origin_path, $new_path);
+                }
+            }
+
             $d = ORM::for_table('sys_ticketreplies')->create();
             $d->tid = $tid;
             $d->userid = $cid;

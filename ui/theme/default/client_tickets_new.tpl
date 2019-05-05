@@ -26,6 +26,18 @@
                         <input type="email" class="form-control" id="email" name="email" value="{$user->email}" disabled>
                     </div>
 
+                    <div class="form-group">
+                        <label> Submission Requirements</label>
+                        <span class="block" >You must read and acknowledge that you've completed the requirements below before proceeding</span>
+                        <div style="margin-top:20px; margin-left:20px;">
+                            <p><input type="checkbox" id="check_1"> <label for="check_1" style="display:inline; font-weight:600">The submission has not been previously published, nor is it before another journal for consideration (or an explanation has been provided in Comments to the Editor).</label></p>
+                            <p><input type="checkbox" id="check_2"> <label for="check_2" style="display:inline;font-weight:600">The submission file is in OpenOffice, Microsoft Word, or RTF document file format.</label></p>
+                            <p><input type="checkbox" id="check_3"> <label for="check_3" style="display:inline;font-weight:600">Where available, URLs  for the references have been provided.</label></p>
+                            <p><input type="checkbox" id="check_4"> <label for="check_4" style="display:inline;font-weight:600">The text is single-spaced; uses a 12-point font; employs italics, rather than underlining)except with URL addresses); and all illustrations, figures, and tables are placed within the text at the appropriate points, rather than at the end.</label></p>
+                            <p><input type="checkbox" id="check_5"> <label for="check_5" style="display:inline;font-weight:600">The text adheres to the stylistic and bibliographic requirements outlined in the Author Guidelines</label></p>
+                        </div>
+                    </div>
+
 
 
                     <div class="form-group">
@@ -62,10 +74,26 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-xs-6">
+                                <label for="ttype">Type of Submission</label>
+                                <select class="form-control" name="ttype" id="ttype" size="1">
+                                    <option value="Original Article" selected>Original Article</option>
+                                    <option value="Review Article">Review Article</option>
+                                    <option value="Short Communication">Short Communication</option>
+                                    <option value="Case Report">Case Report</option>
+                                    <option value="Editorial Note">Editorial Note</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
                     <div class="form-group">
                         <label for="message">{$_L['Description']}</label>
                         <textarea id="message"  class="form-control sysedit" name="message"></textarea>
-                        <div class="help-block"><a data-toggle="modal" href="#modal_add_item"><i class="fa fa-paperclip"></i> {$_L['Attach File']}</a> </div>
+                        <div class="help-block"><a data-toggle="modal" href="#modal_add_item"><i class="fa fa-paperclip"></i> {$_L['Attach File']}</a> <span class="" style="color:green; margin-left: 30px" id="file_attachment_success"> Manuscript attached successfully - Click submit</span></div>
                     </div>
 
                     {if $config['recaptcha'] eq '1'}
@@ -118,7 +146,7 @@
         </div>
         <div class="modal-footer">
 
-            <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
+            <button type="button" data-dismiss="modal" class="btn btn-primary">Save</button>
 
         </div>
     </div>
@@ -139,6 +167,7 @@
             var $create_ticket = $("#create_ticket");
             var $ib_box = $("#ib_box");
 
+            $('#file_attachment_success').hide();
 
             $('.sysedit').summernote({
                 height: 300,
@@ -193,17 +222,12 @@
                         return val + (!val ? '' : ',') + upload_resp.file;
                     });
 
+                    $('#file_attachment_success').show();
 
                 }
                 else{
                     toastr.error(upload_resp.msg);
                 }
-
-
-
-
-
-
 
             });
 
@@ -212,7 +236,14 @@
             $ib_form_submit.on('click', function(e) {
                 e.preventDefault();
                 $ib_box.block({ message: block_msg });
-                $.post( _url + "client/tickets/add_post/", { subject: $("#subject").val(), department: $("#department").val(), urgency: $("#urgency").val(), message: $('.sysedit').code(), attachments: $("#attachments").val()} )
+
+                var check_count = 0;
+                $('input[type="checkbox"]:checked').each( function(elem) {
+                    check_count++;
+                })
+
+                if(check_count == 6){
+                    $.post( _url + "client/tickets/add_post/", { subject: $("#subject").val(), department: $("#department").val(), urgency: $("#urgency").val(), message: $('.sysedit').code(), attachments: $("#attachments").val(), ttype: $("#ttype").val()} )
                     .done(function( data ) {
 
                         if(data.success == "Yes"){
@@ -226,8 +257,11 @@
                         }
 
                     });
-
-
+                }else {
+                     $ib_box.unblock();
+                     toastr.error("Please Check Submission Requirements.");
+                }
+                
             });
 
             $('#urgency').on('change', function(e){

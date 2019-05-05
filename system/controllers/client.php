@@ -3710,7 +3710,7 @@ vMax: \'9999999999999999.00\',
                     $ui->assign('download_files', $download_files);
 
 
-                    $attachment_path = APP_URL. '/storage/tickets/';
+                    $attachment_path = APP_URL. '/storage/tickets/'.$d->tid.'/';
                     $ui->assign('attachment_path', $attachment_path);
                 
 
