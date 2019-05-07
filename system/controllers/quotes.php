@@ -228,11 +228,11 @@ minHeight: 300 // pixels
         }
 
 
-        if (isset($_POST['amount'])) {
-            $amount = $_POST['amount'];
-        } else {
-            $msg .= $_L['at_least_one_item_required'].' <br> ';
-        }
+        // if (isset($_POST['amount'])) {
+        //     $amount = $_POST['amount'];
+        // } else {
+        //     $msg .= $_L['at_least_one_item_required'].' <br> ';
+        // }
 
         $idate = _post('idate');
         $its = strtotime($idate);
@@ -243,6 +243,7 @@ minHeight: 300 // pixels
 
         if ($msg == '') {
 
+ /*           
             $qty = $_POST['qty'];
             if(isset($_POST['taxed'])){
                 $taxed = $_POST['taxed'];
@@ -279,6 +280,7 @@ minHeight: 300 // pixels
                 $samount = Finance::amount_fix($samount);
                 $a[$i] = $samount;
                 /* @since v 2.0 */
+            /*
                 $sqty = $qty[$i];
 
                 $sqty = Finance::amount_fix($sqty);
@@ -319,19 +321,19 @@ minHeight: 300 // pixels
 
                 $i++;
             }
-
+            */
 
             $invoicenum = _post('invoicenum');
             $cn = _post('cn');
 
 
-            $fTotal = $sTotal;
+            // $fTotal = $sTotal;
 
 
 
 
             // calculate discount
-
+/*
             $discount_amount = _post('discount_amount');
             $discount_type = _post('discount_type');
             $discount_value = '0.00';
@@ -383,7 +385,7 @@ minHeight: 300 // pixels
 
 
             $fTotal = $fTotal + $taxval;
-
+*/
 
             //
 
@@ -411,15 +413,15 @@ minHeight: 300 // pixels
             $d->country = '';
             $d->phonenumber = '';
             $d->currency = 1;
-            $d->subtotal = $sTotal;
-            $d->discount_type = $discount_type;
-            $d->discount_value = $discount_value;
-            $d->discount = $actual_discount;
-            $d->taxname = $taxname;
-            $d->taxrate = $taxrate;
-            $d->tax1 = $taxval;
-            $d->tax2 = '0.00';
-            $d->total = $fTotal;
+            // $d->subtotal = $sTotal;
+            // $d->discount_type = $discount_type;
+            // $d->discount_value = $discount_value;
+            // $d->discount = $actual_discount;
+            // $d->taxname = $taxname;
+            // $d->taxrate = $taxrate;
+            // $d->tax1 = $taxval;
+            // $d->tax2 = '0.00';
+            // $d->total = $fTotal;
             $d->proposal = $proposal_text;
             $d->customernotes = $customer_notes;
             $d->adminnotes = '';
@@ -433,14 +435,14 @@ minHeight: 300 // pixels
 
             $qid = $d->id();
 
-            $description = $_POST['desc'];
+            // $description = $_POST['desc'];
 
             $i = '0';
-
+/*
             foreach ($description as $item) {
                 $samount = $a[$i];
                 /* @since v 2.0 */
-                $sqty = $qty[$i];
+/*                $sqty = $qty[$i];
                 $sqty = Finance::amount_fix($sqty);
                 $samount = Finance::amount_fix($samount);
 
@@ -476,7 +478,7 @@ minHeight: 300 // pixels
                 $d->save();
                 $i++;
             }
-
+*/
 
             $code = _post('cn');
             update_option('quotation_code_current_number',current_number_would_be($code));
@@ -491,6 +493,7 @@ minHeight: 300 // pixels
         break;
 
     case 'list':
+
         Event::trigger('quotes/list/');
         $view_type = 'filter';
 
@@ -605,11 +608,11 @@ $(".cdelete").click(function (e) {
         }
 
 
-        if (isset($_POST['amount'])) {
-            $amount = $_POST['amount'];
-        } else {
-            $msg .= $_L['at_least_one_item_required'].' <br> ';
-        }
+        // if (isset($_POST['amount'])) {
+        //     $amount = $_POST['amount'];
+        // } else {
+        //     $msg .= $_L['at_least_one_item_required'].' <br> ';
+        // }
 
         $idate = _post('idate');
         $its = strtotime($idate);
@@ -620,6 +623,7 @@ $(".cdelete").click(function (e) {
 
         if ($msg == '') {
 
+            /*
             $qty = $_POST['qty'];
             if(isset($_POST['taxed'])){
                 $taxed = $_POST['taxed'];
@@ -657,7 +661,7 @@ $(".cdelete").click(function (e) {
                 $samount = Finance::amount_fix($samount);
                 $a[$i] = $samount;
                 /* @since v 2.0 */
-                $sqty = $qty[$i];
+/*                $sqty = $qty[$i];
 
                 $sqty = Finance::amount_fix($sqty);
 //                if (($config['dec_point']) == ',') {
@@ -697,7 +701,7 @@ $(".cdelete").click(function (e) {
 
                 $i++;
             }
-
+*/
 
 
 
@@ -706,12 +710,12 @@ $(".cdelete").click(function (e) {
             $cn = _post('cn');
 
 
-            $fTotal = $sTotal;
+            // $fTotal = $sTotal;
 
 
 
             // calculate discount
-
+/*
             $discount_amount = _post('discount_amount');
             $discount_type = _post('discount_type');
             $discount_value = '0.00';
@@ -764,7 +768,7 @@ $(".cdelete").click(function (e) {
 
             $fTotal = $fTotal + $taxval;
 
-
+*/
             //
 
 
@@ -795,15 +799,15 @@ $(".cdelete").click(function (e) {
                 $d->country = '';
                 $d->phonenumber = '';
                 $d->currency = 1;
-                $d->subtotal = $sTotal;
-                $d->discount_type = $discount_type;
-                $d->discount_value = $discount_value;
-                $d->discount = $actual_discount;
-                $d->taxname = $taxname;
-                $d->taxrate = $taxrate;
-                $d->tax1 = $taxval;
-                $d->tax2 = '0.00';
-                $d->total = $fTotal;
+                // $d->subtotal = $sTotal;
+                // $d->discount_type = $discount_type;
+                // $d->discount_value = $discount_value;
+                // $d->discount = $actual_discount;
+                // $d->taxname = $taxname;
+                // $d->taxrate = $taxrate;
+                // $d->tax1 = $taxval;
+                // $d->tax2 = '0.00';
+                // $d->total = $fTotal;
                 $d->proposal = $proposal_text;
                 $d->customernotes = $customer_notes;
                 $d->adminnotes = '';
@@ -817,13 +821,15 @@ $(".cdelete").click(function (e) {
 
                 $qid = $d->id();
 
-                $description = $_POST['desc'];
+                // $description = $_POST['desc'];
 
                 $i = '0';
                 $x = ORM::for_table('sys_quoteitems')->where('qid', $iid)->delete_many();
+                /*
                 foreach ($description as $item) {
                     $samount = $a[$i];
                     /* @since v 2.0 */
+                /*
                     $sqty = $qty[$i];
                     $sqty = Finance::amount_fix($sqty);
                     $samount = Finance::amount_fix($samount);
@@ -861,7 +867,7 @@ $(".cdelete").click(function (e) {
                     $d->save();
                     $i++;
                 }
-
+                */
                 echo $qid;
 
             }

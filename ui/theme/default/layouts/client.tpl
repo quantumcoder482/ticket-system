@@ -390,7 +390,7 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
         function notification(){
             $.get(_url+'client/tickets/notification_count', function(data){
-                if(data != 0){
+                if(data != 0 ){
                     $('.notification-counter').text(data);
                 }else{
                     $('.notification-counter').text('');

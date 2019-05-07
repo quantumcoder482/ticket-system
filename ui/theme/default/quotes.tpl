@@ -28,9 +28,9 @@
                     <th>#</th>
                     <th>{$_L['Account']}</th>
                     <th width="30%">{$_L['Subject']}</th>
-                    <th>{$_L['Amount']}</th>
+                    <!-- <th>{$_L['Amount']}</th> -->
                     <th>{$_L['Date Created']}</th>
-                    <th>{$_L['Expiry Date']}</th>
+                    <th>Month Published</th>
                     <th>{$_L['Stage']}</th>
 
                     <th class="text-right">{$_L['Manage']}</th>
@@ -43,9 +43,9 @@
                         <td data-value="{$ds['id']}"><a href="{$_url}quotes/view/{$ds['id']}/">{$ds['invoicenum']}{if $ds['cn'] neq ''} {$ds['cn']} {else} {$ds['id']} {/if}</a> </td>
                         <td><a href="{$_url}contacts/view/{$ds['userid']}/">{$ds['account']}</a> </td>
                         <td><a href="{$_url}quotes/view/{$ds['id']}/">{$ds['subject']}</a> </td>
-                        <td class="amount">{$ds['total']}</td>
+                        <!-- <td class="amount">{$ds['total']}</td> -->
                         <td>{date( $config['df'], strtotime($ds['datecreated']))}</td>
-                        <td>{date( $config['df'], strtotime($ds['validuntil']))}</td>
+                        <td>{date( 'F Y', strtotime($ds['validuntil']))}</td>
                         <td>
                             {if $ds['stage'] eq 'Dead'}
                                 <span class="label label-default">{$_L['Dead']}</span>
@@ -55,8 +55,8 @@
                                 <span class="label label-success">{$_L['Accepted']}</span>
                             {elseif $ds['stage'] eq 'Draft'}
                                 <span class="label label-info">{$_L['Draft']}</span>
-                            {elseif $ds['stage'] eq 'Delivered'}
-                                <span class="label label-info">{$_L['Delivered']}</span>
+                            {elseif $ds['stage'] eq 'Declined'}
+                                <span class="label label-info">Declined</span>
                             {else}
                                 <span class="label label-info">{$ds['stage']}</span>
                             {/if}

@@ -50,14 +50,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <!-- <form>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Abstract</label>
-                                                <hr>
-                                                <div >{$d->message}</div>
-                                                    
-                                            </div>
-                                        </form> -->
+                                        
                                     </div>
                                 </div>
                             </div>

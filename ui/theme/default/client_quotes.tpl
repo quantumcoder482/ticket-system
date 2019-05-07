@@ -14,9 +14,9 @@
                     <tr>
 
                         <th width="30%">{$_L['Subject']}</th>
-                        <th>{$_L['Amount']}</th>
+                        <!-- <th>{$_L['Amount']}</th> -->
                         <th>{$_L['Date Created']}</th>
-                        <th>{$_L['Expiry Date']}</th>
+                        <th>Date Published</th>
                         {*<th>{$_L['Stage']}</th>*}
 
                         <th class="text-right">{$_L['Manage']}</th>
@@ -28,9 +28,9 @@
                         <tr>
 
                             <td><a href="{$_url}client/q/{$ds['id']}/token_{$ds['vtoken']}/" target="_blank">{$ds['subject']}</a> </td>
-                            <td class="amount">{$ds['total']}</td>
+                            <!-- <td class="amount">{$ds['total']}</td> -->
                             <td>{date( $config['df'], strtotime($ds['datecreated']))}</td>
-                            <td>{date( $config['df'], strtotime($ds['validuntil']))}</td>
+                            <td>{date( 'F Y', strtotime($ds['validuntil']))}</td>
 
 
                             <td class="text-right">

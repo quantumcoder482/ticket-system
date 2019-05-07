@@ -6,8 +6,8 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>{$_L['Records']} {$paginator['found']}
-                        . {$_L['Page']} {$paginator['page']} {$_L['of']} {$paginator['lastpage']}. </h5>
+                    <!-- <h5>{$_L['Records']} {$paginator['found']}
+                        . {$_L['Page']} {$paginator['page']} {$_L['of']} {$paginator['lastpage']}. </h5> -->
 
 
 
@@ -16,7 +16,7 @@
                 <div class="ibox-content" id="application_ajaxrender">
 
 
-                    <table class="table table-bordered sys_table" id="sys_logs">
+                    <table class="table table-bordered table-hover sys_table footable" id="sys_logs" data-page-size="20">
                         <thead>
                         <tr>
                             <th width="5%">{$_L['ID']}</th>
@@ -39,10 +39,17 @@
                             </tr>
                         {/foreach}
                         </tbody>
+                   
+                        <tfoot>
+                            <tr>
+                                <td style="text-align: left;" colspan="5">
+                                    <ul class="pagination">
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tfoot>
+                   
                     </table>
-
-                    {$paginator['contents']}
-
                 </div>
 
 
@@ -50,4 +57,10 @@
         </div>
     </div>
 
+{/block}
+{block name=script}
+<script type="text/javascript">
+    var _url = $("#_url").val();
+    $('.footable').footable();
+</script>
 {/block}

@@ -255,6 +255,9 @@ switch ($action) {
             $cf = ORM::for_table('crm_customfields')->where('showinvoice','Yes')->order_by_asc('id')->find_many();
             $ui->assign('cf',$cf);
 
+            $admin = ORM::for_table('sys_users')->where('user_type', 'Admin')->find_one();
+            $ui->assign('admin', $admin);
+
             $x_html = '';
 
 
@@ -1904,6 +1907,58 @@ switch ($action) {
 
             $send_email = Ib_Email::send_client_welcome_email($data);
 
+            // send email to admin
+
+            $admin = ORM::for_table('sys_users')->where('user_type', 'Admin')->find_one();
+            $admin_email = $admin['username'];
+            $admin_fullname = $admin['fullname'];
+            $admin_id = $admin['id'];
+            $client_ip = get_client_ip();
+
+            $ip_response = file_get_contents('http://ip-api.com/json/' . $client_ip);
+            $ip_array = json_decode($ip_response);
+            $city = $ip_array->city;
+
+            $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Admin: New User Registration')->where('send', 'Yes')->find_one();
+
+            if ($eml) {
+
+                $eml_subject = new Template($eml->subject);
+               
+                $subj = $eml_subject->output();
+
+                $eml_message = new Template($eml->message);
+                $eml_message->set('client_name', $data['account']);
+                $eml_message->set('client_email', $data['email']);
+                $eml_message->set('client_phone', $data['phone']);
+                $eml_message->set('country', $data['country']);
+                $eml_message->set('business_name', $config['CompanyName']);
+                $eml_message->set('ip_address', $client_ip);
+                $eml_message->set('city', $city);
+
+                // $eml_message->set('processing', $urgency);
+                $message_o = $eml_message->output();
+                
+                    Notify_Email::_send($admin_fullname, $admin_email, $subj, $message_o, $admin_id);
+
+                    if ($data['phone'] != '') {
+                        require 'system/lib/misc/smsdriver.php';
+
+                        $tpl = SMSTemplate::where('tpl', 'Client New Registration')->first();
+
+                        if ($tpl) {
+                            $message = new Template($tpl->sms);
+                            $message->set('client_name', $data['account']);
+                            $message->set('business_name', $config['CompanyName']);
+                            $message_o = $message->output();
+                            spSendSMS($data['phone'], $message_o, 'PSCOPE', 0, 'text', 4);
+                        }
+                    }
+                
+            }
+
+
+            
             $auth = Contacts::login($data['email'],$o_password);
 
             if($auth){
@@ -2621,7 +2676,7 @@ vMax: \'9999999999999999.00\',
                 exit;
             }
 
-            $d->stage = 'Lost';
+            $d->stage = 'Declined';
             $d->save();
 
 

@@ -103,7 +103,7 @@
 
                                         <div class="form-group">
                                             <label for="edate"
-                                                   class="col-sm-4 control-label">{$_L['Expiry Date']}</label>
+                                                   class="col-sm-4 control-label">Month Published</label>
 
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" id="edate" name="edate" datepicker
@@ -119,43 +119,9 @@
                                             <div class="col-sm-8">
                                                 <select class="form-control" name="stage" id="stage">
                                                     <option value="Draft" {if $d['stage'] eq 'Draft'}selected{/if}>{$_L['Draft']}</option>
-                                                    <option value="Delivered" {if $d['stage'] eq 'Delivered'}selected{/if}>{$_L['Delivered']}</option>
                                                     <option value="Accepted" {if $d['stage'] eq 'Accepted'}selected{/if}>{$_L['Accepted']}</option>
-                                                    <option value="Lost" {if $d['stage'] eq 'Lost'}selected{/if}>{$_L['Lost']}</option>
-                                                    <option value="Dead" {if $d['stage'] eq 'Dead'}selected{/if}>{$_L['Dead']}</option>
+                                                    <option value="Delivered" {if $d['stage'] eq 'Declined'}selected{/if}>Declined </option>
                                                 </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="tid" class="col-sm-4 control-label">{$_L['Sales TAX']}</label>
-
-                                            <div class="col-sm-8">
-                                                <select id="tid" name="tid" class="form-control">
-                                                    <option value="">{$_L['None']}</option>
-                                                    {foreach $t as $ts}
-                                                        <option value="{$ts['id']}"
-                                                                {if $ts['name'] eq $i['taxname']}selected="selected" {/if} >{$ts['name']}
-                                                            ({{number_format($ts['rate'],2,$config['dec_point'],$config['thousands_sep'])}}
-                                                            %)
-                                                        </option>
-                                                    {/foreach}
-
-                                                </select>
-                                                <input type="hidden" id="stax" name="stax" value="{$d['taxrate']}">
-                                                <input type="hidden" id="discount_amount" name="discount_amount" value="{$d['discount_value']}">
-                                                <input type="hidden" id="discount_type" name="discount_type" value="{$d['discount_type']}">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="add_discount"
-                                                   class="col-sm-4 control-label">{$_L['Discount']}</label>
-
-                                            <div class="col-sm-8">
-
-                                                <a href="#" id="add_discount" class="btn btn-info btn-xs"
-                                                   style="margin-top: 5px;"><i
-                                                            class="fa fa-minus-circle"></i> {$_L['Set Discount']}</a>
                                             </div>
                                         </div>
 
@@ -176,73 +142,6 @@
                                     <hr>
                                 </div>
                             </div>
-
-
-
-                            <div class="table-responsive m-t">
-
-                                <table class="table invoice-table" id="invoice_items">
-                                    <thead>
-                                    <tr>
-                                        <th width="10%">{$_L['Item Code']}</th>
-                                        <th width="50%">{$_L['Item Name']}</th>
-                                        <th width="10%">{$_L['Qty']}</th>
-                                        <th width="10%">{$_L['Price']}</th>
-                                        <th width="10%">{$_L['Total']}</th>
-                                        <th width="10%">Tax</th>
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    {foreach $items as $item}
-                                        <tr> <td>{$item['itemcode']}</td> <td><textarea class="form-control item_name" name="desc[]" rows="3">{$item['description']}</textarea> </td> <td><input type="text" class="form-control qty" value="{if ($config['dec_point']) eq ','}{$item['qty']|replace:'.':','}{else}{$item['qty']}{/if}" name="qty[]"></td> <td><input type="text" class="form-control item_price" name="amount[]" value="{if ($config['dec_point']) eq ','}{$item['amount']|replace:'.':','}{else}{$item['amount']}{/if}"></td> <td class="ltotal"><input type="text" class="form-control lvtotal" readonly="" value="{if ($config['dec_point']) eq ','}{{$item['total']}|replace:'.':','}{else}{{$item['total']}}{/if}"></td> <td> <select class="form-control taxed" name="taxed[]"> <option value="Yes" {if $item['taxable'] eq '1'}selected=""{/if}>Yes</option> <option value="No" {if $item['taxable'] eq '0'}selected=""{/if}>No</option></select></td></tr>
-                                    {/foreach}
-
-
-
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-                            <!-- /table-responsive -->
-                            <button type="button" class="btn btn-primary" id="blank-add"><i
-                                        class="fa fa-plus"></i> {$_L['Add blank Line']}</button>
-                            <button type="button" class="btn btn-primary" id="item-add"><i
-                                        class="fa fa-search"></i> {$_L['Add Product OR Service']}</button>
-                            <button type="button" class="btn btn-danger" id="item-remove"><i
-                                        class="fa fa-minus-circle"></i> {$_L['Delete']}</button>
-                            <table class="table invoice-total">
-                                <tbody>
-                                <tr>
-                                    <td><strong>{$_L['Sub Total']} :</strong></td>
-                                    <td id="sub_total" class="amount" data-a-sign="" data-a-dec="{$config['dec_point']}"
-                                        data-a-sep="" data-d-group="2">{$d['subtotal']}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{$_L['Discount']} <span id="is_pt"></span> :</strong></td>
-                                    <td id="discount_amount_total" class="amount" data-a-sign=""
-                                        data-a-dec="{$config['dec_point']}" data-a-sep="" data-d-group="2">{$d['discount']}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{$_L['TAX']} :</strong></td>
-                                    <td id="taxtotal" class="amount" data-a-sign="" data-a-dec="{$config['dec_point']}"
-                                        data-a-sep="" data-d-group="2">{$d['tax1']}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>{$_L['TOTAL']} :</strong></td>
-                                    <td id="total" class="amount" data-a-sign="" data-a-dec="{$config['dec_point']}"
-                                        data-a-sep="" data-d-group="2">{$d['total']}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <hr>
 
                             <div class="form-group">
                                 <label for="customer_notes">{$_L['Customer Notes']}</label>

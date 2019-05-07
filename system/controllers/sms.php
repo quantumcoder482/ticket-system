@@ -131,12 +131,18 @@ switch ($action)
 
     case 'sent':
         $paginator = Paginator::bootstrap('app_sms');
-        $d = ORM::for_table('app_sms')->offset($paginator['startpoint'])->limit($paginator['limit'])->find_many();
+        $d = ORM::for_table('app_sms')->offset($paginator['startpoint'])->limit($paginator['limit'])->order_by_desc('id')->find_many();
         $ui->assign('d', $d);
         $ui->assign('paginator', $paginator);
+        $ui->assign('xheader', Asset::css(array('modal', 'dp/dist/datepicker.min', 'footable/css/footable.core.min', 'dropzone/dropzone', 'redactor/redactor', 's2/css/select2.min')));
+        $ui->assign('xfooter', Asset::js(array(
+            'modal', 'dp/dist/datepicker.min', 'footable/js/footable.all.min', 'dropzone/dropzone', 'redactor/redactor.min', 'numeric', 's2/js/select2.min',
+            's2/js/i18n/' . lan(),
+        )));
 
         //        $ui->assign('_include','sent');
         //        $ui->display('wrapper.tpl');
+     
 
         view('sms_sent');
         break;

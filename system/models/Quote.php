@@ -101,6 +101,9 @@ Class Quote extends Model
 
 //find the user
             $a = ORM::for_table('crm_accounts')->find_one($d['userid']);
+
+            $admin = ORM::for_table('sys_users')->where('user_type', 'Admin')->find_one();
+
             $i_credit = $d['credit'];
             $i_due = '0.00';
             $i_total = $d['total'];

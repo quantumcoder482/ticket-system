@@ -58,8 +58,8 @@
                                 {if $d['stage'] neq 'Draft'}
                                     <li><a href="#" id="mark_draft">{$_L['Draft']}</a></li>
                                 {/if}
-                                {if $d['stage'] neq 'Delivered'}
-                                    <li><a href="#" id="mark_delivered">{$_L['Delivered']}</a></li>
+                                {if $d['stage'] neq 'Declined'}
+                                    <li><a href="#" id="mark_delivered">Declined</a></li>
                                 {/if}
                                 {if $d['stage'] neq 'On Hold'}
                                     <li><a href="#" id="mark_on_hold">{$_L['On Hold']}</a></li>
@@ -112,9 +112,9 @@
                             <a href="javascript:void(0)" id="ribbon">{$_L['Accepted']}</a>
 
                         </div>
-                    {elseif $d['stage'] eq 'Delivered'}
+                    {elseif $d['stage'] eq 'Declined'}
                         <div id="ribbon-container">
-                            <a href="javascript:void(0)" id="ribbon">{$_L['Delivered']}</a>
+                            <a href="javascript:void(0)" id="ribbon">Declined</a>
                         </div>
                     {elseif $d['stage'] eq 'Draft'}
                         <div id="ribbon-container">
@@ -202,11 +202,10 @@
                                             <span class="value">{date( $config['df'], strtotime($d['datecreated']))}</span>
                                         </p>
                                         <p class="mb-none">
-                                            <span class="text-dark">{$_L['Expiry Date']}:</span>
-                                            <span class="value">{date( $config['df'], strtotime($d['validuntil']))}</span>
+                                            <span class="text-dark">Month Published:</span>
+                                            <span class="value">{date( 'F Y', strtotime($d['validuntil']))}</span>
                                         </p>
-                                        <h2> {$_L['Total']}: <span class="amount">{$d['total']}</span> </h2>
-
+                                     
                                     </div>
                                 </div>
                             </div>
@@ -229,69 +228,10 @@
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table invoice-items">
-                                <thead>
-                                <tr class="h4 text-dark">
-                                    <th id="cell-id" class="text-semibold">#</th>
-                                    <th id="cell-item" class="text-semibold">{$_L['Item']}</th>
-
-                                    <th id="cell-price" class="text-center text-semibold">{$_L['Price']}</th>
-                                    <th id="cell-qty" class="text-center text-semibold">{$_L['Quantity']}</th>
-                                    <th id="cell-total" class="text-center text-semibold">{$_L['Total']}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-
-                                {foreach $items as $item}
-                                    <tr>
-                                        <td>{$item['itemcode']}</td>
-                                        <td class="text-semibold text-dark">{$item['description']}</td>
-
-                                        <td class="text-center amount">{$item['amount']}</td>
-                                        <td class="text-center">{$item['qty']}</td>
-                                        <td class="text-center amount">{$item['total']}</td>
-                                    </tr>
-                                {/foreach}
-
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="invoice-summary">
-                            <div class="row">
-                                <div class="col-sm-4 col-sm-offset-8">
-                                    <table class="table h5 text-dark">
-                                        <tbody>
-                                        <tr class="b-top-none">
-                                            <td colspan="2">{$_L['Subtotal']}</td>
-                                            <td class="text-left amount">{$d['subtotal']}</td>
-                                        </tr>
-                                        {if ($d['discount']) neq '0.00'}
-                                            <tr>
-                                                <td colspan="2">{$_L['Discount']}</td>
-                                                <td class="text-left amount">{$d['discount']}</td>
-                                            </tr>
-                                        {/if}
-                                        <tr>
-                                            <td colspan="2">{$d['taxname']}</td>
-                                            <td class="text-left amount">{$d['tax1']}</td>
-                                        </tr>
-
-                                        <tr class="h4">
-                                            <td colspan="2">{$_L['Grand Total']}</td>
-                                            <td class="text-left amount">{$d['total']}</td>
-                                        </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
+                     
                         <div class="row">
                             <div class="col-md-12">
-                                <hr>
+                                <p><strong>Copyright Agreement:</strong></p>
                                 {$d['customernotes']}
                             </div>
                         </div>

@@ -44,13 +44,48 @@
             border: 2px solid #DDD;
             background-color: #FFF;
             position: relative;
-            font-size: 14px;
+            font-size: 16px;
+        }
+        .panel {
+             box-shadow: none;
+             margin:20px 50px;
         }
 
-        .panel {
+        hr {
+            margin:20px auto 20px; 
+            border-top:2px solid #282C34;
+        }
+        div.signature {
+            width:150px;
+            margin:auto;
+        }
+        div.signature p{
+            margin: 0px;
+            padding: 0px;
+            text-align: left;
+            font-size: 10px;
+        }
+        div.signature p:first-child{
+            font-size: 18px;
+        }
+        div.signature hr{
+            margin:0;
+            border-top: 1px solid #908989;
+        }
 
-             box-shadow: none;
+        .static-title {
+            margin: 0px auto 20px; 
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
 
+        .title {
+            margin: 10px 0px 10px;
+            text-align: left;
+            font-size: 1.2em;
+            font-weight: 600;
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -60,53 +95,63 @@
 <div class="paper">
 
     <section class="panel">
+        
         <div class="panel-body">
 
             <div class="invoice">
                 <header class="clearfix">
                     <div class="text-right">
-
                         <br>
 
                         <a href="{$_url}client/qpdf/{$d['id']}/token_{$d['vtoken']}" class="btn btn-primary ml-sm"><i class="fa fa-print"></i> {$_L['View PDF']}</a>
                         <a href="{$_url}client/qpdf/{$d['id']}/token_{$d['vtoken']}/dl/" class="btn btn-info ml-sm"><i class="fa fa-file-pdf-o"></i> {$_L['Download PDF']}</a>
 
-
-
                         {if ($d['stage'] neq 'Accepted')}
                             <a href="{$_url}client/q_accept/{$d['id']}/token_{$d['vtoken']}" class="btn btn-green ml-sm">{$_L['Accept']}</a>
                         {/if}
 
-                        {if ($d['stage'] neq 'Lost')}
+                        {if ($d['stage'] neq 'Declined')}
                             <a href="{$_url}client/q_decline/{$d['id']}/token_{$d['vtoken']}" class="btn btn-danger ml-sm">{$_L['Decline']}</a>
                         {/if}
 
-
-
-
-
                     </div>
+
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-md-8">
+                            <div class="ib">
+                                <img src="{$app_url}storage/system/{$config['logo_default']}" alt="Logo" style="margin-bottom: 15px;">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <address class="ib">
+                                {$config['caddress']}
+                            </address>
+                        </div>
+                    </div>
+                    <hr>
+                </header>
+                <div class="bill-info"> 
+                    
                     <div class="row">
                         <div class="col-md-12 mt-md">
-                            <h2 class="h2 mt-none mb-sm text-dark text-bold">{$config['CompanyName']}</h2>
-                            <h4 class="h4 m-none text-dark text-bold">{$_L['Quote']} #{$d['invoicenum']}{if $d['cn'] neq ''} {$d['cn']} {else} {$d['id']} {/if}</h4>
-
+                            <h4 class="static-title">ACCEPTANCE & COPYRIGHT AGREEMENT</h4>
                         </div>
-
                     </div>
-                </header>
-                <div class="bill-info">
+
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="bill-to">
-                                <p class="h5 mb-xs text-dark text-semibold"><strong>{$_L['Recipient']}:</strong></p>
                                 <address>
                                     {if $a['company'] neq ''}
+                                        {$_L['ATTN']}:
+                                        <br>
+                                        {$d['account']}
+                                        <br>
                                         {$a['company']}
                                         <br>
-                                        {$_L['ATTN']}: {$d['account']}
-                                        <br>
                                     {else}
+                                        {$_L['ATTN']}:
+                                        <br>
                                         {$d['account']}
                                         <br>
                                     {/if}
@@ -116,45 +161,43 @@
                                     {$a['state']} - {$a['zip']} <br>
                                     {$a['country']}
                                     <br>
-                                    <strong>{$_L['Phone']}:</strong> {$a['phone']}
+                                    {$_L['Phone']}: {$a['phone']}
                                     <br>
-                                    <strong>{$_L['Email']}:</strong> {$a['email']}
+                                    {$_L['Email']}: {$a['email']}
                                     {foreach $cf as $cfs}
                                         <br>
-                                        <strong>{$cfs['fieldname']}: </strong> {get_custom_field_value($cfs['id'],$a['id'])}
+                                        {$cfs['fieldname']}:  {get_custom_field_value($cfs['id'],$a['id'])}
                                     {/foreach}
 
                                     {$x_html}
                                 </address>
 
-
-
-
-
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bill-data text-right">
+                        <div class="col-md-5">
+                            <div class="bill-data text-left">
 
-                                <div class="ib">
-                                    <img src="{$app_url}storage/system/{$config['logo_default']}" alt="Logo" style="margin-bottom: 15px;">
-
+                                <div class="col-md-6">
+                                    Submission ID:
+                                    <br>
+                                    Date Accepeted:
+                                    <br>
+                                    Month Published:
+                                    <br>
+                                    Copyright Status:
+                                    <br>
+                                </div>
+                                <div class="col-md-6">
+                                   {if $d['cn'] neq ''} {$d['cn']} {else} {$d['id']} {/if}
+                                    <br>
+                                    {date( $config['df'], strtotime($d['datecreated']))}
+                                    <br>
+                                    {date( 'F Y', strtotime($d['validuntil']))}
+                                    <br>
+                                    {$d['stage']}
+                                    <br>
                                 </div>
 
-                                <address class="ib mr-xlg">
-                                    {$config['caddress']}
-                                </address>
-
-                                <p class="mb-none mt-lg">
-                                    <span class="text-dark">{$_L['Date Created']}:</span>
-                                    <span class="value">{date( $config['df'], strtotime($d['datecreated']))}</span>
-                                </p>
-                                <p class="mb-none">
-                                    <span class="text-dark">{$_L['Expiry Date']}:</span>
-                                    <span class="value">{date( $config['df'], strtotime($d['validuntil']))}</span>
-                                </p>
-                                <h2> {$_L['Total']}: {$config['currency_code']} {number_format($d['total'],2,$config['dec_point'],$config['thousands_sep'])} </h2>
-
                             </div>
                         </div>
                     </div>
@@ -162,89 +205,68 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <hr>
 
-                        <strong>{$d['subject']}</strong>
+                        <h4 class="title">{$d['subject']}</h4>
 
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <hr>
+                        
                         {$d['proposal']}
-                        <hr>
+                        
+                    </div>
+                   
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="title">Copyright Agreement:</h4>
                     </div>
                 </div>
+                <div class="row">
+                    
+                    <div class="col-md-12" style="font-size:0.8em">
 
-                <div class="table-responsive">
-                    <table class="table invoice-items">
-                        <thead>
-                        <tr class="h4 text-dark">
-                            <th id="cell-id" class="text-semibold">#</th>
-                            <th id="cell-item" class="text-semibold">{$_L['Item']}</th>
+                        {$d['customernotes']}
 
-                            <th id="cell-price" class="text-center text-semibold">{$_L['Price']}</th>
-                            <th id="cell-qty" class="text-center text-semibold">{$_L['Quantity']}</th>
-                            <th id="cell-total" class="text-center text-semibold">{$_L['Total']}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {foreach $items as $item}
-                            <tr>
-                                <td>{$item['itemcode']}</td>
-                                <td class="text-semibold text-dark">{$item['description']}</td>
-
-                                <td class="text-center nowrap">{$config['currency_code']} {number_format($item['amount'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                                <td class="text-center nowrap">{$item['qty']}</td>
-                                <td class="text-center nowrap">{$config['currency_code']} {number_format($item['total'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                            </tr>
-                        {/foreach}
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="invoice-summary">
-                    <div class="row">
-                        <div class="col-sm-4 col-sm-offset-8">
-                            <table class="table h5 text-dark">
-                                <tbody>
-                                <tr class="b-top-none">
-                                    <td colspan="2">{$_L['Subtotal']}</td>
-                                    <td class="text-left">{$config['currency_code']} {number_format($d['subtotal'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                                </tr>
-                                {if ($d['discount']) neq '0.00'}
-                                    <tr>
-                                        <td colspan="2">{$_L['Discount']}</td>
-                                        <td class="text-left">{$config['currency_code']} {number_format($d['discount'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                                    </tr>
-                                {/if}
-                                <tr>
-                                    <td colspan="2">{$d['taxname']}</td>
-                                    <td class="text-left">{$config['currency_code']} {number_format($d['tax1'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                                </tr>
-
-                                <tr class="h4">
-                                    <td colspan="2">{$_L['Grand Total']}</td>
-                                    <td class="text-left">{$config['currency_code']} {number_format($d['total'],2,$config['dec_point'],$config['thousands_sep'])}</td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-12">
-                        <hr>
-                        {$d['customernotes']}
+                    <div class="col-md-6 text-center">
+                        {if $d['stage'] eq 'Accepted'}
+                        <div class="signature">
+                            <p>Signature valid</p>
+                            <p style="float:left">
+                                Digitally signed by<br>
+                                {$a->account}<br>
+                                {date($config['df'], strtotime($d['dateaccepted']))}<br>
+                            </p>
+                            <p><img src="{$app_url}ui/assets/img/apply-icon.png" width="50px" height="43px"></p>
+                            <hr>
+                            
+                        </div>
+                        {/if}
+
+
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <div class="signature">
+                            <p>Signature valid</p>
+                            <p style="float:left">
+                                Digitally signed by<br>
+                                {$admin->fullname}<br>
+                                {date($config['df'], strtotime($d['datecreated']))}<br>
+                            </p>
+                            <p><img src="{$app_url}ui/assets/img/apply-icon.png" width="50px" height="43pxs"></p>
+                            <hr>
+                         </div>
                     </div>
                 </div>
+
             </div>
-
-
 
         </div>
     </section>
