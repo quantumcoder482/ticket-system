@@ -210,6 +210,11 @@ Class Tickets{
 
         if($subject == ''){
             $msg .= 'Subject is required. <br>';
+        }else {
+            $check_subject = ORM::for_table('sys_tickets')->where('subject', $subject)->find_one();
+            if($check_subject) {
+                $msg .= 'This manuscript title already submitted. <br>';
+            }
         }
 
         if($message == ''){
@@ -373,7 +378,6 @@ Class Tickets{
                 $eml_message->set('priority', $urgency);
                 $eml_message->set('urgency', $urgency);
                 $eml_message->set('subject', $subject);
-                $eml_message->set('subject', $subject);
                 $eml_message->set('ticket_subject', $subject);
                 $eml_message->set('status', $urgency);
                 $eml_message->set('ticket_status', $d->status);
@@ -414,6 +418,7 @@ Class Tickets{
                 $eml_message->set('ticket_status', $d->status);
                 $eml_message->set('ticket_urgency', $urgency);
                 $eml_message->set('ticket_priority', $urgency);
+                $eml_message->set('ticket_subject', $subject);
                 $eml_message->set('ticket_id', '#'.$tid);
                 $eml_message->set('message', $message);
                 $eml_message->set('business_name', $config['CompanyName']);

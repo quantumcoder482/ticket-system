@@ -143,6 +143,10 @@ License: You must have a valid license purchased only from cloudonex.com in orde
                     
                     {$client_extra_nav[2]}
 
+                      {if ($config['quotes'])}
+                      <li {if $_application_menu eq 'quotes' }class="active" {/if}> <a href="{$_url}client/quotes/"><i class="icon-article"></i> <span class="nav-label">{$_L['Quotes']}</span></a></li>
+                      {/if}
+
 
                     {if ($config['kb'])}
 
@@ -150,36 +154,14 @@ License: You must have a valid license purchased only from cloudonex.com in orde
 
                     {/if}
 
-                    <li {if $_application_menu eq 'invoices'}class="active"{/if}><a href="{$_url}client/invoices/"><i class="icon-credit-card-1"></i> <span class="nav-label">{$_L['Invoices']}</span></a></li>
-                      
-
                     {$client_extra_nav[3]}
-
-                 
-                    {if ($config['orders'] eq '1')}
-
-
-                        <li {if $_application_menu eq 'orders'}class="active"{/if}><a href="#"><i class="fa fa-server"></i> <span class="nav-label">{$_L['Orders']}</span><span class="fa arrow"></span></a>
-
-                            <ul class="nav nav-second-level">
-                                <li><a href="{$_url}client/orders/" >{$_L['My Orders']}</a></li>
-                                <li><a href="{$_url}client/new-order/" >{$_L['Place New Order']}</a></li>
-                            </ul>
-                        </li>
-
-                    {/if}
-
-                    {if ($config['quotes'])}
-                        <li {if $_application_menu eq 'quotes'}class="active"{/if}><a href="{$_url}client/quotes/"><i class="icon-article"></i> <span class="nav-label">{$_L['Quotes']}</span></a></li>
-                    {/if}
-
-
+                    
+                    <li {if $_application_menu eq 'invoices'}class="active"{/if}><a href="{$_url}client/invoices/"><i class="icon-credit-card-1"></i> <span class="nav-label">{$_L['Invoices']}</span></a></li>
+                                
                  
                     {$client_extra_nav[4]}
 
-                    <li {if $_application_menu eq 'transactions'}class="active"{/if}><a href="{$_url}client/transactions/"><i class="icon-database"></i> <span class="nav-label">{$_L['Transactions']}</span></a></li>
-
-
+           
                     {if ($config['documents'])}
                         <li {if $_application_menu eq 'downloads'}class="active"{/if}><a href="{$_url}client/downloads/"><i class="fa fa-file-o"></i> <span class="nav-label">
                              {if $config['client_drive']}{$_L['Documents']} {else}{$_L['Downloads']}{/if}

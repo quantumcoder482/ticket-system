@@ -1283,7 +1283,7 @@ switch ($action){
 
         $t = ORM::for_table('sys_tickets')->find_one($id);
 
-        // $dname = Ticket:: get_department($t->did);
+        // $dname = Ticket::get_department($t->did);
 
         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Status - Client')->where('send', 'Yes')->find_one();
 
@@ -1314,7 +1314,7 @@ switch ($action){
             $eml_message->set('ticket_message', $t->message);
             $eml_message->set('business_name', $config['CompanyName']);
             $eml_message->set('ticket_link', $client_view_link);
-            $eml_message->set('department', $dname);
+            $eml_message->set('department', $t->dname);
             // $eml_message->set('processing', $urgency);
             $message_o = $eml_message->output();
 
@@ -1462,7 +1462,7 @@ switch ($action){
             $eml_message->set('ticket_message', $t->message);
             $eml_message->set('business_name', $config['CompanyName']);
             $eml_message->set('ticket_link', $client_view_link);
-            $eml_message->set('department', $dname);
+            $eml_message->set('department', $t->dname);
             // $eml_message->set('processing', $urgency);
             $message_o = $eml_message->output();
 

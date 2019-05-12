@@ -224,9 +224,9 @@
                             <tr>
 
                                 <th width="40%">{$_L['Subject']}</th>
-                                <th>{$_L['Amount']}</th>
+                                <!-- <th>{$_L['Amount']}</th> -->
                                 <th>{$_L['Date Created']}</th>
-                                <th>{$_L['Expiry Date']}</th>
+                                <th>Month Published</th>
                                 {*<th>{$_L['Stage']}</th>*}
 
                                 <th class="text-right">{$_L['Manage']}</th>
@@ -237,9 +237,9 @@
                             {foreach $q as $ds}
                                 <tr>
                                     <td><a href="{$_url}client/q/{$ds['id']}/token_{$ds['vtoken']}/" target="_blank">{$ds['subject']}</a> </td>
-                                    <td class="amount">{$ds['total']}</td>
+                                    <!-- <td class="amount">{$ds['total']}</td> -->
                                     <td>{date( $config['df'], strtotime($ds['datecreated']))}</td>
-                                    <td>{date( $config['df'], strtotime($ds['validuntil']))}</td>
+                                    <td>{date('F Y', strtotime($ds['validuntil']))}</td>
 
 
                                     <td class="text-right">
@@ -266,81 +266,6 @@
     </div>
 
 
-    <div class="row">
-
-        <div class="col-md-12">
-
-
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5><h5>{$_L['Recent Orders']}</h5></h5>
-                </div>
-                <div class="ibox-content">
-
-                    <div class="table-responsive">
-
-                        <table class="table table-bordered table-hover sys_table">
-                            <thead>
-                            <tr>
-
-                                <th>{$_L['Date']}</th>
-
-
-                                <th>{$_L['Order']} #</th>
-
-
-                                <th>{$_L['Amount']}</th>
-                                <th>{$_L['Status']}</th>
-
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            {foreach $orders as $order}
-
-                                <tr>
-
-                                    <td> {date( $config['df'], strtotime({$order->date_added}))} </td>
-
-
-                                    <td>
-
-                                        <a href="{$_url}client/order_view/{$order->id}/{$order->ordernum}/">{$order->ordernum}</a>
-
-                                    </td>
-
-
-
-
-                                    <td class="amount" data-a-sign="{$config['currency_code']} ">{$order->amount}</td>
-
-                                    <td>
-                                        {if $order->status eq 'Active'}
-                                            <span class="label label-success">{ib_lan_get_line($_L[$order->status])}</span>
-                                        {else}
-                                            <span class="label label-danger">{ib_lan_get_line($_L[$order->status])}</span>
-                                        {/if}
-                                    </td>
-                                </tr>
-
-                            {/foreach}
-
-                            </tbody>
-
-
-
-                        </table>
-
-                    </div>
-
-
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
 
 {/block}
 
