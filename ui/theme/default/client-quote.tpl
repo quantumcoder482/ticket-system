@@ -103,8 +103,10 @@
                     <div class="text-right">
                         <br>
 
+                        {if ($d['stage'] eq 'Accepted')}
                         <a href="{$_url}client/qpdf/{$d['id']}/token_{$d['vtoken']}" class="btn btn-primary ml-sm"><i class="fa fa-print"></i> {$_L['View PDF']}</a>
                         <a href="{$_url}client/qpdf/{$d['id']}/token_{$d['vtoken']}/dl/" class="btn btn-info ml-sm"><i class="fa fa-file-pdf-o"></i> {$_L['Download PDF']}</a>
+                        {/if}
 
                         {if ($d['stage'] neq 'Accepted')}
                             <a href="{$_url}client/q_accept/{$d['id']}/token_{$d['vtoken']}" class="btn btn-green ml-sm">{$_L['Accept']}</a>

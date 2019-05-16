@@ -1113,10 +1113,15 @@ $(".cdelete").click(function (e) {
             $subject = new Template($e['subject']);
             $subject->set('business_name', $config['CompanyName']);
             $subject->set('quote_subject', $d['subject']);
+            $subject->set('ticket_id', $d['cn']);
+            $subject->set('quote_id', $d['cn']);
             $subj = $subject->output();
             $message = new Template($e['message']);
             $message->set('contact_name', $a['account']);
             $message->set('business_name', $config['CompanyName']);
+            $message->set('quote_subject', $d['subject']);
+            $message->set('ticket_id', $d['cn']);
+            $message->set('quote_id', $d['cn']);
             $message->set('quote_url', U . 'client/q/' . $d['id'] . '/token_' . $d['vtoken']);
 //            $message->set('invoice_id', $d['invoicenum'].$d['id']);
 //            $message->set('invoice_status', $d['status']);
