@@ -108,12 +108,10 @@
                         <a href="{$_url}client/qpdf/{$d['id']}/token_{$d['vtoken']}/dl/" class="btn btn-info ml-sm"><i class="fa fa-file-pdf-o"></i> {$_L['Download PDF']}</a>
                         {/if}
 
-                        {if ($d['stage'] neq 'Accepted')}
+                        {if ($d['stage'] neq 'Declined') and ($d['stage'] neq 'Accepted')}
                             <a href="{$_url}client/q_accept/{$d['id']}/token_{$d['vtoken']}" class="btn btn-green ml-sm">{$_L['Accept']}</a>
-                        {/if}
-
-                        {if ($d['stage'] neq 'Declined')}
-                            <a href="{$_url}client/q_decline/{$d['id']}/token_{$d['vtoken']}" class="btn btn-danger ml-sm">{$_L['Decline']}</a>
+                            <button class="btn btn-danger ml-sm" id="decline">{$_L['Decline']}</button>
+                            <!-- <a href="{$_url}client/q_decline/{$d['id']}/token_{$d['vtoken']}" class="btn btn-danger ml-sm">{$_L['Decline']}</a> -->
                         {/if}
 
                     </div>
@@ -370,6 +368,18 @@
                 'close'
             ]
         });
+
+        $("#decline").click(function (e) {
+            e.preventDefault();
+            var id = this.id;
+            bootbox.confirm("If declined, your paper will not be processed further and will not get published", function(result) {
+            if(result){
+                window.location.href = base_url + "client/q_decline/{$d['id']}/token_{$d['vtoken']}";
+            }
+            });
+        });
+
+
 
     });
 

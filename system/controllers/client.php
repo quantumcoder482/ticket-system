@@ -4020,7 +4020,7 @@ vMax: \'9999999999999999.00\',
 
                 $tid = route(3);
 
-                $tasks = ORM::for_table('sys_tasks')->where('rel_type', 'Ticket')->where('rel_id', $tid)->select('title')->select('id')->select('status')->order_by_desc('id')->find_array();
+                $tasks = ORM::for_table('sys_tasks')->where('rel_type', 'Ticket')->where('rel_id', $tid)->select('title')->select('id')->select('status')->order_by_asc('id')->find_array();
 
 
                 $table_data = "<table class='table table-bordered table-hover sys_table'>

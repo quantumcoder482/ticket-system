@@ -258,28 +258,428 @@
                                 <div class="form-group">
                                     <div class="col-xs-12">
                                         <button class="btn btn-primary" id="btn_add_task" type="submit"> Save</button>
-                                        <div id="tasks_tools"  style="display: none;">
-                                            <hr>
-                                            {*<button class="btn btn-green" id="btn_mark_tasks_completed" type="button"><i class="fa fa-check push-5-r"></i> Completed</button>*}
-                                            {*<button class="btn btn-warning" id="btn_mark_tasks_not_started" type="button"><i class="fa fa-check push-5-r"></i> Not Started</button>*}
-                                            {*<hr>*}
-                                            {*<button class="btn btn-danger" id="btn_delete_tasks" type="button"><i class="fa fa-trash push-5-r"></i> Delete</button>*}
-
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-green no-shadow" id="btn_mark_tasks_completed" data-toggle="tooltip" data-placement="top" title="Mark as Completed"><i class="fa fa-check"></i></button>
-                                                <button type="button" class="btn btn-primary no-shadow" id="btn_mark_tasks_not_started" data-toggle="tooltip" data-placement="top" title="Mark as Not Started"><i class="fa fa-clock-o"></i></button>
-                                                <button type="button" class="btn btn-danger no-shadow" id="btn_delete_tasks" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
-                                            </div>
-
-
-                                            <hr>
-                                        </div>
+                                       
                                     </div>
                                 </div>
                             </form>
 
-                            <div id="tasks_list">
+                            <div class="row">
+                                <div class="col-md-8 col-sm-8">
+                                    <h3>All Tasks</h3>
+                                    <hr>
+                                    <div id="tasks_list" class="table-responsive"></div>
+                                </div>
+                                <div class="col-md-4 col-sm-4">
+                                    <div style="float:right; margin-right:30px">
+                                        <p style="">
+                                            <h3>Task Overview</h3>
+                                        </p>
+                                        <p>1. Editorial Review</p>
+                                        <p>2. Plagiarism Check</p>
+                                        <p>3. Peer-review</p>
+                                        <p>4. Proofreading</p>
+                                        <p>5. Layout Editing</p>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="row">
+
+                                <div class="col-md-12">
+
+
+                                    <div style="overflow: auto;">
+
+                                        <div style="min-width: 1545px; max-width: 1545px;">
+
+                                            <!--sütun başlangıç-->
+                                            <div class="panel panel-deep-orange kanban-col">
+                                                <div class="panel-heading">
+
+                                                    Not Started
+
+                                                </div>
+
+                                                <div class="panel-body">
+                                                    <div id="not_started" class="kanban-centered kanban-droppable-area">
+                                                        {foreach $tasks_not_started as $tns}
+                                                        <article class="kanban-entry cursor-move" id="item_{$tns['id']}"
+                                                            draggable="true">
+                                                            <div class="kanban-entry-inner">
+                                                                <div class="kanban-label">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <a href="javascript:void(0)"
+                                                                                id="v_{$tns['id']}"
+                                                                                class="v_item">{$tns['title']}</a>
+                                                                            <hr>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+
+                                                                            {if $tns['cid'] != 0 && $tns['cid'] != '' &&
+                                                                            isset($contacts[$tns['cid']][0]->account)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                {$contacts[$tns['cid']][0]->account}
+                                                                            </div>
+
+                                                                            {/if}
+
+                                                                            {if $tns['tid'] != 0 && $tns['tid'] != '' &&
+                                                                            isset($tickets[$tns['tid']][0]->tid)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                Ticket: {$tickets[$tns['tid']][0]->tid}
+                                                                            </div>
+
+                                                                            {/if}
+
+
+
+                                                                            <img src="{getAdminImage($tns['aid'])}"
+                                                                                class="img-circle"
+                                                                                style="max-width: 30px; margin-bottom: 5px;"
+                                                                                alt="{$tns['created_by']}">
+                                                                            {$tns['created_by']}
+
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+
+                                                                            <small>{$_L['Created']}: <span
+                                                                                    class="mmnt">{strtotime({$tns['created_at']})}</span></small>
+                                                                            <br>
+                                                                            <small>{$_L['Due Date']}: {date(
+                                                                                $config['df'],
+                                                                                strtotime($tns['due_date']))}</small>
+
+                                                                            {if isset($tns['priority'])}
+                                                                            <br>
+                                                                            {if strtolower($tns['priority']) ==
+                                                                            'critical' ||
+                                                                            strtolower($tns['priority']) == 'high'}
+                                                                            <span
+                                                                                class="label label-danger">{$tns['priority']}</span>
+                                                                            {else}
+                                                                            <span
+                                                                                class="label label-info">{$tns['priority']}</span>
+                                                                            {/if}
+
+                                                                            {/if}
+                                                                            {*<br>*}
+                                                                            {*<a href="javascript:void(0)"
+                                                                                class="c_delete" id="d_{$tns['id']}"><i
+                                                                                    class="fa fa-trash"></i> </a>*}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </article>
+
+                                                        {/foreach}
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="panel panel-primary kanban-col">
+                                                <div class="panel-heading">
+
+                                                    In Progress
+
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div id="in_progress" class="kanban-centered kanban-droppable-area">
+
+
+                                                        {foreach $tasks_in_progress as $tns}
+                                                        <article class="kanban-entry cursor-move" id="item_{$tns['id']}"
+                                                            draggable="true">
+                                                            <div class="kanban-entry-inner">
+                                                                <div class="kanban-label">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <a href="javascript:void(0)"
+                                                                                id="v_{$tns['id']}"
+                                                                                class="v_item">{$tns['title']}</a>
+                                                                            <hr>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            {if $tns['cid'] != 0 && $tns['cid'] != '' &&
+                                                                            isset($contacts[$tns['cid']][0]->account)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                {$contacts[$tns['cid']][0]->account}
+                                                                            </div>
+
+                                                                            {/if}
+
+                                                                            {if $tns['tid'] != 0 && $tns['tid'] != '' &&
+                                                                            isset($tickets[$tns['tid']][0]->tid)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                Ticket: {$tickets[$tns['tid']][0]->tid}
+                                                                            </div>
+
+                                                                            {/if}
+                                                                            <img src="{getAdminImage($tns['aid'])}"
+                                                                                class="img-circle"
+                                                                                style="max-width: 30px; margin-bottom: 5px;"
+                                                                                alt="{$tns['created_by']}">
+                                                                            {$tns['created_by']}
+
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+
+                                                                            <small
+                                                                                class="mmnt">{strtotime({$tns['created_at']})}</small>
+
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </article>
+
+                                                        {/foreach}
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!--sütun bitiş-->
+                                            <!--sütun başlangıç-->
+                                            <div class="panel panel-light-green kanban-col">
+                                                <div class="panel-heading">
+
+                                                    Completed
+
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div id="completed" class="kanban-centered kanban-droppable-area">
+
+
+                                                        {foreach $tasks_completed as $tns}
+                                                        <article class="kanban-entry cursor-move" id="item_{$tns['id']}"
+                                                            draggable="true">
+                                                            <div class="kanban-entry-inner">
+                                                                <div class="kanban-label">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <a href="javascript:void(0)"
+                                                                                id="v_{$tns['id']}"
+                                                                                class="v_item">{$tns['title']}</a>
+                                                                            <hr>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            {if $tns['cid'] != 0 && $tns['cid'] != '' &&
+                                                                            isset($contacts[$tns['cid']][0]->account)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                {$contacts[$tns['cid']][0]->account}
+                                                                            </div>
+
+                                                                            {/if}
+
+                                                                            {if $tns['tid'] != 0 && $tns['tid'] != '' &&
+                                                                            isset($tickets[$tns['tid']][0]->tid)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                Ticket: {$tickets[$tns['tid']][0]->tid}
+                                                                            </div>
+
+                                                                            {/if}
+                                                                            <img src="{getAdminImage($tns['aid'])}"
+                                                                                class="img-circle"
+                                                                                style="max-width: 30px; margin-bottom: 5px;"
+                                                                                alt="{$tns['created_by']}">
+                                                                            {$tns['created_by']}
+
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+
+                                                                            <small
+                                                                                class="mmnt">{strtotime({$tns['created_at']})}</small>
+                                                                            {*<br>*}
+                                                                            {*<a href="javascript:void(0)"
+                                                                                class="c_delete" id="d_{$tns['id']}"><i
+                                                                                    class="fa fa-trash"></i> </a>*}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </article>
+
+                                                        {/foreach}
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="panel panel-blue-grey kanban-col">
+                                                <div class="panel-heading">
+
+                                                    Deferred
+
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div id="deferred" class="kanban-centered kanban-droppable-area">
+
+
+                                                        {foreach $tasks_deferred as $tns}
+                                                        <article class="kanban-entry cursor-move" id="item_{$tns['id']}"
+                                                            draggable="true">
+                                                            <div class="kanban-entry-inner">
+                                                                <div class="kanban-label">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <a href="javascript:void(0)"
+                                                                                id="v_{$tns['id']}"
+                                                                                class="v_item">{$tns['title']}</a>
+                                                                            <hr>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            {if $tns['cid'] != 0 && $tns['cid'] != '' &&
+                                                                            isset($contacts[$tns['cid']][0]->account)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                {$contacts[$tns['cid']][0]->account}
+                                                                            </div>
+
+                                                                            {/if}
+
+                                                                            {if $tns['tid'] != 0 && $tns['tid'] != '' &&
+                                                                            isset($tickets[$tns['tid']][0]->tid)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                Ticket: {$tickets[$tns['tid']][0]->tid}
+                                                                            </div>
+
+                                                                            {/if}
+                                                                            <img src="{getAdminImage($tns['aid'])}"
+                                                                                class="img-circle"
+                                                                                style="max-width: 30px; margin-bottom: 5px;"
+                                                                                alt="{$tns['created_by']}">
+                                                                            {$tns['created_by']}
+
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+
+                                                                            <small
+                                                                                class="mmnt">{strtotime({$tns['created_at']})}</small>
+                                                                            {*<br>*}
+                                                                            {*<a href="javascript:void(0)"
+                                                                                class="c_delete" id="d_{$tns['id']}"><i
+                                                                                    class="fa fa-trash"></i> </a>*}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </article>
+
+                                                        {/foreach}
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="panel panel-grey kanban-col"
+                                                style="border-right: 1px solid #ffffff;">
+                                                <div class="panel-heading">
+
+                                                    Waiting on someone else
+
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div id="waiting_on_someone"
+                                                        class="kanban-centered kanban-droppable-area">
+
+
+                                                        {foreach $tasks_waiting as $tns}
+                                                        <article class="kanban-entry cursor-move" id="item_{$tns['id']}"
+                                                            draggable="true">
+                                                            <div class="kanban-entry-inner">
+                                                                <div class="kanban-label">
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <a href="javascript:void(0)"
+                                                                                id="v_{$tns['id']}"
+                                                                                class="v_item">{$tns['title']}</a>
+                                                                            <hr>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            {if $tns['cid'] != 0 && $tns['cid'] != '' &&
+                                                                            isset($contacts[$tns['cid']][0]->account)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                {$contacts[$tns['cid']][0]->account}
+                                                                            </div>
+
+                                                                            {/if}
+
+                                                                            {if $tns['tid'] != 0 && $tns['tid'] != '' &&
+                                                                            isset($tickets[$tns['tid']][0]->tid)}
+                                                                            <div style="margin-bottom: 15px;">
+                                                                                Ticket: {$tickets[$tns['tid']][0]->tid}
+                                                                            </div>
+
+                                                                            {/if}
+                                                                            <img src="{getAdminImage($tns['aid'])}"
+                                                                                class="img-circle"
+                                                                                style="max-width: 30px; margin-bottom: 5px;"
+                                                                                alt="{$tns['created_by']}">
+                                                                            {$tns['created_by']}
+
+
+                                                                        </div>
+
+
+                                                                        <div class="col-md-12">
+
+                                                                            <small
+                                                                                class="mmnt">{strtotime({$tns['created_at']})}</small>
+                                                                            {*<br>*}
+                                                                            {*<a href="javascript:void(0)"
+                                                                                class="c_delete" id="d_{$tns['id']}"><i
+                                                                                    class="fa fa-trash"></i> </a>*}
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </article>
+                                                        {/foreach}
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!--sütun bitiş-->
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
                             </div>
 
 
@@ -697,7 +1097,7 @@
 
                                                             <input type="hidden" name="attachments" id="attachments" value="">
                                                             <input type="hidden" name="f_tid" id="f_tid" value="{$d->id}">
-                                                            <input type="hidden" name="cid" id="cid" value="{$d->userid}">
+                                                            <input type="hidden" name="cid" id="ccid" value="{$d->userid}">
 
                                                             <button class="btn btn-primary" id="ib_form_submit" type="submit"><i
                                                                         class="fa fa-send push-5-r"></i> Submit
@@ -775,7 +1175,7 @@
     </div>
 
 
-    <div id="modal_predefined_replies" class="modal fade" tabindex="-1" data-width="800" style="display: none;">
+    <div id="modal_predefined_replies" class="modal fade predefined" tabindex="-1" data-width="800" style="display: none;">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h4 class="modal-title">Predefined replies</h4>
@@ -839,6 +1239,7 @@
         </div>
     </div>
 
+
     <div id="modal_upload_file" class="modal fade" tabindex="-2" data-width="760" style="display: none;">
 
         <div class="modal-header">
@@ -893,15 +1294,16 @@
 {/block}
 
 {block name="script"}
-
+ 
     <script type="text/javascript" src="{$app_url}ui/lib/footable/js/footable.all.min.js"></script>
     <script src="{$app_url}ui/lib/easytimer.min.js"></script>
-    <script type="text/javascript" src="{$app_url}ui/lib/s2/js/select2.min.js"></script>
+    <script type="text/javascript" src="{$app_url}ui/lib/s2/js/select2.min.js"></script> 
 
 
     <script>
 
         Dropzone.autoDiscover = false;
+
         $(function() {
 
             var _url = $("#_url").val();
@@ -1281,8 +1683,6 @@
             });
 
 
-
-
             {literal}
 
             $("#editable_cc").on("blur",function(e){
@@ -1469,6 +1869,8 @@
 
 
 
+            // Comments
+
             var $reply_public = $("#reply_public");
             var $reply_internal = $("#reply_internal");
 
@@ -1501,40 +1903,18 @@
                 });
             });
 
+
+
+            //  Task management
+
+
             function loadTasks() {
 
                 $("#tasks_list").html(block_msg);
 
-                $.get( base_url + "tickets/admin/tasks_list/"+tid, function( data ) {
+                $.get(base_url + "client/tickets/tasks_list/" + tid, function (data) {
 
                     $("#tasks_list").html(data);
-
-                    $('.i-checks').iCheck({
-                        checkboxClass: 'icheckbox_square-blue',
-                        radioClass: 'icheckbox_square-blue',
-                        increaseArea: '20%' // optional
-                    });
-
-                    $('.i-checks').on('ifChanged', function (event) {
-
-                        var i_check_id = $(this)[0].id;
-
-                        if($(this).iCheck('update')[0].checked){
-
-                            $.get(base_url + 'tickets/admin/set_task_completed/'+i_check_id,function () {
-                                loadTasks();
-                            });
-
-                        }
-                        else{
-
-                            $.get(base_url + 'tickets/admin/set_task_not_started/'+i_check_id,function () {
-                                loadTasks();
-                            });
-
-                        }
-
-                    });
 
                 });
             }
@@ -1545,7 +1925,6 @@
 
             $("#btn_add_task").click(function (e) {
                 e.preventDefault();
-
 
 
                 if($("#task_subject").val() == ''){
@@ -1567,7 +1946,8 @@
 
                                 $("#task_subject").val('');
 
-                                loadTasks();
+                                location.href = _url+'tickets/admin/view/'+tid+'/tasks';
+                                // loadTasks();
 
                             }
                             else{
@@ -1579,172 +1959,155 @@
                 }
             });
 
-            var task_id;
 
-            function has_selected_task_items() {
-                if($('.selected').length > 0){
-
-                    $("#tasks_tools").show(200);
-
-                }
-                else{
-                    $("#tasks_tools").hide(200);
-                }
-            }
-
-            $("#tasks_list").on('click', '.task_item', function () {
-
-                task_id = this.id;
+            for (var a = dragula($(".kanban-droppable-area").toArray()), r = a.containers, o = r.length, l = 0; l < o; l++)$(r[l]).addClass("dragula dragula-vertical");
+            a.on("drop", function (a, r, o, l) {
 
 
+                var item = a.id;
+                var target = r.id;
 
-                if($("#" + task_id).hasClass('selected')){
-                    $("#" + task_id).removeClass('selected');
-                }
-                else{
-                    $("#" + task_id).addClass('selected');
-                }
+                $.post(base_url + 'tasks/set_status/', { task_id: item, target: target }, function (data) {
+                    // $(".kanban-col").unblock();
+                    loadTasks();
 
-                has_selected_task_items();
-
-
-                // alert(task_id);
-
+                })
 
             });
 
-            $("#btn_mark_tasks_completed").on('click',function (e) {
+
+            $modal.on('click', '.modal_submit', function (e) {
+
                 e.preventDefault();
-                var arrayOfIds = $.map($(".selected"), function(n, i){
-                    return n.id;
-                });
 
-                $("#btn_mark_tasks_completed").prop('disabled', true);
+                $modal.modal('loading');
 
-                $.post( base_url + "tickets/admin/do_task/", { action: 'completed', ids: arrayOfIds })
-                    .done(function( data ) {
+                $.post(base_url + "tasks/post/", {
+                        title:$('#title').val(), 
+                        start_date:$('#start_date').val(), 
+                        due_date: $('#due_date').val(),
+                        cid:$('#cid').val(), 
+                        description: tinyMCE.activeEditor.getContent(), 
+                        status:$('#task_status').val(),
+                        task_id:$('#task_id').val()
+                    })
+                    .done(function (data) {
 
-                        $("#btn_mark_tasks_completed").prop('disabled', false);
+                        if ($.isNumeric(data)) {
 
-                        loadTasks();
+                            location.href = _url+'tickets/admin/view/'+tid+'/tasks';
+                            // window.location = base_url + 'tasks/list/' + data;
 
-                        $("#tasks_tools").hide(200);
+                        }
+
+                        else {
+                            $modal.modal('loading');
+                            toastr.error(data);
+                        }
 
                     });
 
             });
 
 
-            $("#btn_mark_tasks_not_started").on('click',function (e) {
+            $('.v_item').on('click', function (e) {
                 e.preventDefault();
-                var arrayOfIds = $.map($(".selected"), function(n, i){
-                    return n.id;
+                $('body').modalmanager('loading');
+
+                $modal.load(base_url + 'tasks/view/' + this.id, '', function () {
+
+                    $modal.modal();
+
+
                 });
 
-                $("#btn_mark_tasks_completed").prop('disabled', true);
 
-                $.post( base_url + "tickets/admin/do_task/", { action: 'not_started', ids: arrayOfIds })
-                    .done(function( data ) {
+            });
 
-                        $("#btn_mark_tasks_completed").prop('disabled', false);
 
-                        loadTasks();
+            $modal.on('click', '.c_delete', function (e) {
+                e.preventDefault();
+                var ttid = this.id;
+                bootbox.confirm(_L['are_you_sure'], function (result) {
+                    if (result) {
 
-                        $("#tasks_tools").hide(200);
+                        $.get(base_url + "delete/tasks/" + ttid, function (data) {
+                            location.href = _url+'tickets/admin/view/'+tid+'/tasks';
+                            
+                        });
+
+
+                    }
+                });
+
+            });
+
+
+            $modal.on('click', '.c_edit', function (e) {
+                e.preventDefault();
+                var ttid = this.id;
+
+                $('body').modalmanager('loading');
+
+                $modal.load(base_url + 'tasks/create/' + ttid, '', function () {
+                    $('body').modalmanager('loading');
+                    $modal.modal();
+                    ib_editor("#description");
+                    var ib_date_picker_options = {
+                        format: ib_date_format_picker
+                    };
+
+
+                    var jq_title = $('#title').val();
+
+                    $('#title').keyup(function () {
+
+                        var live_val = $(this).val();
+                        if (live_val == '') {
+                            $("#txt_modal_header").html(jq_title);
+                        }
+                        else {
+                            $("#txt_modal_header").html(live_val);
+                        }
+
 
                     });
 
-            });
+                    var $start_date = $('#start_date');
+
+                    $start_date.datetimepicker({
+                        format: 'YYYY-MM-DD'
+                    });
+
+                    var $due_date = $('#due_date');
+
+                    $due_date.datetimepicker({
+                        format: 'YYYY-MM-DD'
+                    });
 
 
-            $("#btn_delete_tasks").on('click',function (e) {
-                e.preventDefault();
+                    $("#cid").select2({
+                        theme: "bootstrap"
+                    });
 
-                bootbox.confirm(_L['are_you_sure'], function(result) {
-                    if(result){
-                        var arrayOfIds = $.map($(".selected"), function(n, i){
-                            return n.id;
-                        });
+                    // $("#rel_type").select2({
+                    //     theme: "bootstrap"
+                    // })
+                    //     .on("change", function(e) {
+                    //         updateRelParams();
+                    //     });
 
-                        $("#btn_delete_tasks").prop('disabled', true);
-
-                        $.post( base_url + "tickets/admin/do_task/", { action: 'delete', ids: arrayOfIds })
-                            .done(function( data ) {
-
-                                $("#btn_delete_tasks").prop('disabled', false);
-
-                                loadTasks();
-
-                                $("#tasks_tools").hide(200);
-
-                            });
-                    }
                 });
 
-
-
             });
-
-
-
-
-            var timer = new Timer();
-            var processing = false;
-
-            $('#startButton').click(function () {
-                timer.start({
-                    startValues: [0,{$timeSpent},0,0,0]
-                });
-            });
-
-            $('#pauseButton').click(function () {
-                timer.pause();
-                if(processing === false)
-                {
-                    processing = true;
-                    $.post( base_url + "tickets/admin/log_time", { total_time: timer.getTimeValues().toString(), ticket_id: '{$ticket->id}' })
-                        .done(function( data ) {
-                            processing = false;
-                        });
-                }
-            });
-
-
-
-            var $i = 0;
-
-            timer.addEventListener('secondsUpdated', function (e) {
-                $('#timeSpent').html(timer.getTimeValues().toString());
-
-                $i++;
-
-                if($i>10 && processing === false)
-                    {
-                      //  console.log(timer.getTimeValues());
-                        processing = true;
-                        $.post( base_url + "tickets/admin/log_time", { total_time: timer.getTimeValues().toString(), ticket_id: '{$ticket->id}' })
-                            .done(function( data ) {
-                                processing = false;
-                                $i = 0;
-                            });
-                    }
-
-            });
-
-            timer.addEventListener('started', function (e) {
-                $('#timeSpent').html(timer.getTimeValues().toString());
-            });
-
-
-
 
 
         });
 
         function setPreDefinedContent(event,predefined_reply_id) {
 
-            $('#modal_predefined_replies').modal('hide');
-
+            $('.predefined').modal('hide');
+            
             $.get( "{$_url}tickets/admin/get-predefined-reply/" + predefined_reply_id, function( data ) {
                 tinyMCE.activeEditor.setContent(data);
             });

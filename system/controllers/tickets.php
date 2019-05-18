@@ -551,12 +551,6 @@ switch ($action){
             $replies = ORM::for_table('sys_ticketreplies')->where('tid',$d->id)->find_array();
             $ui->assign('replies',$replies);
 
-            $ui->assign('xheader', Asset::css(array('redactor/redactor','dropzone/dropzone','modal')));
-
-            $ui->assign('xfooter',
-                Asset::js(array('redactor/redactor','modal','dropzone/dropzone','tinymce/tinymce.min','js/editor'))
-            );
-
             $departments = ORM::for_table('sys_ticketdepartments')->select('id')->select('dname')->find_array();
 
             $ui->assign('departments',$departments);
@@ -599,23 +593,7 @@ switch ($action){
 
             $ui->assign('department',$department);
 
-            $ui->assign('xjq','
-        
-        $( ".mmnt" ).each(function() {
-                    //   alert($( this ).html());
-                    var ut = $( this ).html();
-                    $( this ).html(moment.unix(ut).fromNow());
-                });
-        
-        ');
-
-            $ui->assign('jsvar','
-                var tid = '.$d->id.';
-                var departments = '.$jed.';
-                var agents = '.$jaa.';
-                var files = [];
-            ');
-
+           
             $o_tickets = ORM::for_table('sys_tickets')->where('email',$d->email)->select('status')->select('subject')->select('urgency')->select('created_at')->select('id')->find_array();
             $ui->assign('o_tickets',$o_tickets);
 
@@ -691,6 +669,135 @@ switch ($action){
             $attachment_path = APP_URL . '/storage/tickets/'.$d->tid.'/';
             $ui->assign('attachment_path', $attachment_path);
 
+
+            // Task management Start
+
+            $mdate = date('Y-m-d');
+            $ui->assign('mdate', $mdate);
+
+            $contacts = Contact::select(['id', 'account'])->get()->groupBy('id')->all();
+            $tickets = Ticket::select(['id', 'tid'])->get()->groupBy('id')->all();
+
+
+            // $tasks = ORM::for_table('sys_tasks')->select('title')->select('aid')->select('status')->select('id')->find_array();
+            $tasks_not_started = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status', 'Not Started')
+                ->where('tid', $id)
+                ->select('id')
+                ->select('created_at')
+                ->select('due_date')
+                ->select('created_by')
+                ->order_by_desc('id')
+                ->find_array();
+            $ui->assign('tasks_not_started', $tasks_not_started);
+            // ==================================================================
+
+            $tasks_in_progress = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status', 'In Progress')
+                ->where('tid', $id)
+                ->select('id')
+                ->select('created_at')
+                ->select('due_date')
+                ->select('created_by')
+                ->order_by_desc('id')
+                ->find_array();
+            $ui->assign('tasks_in_progress', $tasks_in_progress);
+            // ==================================================================
+
+            $tasks_completed = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status', 'Completed')
+                ->where('tid', $id)
+                ->select('id')
+                ->select('created_at')
+                ->select('due_date')
+                ->select('created_by')
+                ->order_by_desc('id')
+                ->find_array();
+            $ui->assign('tasks_completed', $tasks_completed);
+            // ==================================================================
+
+            $tasks_deferred = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status', 'Deferred')
+                ->where('tid', $id)
+                ->select('id')->select('created_at')
+                ->select('due_date')
+                ->select('created_by')
+                ->order_by_desc('id')
+                ->find_array();
+
+            $ui->assign('tasks_deferred', $tasks_deferred);
+            // ==================================================================
+
+            $tasks_waiting = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status', 'Waiting')
+                ->where('tid', $id)
+                ->select('id')
+                ->select('created_at')
+                ->select('due_date')
+                ->select('created_by')
+                ->order_by_desc('id')
+                ->find_array();
+            $ui->assign('tasks_waiting', $tasks_waiting);
+
+
+            // Task management End
+
+
+            $ui->assign('xjq', '
+        
+            $( ".mmnt" ).each(function() {
+                    //   alert($( this ).html());
+                    var ut = $( this ).html();
+                    $( this ).html(moment.unix(ut).fromNow());
+                });
+        
+            ');
+
+
+            $lang_code = Ib_I18n::get_code($config['language']);
+
+            $ui->assign('jsvar', '
+            var tid = ' . $d->id . ';
+            var departments = ' . $jed . ';
+            var agents = ' . $jaa . ';
+            var files = [];_L[\'are_you_sure\'] = \'' . $_L['are_you_sure'] . '\';
+            var ib_lang = \'' . $lang_code . '\';
+            var ib_rtl = false;
+            var ib_calendar_first_day = 0;
+            var ib_date_format_picker = \'' . ib_js_date_format($config['df'], 'picker') . '\';
+            var ib_date_format_moment = \'' . ib_js_date_format($config['df']) . '\';
+            ');
+
+
+            $ui->assign('xheader', Asset::css(array('redactor/redactor', 'dropzone/dropzone', 'modal', 'select/select.min', 's2/css/select2.min', 'datetime', 'dragula/dragula', 'css/kanban', 'daterangepicker/daterangepicker')));
+            $ui->assign('xfooter', Asset::js(array('redactor/redactor', 'modal', 'dropzone/dropzone', 'tinymce/tinymce.min', 'js/editor', 'select/select.min', 's2/js/select2.min', 's2/js/i18n/'.lan(), 'datetime', 'dragula/dragula', 'daterangepicker/daterangepicker')));
+
+
             view('tickets_admin_view',[
                 'tab' => $tab,
                 'invoice' => $invoice,
@@ -698,6 +805,8 @@ switch ($action){
                 'timeSpent' => $timeSpent,
                 'can_edit_sales' => $can_edit_sales,
                 'predefined_replies' => $predefined_replies,
+                'contacts' => $contacts,
+                'tickets' => $tickets,
                 'hh' => $hh,
                 'mm' => $mm
             ]);

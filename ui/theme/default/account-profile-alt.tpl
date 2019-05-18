@@ -50,6 +50,7 @@
                 <div class="panel-body list-group border-bottom m-t-n-lg">
                     <a href="#" id="summary" class="list-group-item active"><span class="fa fa-bar-chart-o"></span> {$_L['Summary']} </a>
                     <a href="#" id="activity" class="list-group-item"><span class="fa fa-tasks"></span> {$_L['Activity']}</a>
+                    <a href="#" id="submissions" class="list-group-item"><span class="fa fa fa-life-ring"></span> {$_L['Tickets']}<span class="label label-info pull-right">{$ticket_count}</span></a>
 
                     {if $is_supplier && has_access($user->roleid,'suppliers') && ($config['purchase'])}
 
@@ -94,16 +95,11 @@
 
                 <div class="panel-body">
 
-
-
                     <h5 class="text-muted">{$_L['Contact Notes']}</h5>
 
                     <textarea class="form-control" id="notes" rows="6">{$d['notes']}</textarea>
                     <input type="hidden" id="cid" value="{$d['id']}">
                     <button type="button" id="note_update" class="btn btn-primary btn-block mt-sm">{$_L['Save']}</button>
-
-
-
 
                 </div>
 
@@ -160,6 +156,8 @@
             var _url = $("#_url").val();
 
             var $ibox_form = $('#ibox_form');
+
+            $('.footable').footable();
 
             function updateDiv(action,_url,cid,cb){
                 //var pbar = $('#progressbar');
@@ -443,6 +441,13 @@
                 e.preventDefault();
 
                 tab = 'quotes';
+                updateDiv(tab,_url,cid,cb);
+            });
+
+            $("#submissions").click(function (e) {
+                e.preventDefault();
+
+                tab = 'submissions';
                 updateDiv(tab,_url,cid,cb);
             });
 

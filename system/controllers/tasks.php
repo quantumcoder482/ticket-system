@@ -24,6 +24,33 @@ switch ($action) {
         $mdate = date('Y-m-d');
         $ui->assign('mdate', $mdate);
 
+        $date_range = _post('date_range')?:"";
+        $status = _post('status')?:"";
+        $ticket_id = _post('ticket_id')?:"";
+
+        $ui->assign('ticket_id', $ticket_id);
+        $ui->assign('status', $status);
+        $ui->assign('date_range', $date_range);
+
+        if($date_range != ''){
+            $date_range = explode('-', $date_range);
+            $from_date = str_replace('/', '-', trim($date_range[0])).' 00:00:00';
+            $to_date = str_replace('/', '-', trim($date_range[1])).' 23:59:59';
+
+        }
+
+        if($ticket_id != ''){
+            $t = ORM::for_table('sys_tickets')->where('tid', $ticket_id)->find_one();
+            if($t){
+                $tid = $t['id'];
+            }
+            else{
+                $tid = '-1';
+            }
+
+        }
+        
+
         $contacts = Contact::select(['id','account'])->get()->groupBy('id')->all();
         $tickets = Ticket::select(['id','tid'])->get()->groupBy('id')->all();
 
@@ -51,10 +78,23 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             ->select('id')
             ->select('created_at')
             ->select('due_date')
-            ->select('created_by')
-            ->order_by_desc('id')
-            ->find_array();
-        $ui->assign('tasks_not_started',$tasks_not_started);
+            ->select('created_by');
+        if($ticket_id != ''){
+            $tasks_not_started->where('tid', $tid);
+        }
+        if($date_range){
+            $tasks_not_started->where_gte('created_at', $from_date);
+            $tasks_not_started->where_lte('created_at', $to_date);
+        }
+        $tasks_not_started_array = $tasks_not_started->order_by_desc('id')->find_array();
+
+        if($status == '' || $status == 'Not Started'){
+            $ui->assign('tasks_not_started', $tasks_not_started_array);
+        }
+        else {
+            $ui->assign('tasks_not_started', null);
+        }
+        
         // ==================================================================
 
         $tasks_in_progress = ORM::for_table('sys_tasks')
@@ -67,10 +107,23 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             ->select('id')
             ->select('created_at')
             ->select('due_date')
-            ->select('created_by')
-            ->order_by_desc('id')
-            ->find_array();
-        $ui->assign('tasks_in_progress',$tasks_in_progress);
+            ->select('created_by');
+        if($ticket_id != ''){
+            $tasks_in_progress->where('tid', $tid);
+        }
+        if ($date_range) {
+            $tasks_in_progress->where_gte('created_at', $from_date);
+            $tasks_in_progress->where_lte('created_at', $to_date);
+        }
+        $tasks_in_progress_array = $tasks_in_progress->order_by_desc('id')->find_array();
+
+        if($status == '' || $status == 'In Progress'){
+            $ui->assign('tasks_in_progress', $tasks_in_progress_array);
+        }
+        else {
+            $ui->assign('tasks_in_progress', null);
+        }
+        
         // ==================================================================
 
         $tasks_completed = ORM::for_table('sys_tasks')
@@ -83,10 +136,23 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             ->select('id')
             ->select('created_at')
             ->select('due_date')
-            ->select('created_by')
-            ->order_by_desc('id')
-            ->find_array();
-        $ui->assign('tasks_completed',$tasks_completed);
+            ->select('created_by');
+        if($ticket_id != ''){
+            $tasks_completed->where('tid', $tid);
+        }
+        if ($date_range) {
+            $tasks_completed->where_gte('created_at', $from_date);
+            $tasks_completed->where_lte('created_at', $to_date);
+        }
+        $tasks_completed_array = $tasks_completed->order_by_desc('id')->find_array();
+        
+        if($status == '' || $status == 'Completed'){
+            $ui->assign('tasks_completed', $tasks_completed_array);
+        } 
+        else {
+            $ui->assign('tasks_completed', null);
+        }
+        
         // ==================================================================
 
         $tasks_deferred = ORM::for_table('sys_tasks')
@@ -98,11 +164,23 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             ->where('status','Deferred')
             ->select('id')->select('created_at')
             ->select('due_date')
-            ->select('created_by')
-            ->order_by_desc('id')
-            ->find_array();
+            ->select('created_by');
+        if($ticket_id != ''){
+            $tasks_deferred->where('tid', $tid);
+        }
+        if($date_range){
+            $tasks_deferred->where_gte('created_at', $from_date);
+            $tasks_deferred->where_lte('created_at', $to_date);
+        }
+        $tasks_deferred_array = $tasks_deferred->order_by_desc('id')->find_array();
 
-        $ui->assign('tasks_deferred',$tasks_deferred);
+        if($status == '' || $status == 'Deferred'){
+            $ui->assign('tasks_deferred', $tasks_deferred_array);
+        }
+        else {
+            $ui->assign('tasks_deferred', null);
+        }
+        
         // ==================================================================
 
         $tasks_waiting = ORM::for_table('sys_tasks')
@@ -115,15 +193,34 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             ->select('id')
             ->select('created_at')
             ->select('due_date')
-            ->select('created_by')
-            ->order_by_desc('id')
-            ->find_array();
-        $ui->assign('tasks_waiting',$tasks_waiting);
+            ->select('created_by');
+        if($ticket_id != ''){
+            $tasks_waiting->where('tid', $tid);
+        }
+
+        if ($date_range) {
+            $tasks_waiting->where_gte('created_at', $from_date);
+            $tasks_waiting->where_lte('created_at', $to_date);
+        }
+
+        $tasks_waiting_array = $tasks_waiting->order_by_desc('id')->find_array();
+        
+        if($status == '' || $status == 'Waiting'){
+            $ui->assign('tasks_waiting', $tasks_waiting_array);
+        }
+        else {
+            $ui->assign('tasks_waiting', null);
+        }
+        
         // ==================================================================
 
 
-        $ui->assign('xheader',Asset::css(array('modal','select/select.min','s2/css/select2.min','datetime','dragula/dragula','css/kanban')));
-        $ui->assign('xfooter',Asset::js(array('modal','tinymce/tinymce.min','js/editor','select/select.min','s2/js/select2.min','s2/js/i18n/'.lan(),'datetime','dragula/dragula')));
+        $ui->assign('status', $status);
+
+        
+
+        $ui->assign('xheader',Asset::css(array('modal','select/select.min','s2/css/select2.min','datetime','dragula/dragula','css/kanban', 'dt/dt', 'daterangepicker/daterangepicker')));
+        $ui->assign('xfooter',Asset::js(array('modal','tinymce/tinymce.min','js/editor','select/select.min','s2/js/select2.min','s2/js/i18n/'.lan(),'datetime','dragula/dragula','dt/dt','daterangepicker/daterangepicker')));
 
 
 
@@ -212,7 +309,8 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
         }
 
-
+        $predefined_replies = TicketPredefinedReply::orderBy('sorder', 'asc')
+            ->select(['id', 'title'])->get();
 
         $ui->assign('edit',$edit);
         $ui->assign('task',$task);
@@ -222,7 +320,8 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
 
         view('modal_task_create',[
-            'c' => $c
+            'c' => $c,
+            'predefined_replies' => $predefined_replies
         ]);
 
 
@@ -285,7 +384,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         }
                     }
 
-                    if($data['task_id']){
+                    if(@$data['task_id']){
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Task Updated - Client')->where('send', 'Yes')->find_one();
                     } else {
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket New Task Created - Client')->where('send', 'Yes')->find_one();

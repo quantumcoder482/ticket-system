@@ -101,13 +101,16 @@
 
 
 
-        <div class="form-group">
+        <div class="form-group" >
             <label for="subject">{$_L['Description']}</label>
             <textarea class="form-control" id="description" name="description" rows="10">{$task['description']}</textarea>
+            <div class="help-block">
+                <a data-toggle="modal" href="#modal_predefined_replies" id="add_predefined"><i class="fa fa-align-left"></i> Predefined reply</a>
+            </div>
         </div>
 
-
-        <input type="hidden" id="status" name="status" value="{$task['status']}">
+    
+        <input type="hidden" id="task_status" name="task_status" value="{$task['status']}">
         <input type="hidden" id="task_id" name="task_id" value="{$task['id']}">
     </form>
 
@@ -118,4 +121,72 @@
     <button type="button" data-dismiss="modal" class="btn btn-danger">{$_L['Cancel']}</button>
     <button class="btn btn-primary modal_submit" type="submit" id="modal_submit"><i
                 class="fa fa-check"></i> {$_L['Save']}</button>
+</div>
+
+<div id="modal_predefined_replies" class="modal fade predefined" tabindex="-1" data-width="800" style="display: none;">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Predefined replies</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+
+
+            <div class="col-md-12">
+
+                <form class="form-horizontal" method="post" action="">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-search"></span>
+                                </div>
+                                <input type="text" name="name" id="foo_filter" class="form-control"
+                                    placeholder="{$_L['Search']}..." />
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+                <table class="table table-bordered table-hover sys_table footable" data-filter="#foo_filter"
+                    data-page-size="50">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {foreach $predefined_replies as $predefined_replie}
+                        <tr>
+                            <td><a href="javascript:;"
+                                    onclick="setPreDefinedContent(event,'{$predefined_replie->id}');">{$predefined_replie->title}</a>
+                            </td>
+                        </tr>
+                        {/foreach}
+
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <ul class="pagination">
+                                </ul>
+                            </td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
+
+    </div>
 </div>

@@ -351,8 +351,26 @@ _L[\'New Company\'] = \''.$_L['New Company'].'\';
 
         break;
 
+    case 'submissions':
 
+        Event::trigger('contacts/submissions');
 
+        $cid = _post('cid');
+        $ui->assign('cid', $cid);
+
+        $d = ORM::for_table('crm_accounts')->find_one($cid);
+        if($d){
+            $s = ORM::for_table('sys_tickets')->where('userid', $cid)->find_many();
+            $ui->assign('s', $s);
+            
+            view('ajax.contact-submissions');
+        }
+        else 
+        {
+
+        }
+
+        break;
 
 
     case 'transactions':
@@ -539,6 +557,8 @@ _L[\'New Company\'] = \''.$_L['New Company'].'\';
 
         $po_count = 0;
 
+        $ticket_count = 0;
+
         if($d){
 
             if(!has_access($user->roleid,'customers','all_data')){
@@ -601,6 +621,11 @@ _L[\'New Company\'] = \''.$_L['New Company'].'\';
 
             $ui->assign('quote_count',$quote_count);
 
+            $ticket_count = ORM::for_table('sys_tickets')->where('userid', $id)->count();
+
+            $ui->assign('ticket_count', $ticket_count);
+
+
             //find all activity for this user
 //            $ac = ORM::for_table('sys_activity')->where('cid',$id)->limit(20)->order_by_desc('id')->find_many();
 //            $ui->assign('ac',$ac);
@@ -609,12 +634,12 @@ _L[\'New Company\'] = \''.$_L['New Company'].'\';
 
 
 
-            $ui->assign('xheader', Asset::css(array('modal','s2/css/select2.min','imgcrop/assets/css/croppic')));
+            $ui->assign('xheader', Asset::css(array('modal','s2/css/select2.min','imgcrop/assets/css/croppic', 'footable/css/footable.core.min')));
 
 
 
 
-            $ui->assign('xfooter', Asset::js(array('modal','js/filtertable','js/redirect','tinymce/tinymce.min','js/editor','s2/js/select2.min','s2/js/i18n/'.lan(),'imgcrop/croppic','numeric'),$file_build));
+            $ui->assign('xfooter', Asset::js(array('modal','js/filtertable','js/redirect','tinymce/tinymce.min','js/editor','s2/js/select2.min','s2/js/i18n/'.lan(),'imgcrop/croppic','numeric', 'footable/js/footable.all.min'),$file_build));
 
             $ui->assign('xjq', '
  var cid = $(\'#cid\').val();
