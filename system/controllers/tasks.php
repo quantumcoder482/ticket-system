@@ -67,6 +67,9 @@ var ib_date_format_picker = \''.ib_js_date_format($config['df'],'picker').'\';
 var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
  ');
 
+        $credential = $user['user_type'];
+
+
        // $tasks = ORM::for_table('sys_tasks')->select('title')->select('aid')->select('status')->select('id')->find_array();
         $tasks_not_started = ORM::for_table('sys_tasks')
             ->select('title')
@@ -85,6 +88,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($date_range){
             $tasks_not_started->where_gte('created_at', $from_date);
             $tasks_not_started->where_lte('created_at', $to_date);
+        }
+        if($credential != 'Admin'){
+            $tasks_not_started->where('aid', $user['id']);
         }
         $tasks_not_started_array = $tasks_not_started->order_by_desc('id')->find_array();
 
@@ -115,6 +121,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_in_progress->where_gte('created_at', $from_date);
             $tasks_in_progress->where_lte('created_at', $to_date);
         }
+        if ($credential != 'Admin') {
+            $tasks_in_progress->where('aid', $user['id']);
+        }
         $tasks_in_progress_array = $tasks_in_progress->order_by_desc('id')->find_array();
 
         if($status == '' || $status == 'In Progress'){
@@ -144,6 +153,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_completed->where_gte('created_at', $from_date);
             $tasks_completed->where_lte('created_at', $to_date);
         }
+        if ($credential != 'Admin') {
+            $tasks_completed->where('aid', $user['id']);
+        }
         $tasks_completed_array = $tasks_completed->order_by_desc('id')->find_array();
         
         if($status == '' || $status == 'Completed'){
@@ -171,6 +183,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($date_range){
             $tasks_deferred->where_gte('created_at', $from_date);
             $tasks_deferred->where_lte('created_at', $to_date);
+        }
+        if ($credential != 'Admin') {
+            $tasks_deferred->where('aid', $user['id']);
         }
         $tasks_deferred_array = $tasks_deferred->order_by_desc('id')->find_array();
 
@@ -203,6 +218,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_waiting->where_lte('created_at', $to_date);
         }
 
+        if ($credential != 'Admin') {
+            $tasks_waiting->where('aid', $user['id']);
+        }
         $tasks_waiting_array = $tasks_waiting->order_by_desc('id')->find_array();
         
         if($status == '' || $status == 'Waiting'){
@@ -344,8 +362,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             $data = ib_posted_data();
 
-            $data['aid'] = $user->id;
-            $data['created_by'] = $user->fullname;
+            // get assigned admin(stuff)
+
+            $rel_ticket = ORM::for_table('sys_tickets')->find_one($data['tid']);
+
+            if($rel_ticket->aid){
+                $data['aid'] = $rel_ticket->aid;
+            }
+            else{
+                $data['aid'] = $user->id;
+                $data['created_by'] = $user->fullname;
+            }
+            
 
             $task = Tasks::create($data);
 

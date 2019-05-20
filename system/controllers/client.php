@@ -26,6 +26,7 @@ $ui->assign('tplfooter', 'sections/client_footer');
 
 Event::trigger('client',array($action));
 
+require 'system/lib/misc/smsdriver.php';
 
 switch ($action) {
 
@@ -1942,7 +1943,7 @@ switch ($action) {
                     Notify_Email::_send($admin_fullname, $admin_email, $subj, $message_o, $admin_id);
 
                     if ($data['phone'] != '') {
-                        require 'system/lib/misc/smsdriver.php';
+                      
 
                         $tpl = SMSTemplate::where('tpl', 'Client New Registration')->first();
 
@@ -2618,11 +2619,11 @@ vMax: \'9999999999999999.00\',
 
 
 
+            
+
             $sms = Quote::genSMS($id,'accepted');
 
-
-
-            SMS::send($sms['to'],$sms['sms']);
+            spSendSMS($sms['to'],$sms['sms'], 'PSCOPE', 0, 'text', 4);
 
             //
 
@@ -2644,7 +2645,7 @@ vMax: \'9999999999999999.00\',
 
                     $sms = Quote::genSMS($id,'accepted_admin_notify');
 
-                    SMS::send($u->phonenumber,$sms['sms']);
+                    spSendSMS($u->phonenumber,$sms['sms'], 'PSCOPE', 0, 'text', 4);
 
                 }
 
@@ -2686,9 +2687,10 @@ vMax: \'9999999999999999.00\',
 
             Notify_Email::_send($eml['name'],$eml['email'],$eml['subject'],$eml['body']);
 
+
             $sms = Quote::genSMS($id,'cancelled');
 
-            SMS::send($sms['to'],$sms['sms']);
+            spSendSMS($sms['to'], $sms['sms'], 'PSCOPE', 0, 'text', 4);
 
             // Send to admins
 
@@ -2708,7 +2710,7 @@ vMax: \'9999999999999999.00\',
 
                     $sms = Quote::genSMS($id,'cancelled_admin_notify');
 
-                    SMS::send($u->phonenumber,$sms['sms']);
+                    spSendSMS($u->phonenumber,$sms['sms'], 'PSCOPE', 0, 'text', 4);
 
                 }
 

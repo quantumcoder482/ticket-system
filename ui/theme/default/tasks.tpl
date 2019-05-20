@@ -419,9 +419,9 @@
 </div>
 
 <div class="md-fab-wrapper">
-    <a class="md-fab md-fab-primary waves-effect waves-light add_task" href="#">
+    <!-- <a class="md-fab md-fab-primary waves-effect waves-light add_task" href="#">
         <i class="fa fa-plus"></i>
-    </a>
+    </a> -->
 </div>
 {/block}
 

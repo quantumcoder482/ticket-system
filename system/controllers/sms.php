@@ -274,11 +274,11 @@ switch ($action)
     case 'send_quote':
         $to = _post('to');
         $from = _post('from');
-
+        
         // $invoice_id = _post('invoice_id');
 
         $message = _post('message');
-        spSendSMS($to, $message, $from);
+        spSendSMS($to, $message, $from, 0, 'text', 4);
         echo '<div class="alert alert-success fade in">SMS Sent!</div>';
         break;
 

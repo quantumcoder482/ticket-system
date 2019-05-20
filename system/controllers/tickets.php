@@ -678,6 +678,7 @@ switch ($action){
             $contacts = Contact::select(['id', 'account'])->get()->groupBy('id')->all();
             $tickets = Ticket::select(['id', 'tid'])->get()->groupBy('id')->all();
 
+            $credential = $user['user_type'];
 
             // $tasks = ORM::for_table('sys_tasks')->select('title')->select('aid')->select('status')->select('id')->find_array();
             $tasks_not_started = ORM::for_table('sys_tasks')
@@ -691,10 +692,12 @@ switch ($action){
                 ->select('id')
                 ->select('created_at')
                 ->select('due_date')
-                ->select('created_by')
-                ->order_by_desc('id')
-                ->find_array();
-            $ui->assign('tasks_not_started', $tasks_not_started);
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_not_started->where('aid', $user['id']);
+            }
+            $tasks_not_started_array = $tasks_not_started->order_by_desc('id')->find_array();
+            $ui->assign('tasks_not_started', $tasks_not_started_array);
             // ==================================================================
 
             $tasks_in_progress = ORM::for_table('sys_tasks')
@@ -708,10 +711,12 @@ switch ($action){
                 ->select('id')
                 ->select('created_at')
                 ->select('due_date')
-                ->select('created_by')
-                ->order_by_desc('id')
-                ->find_array();
-            $ui->assign('tasks_in_progress', $tasks_in_progress);
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_in_progress->where('aid', $user['id']);
+            }
+            $tasks_in_progress_array = $tasks_in_progress->order_by_desc('id')->find_array();
+            $ui->assign('tasks_in_progress', $tasks_in_progress_array);
             // ==================================================================
 
             $tasks_completed = ORM::for_table('sys_tasks')
@@ -725,10 +730,12 @@ switch ($action){
                 ->select('id')
                 ->select('created_at')
                 ->select('due_date')
-                ->select('created_by')
-                ->order_by_desc('id')
-                ->find_array();
-            $ui->assign('tasks_completed', $tasks_completed);
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_completed->where('aid', $user['id']);
+            }
+            $tasks_completed_array = $tasks_completed->order_by_desc('id')->find_array();
+            $ui->assign('tasks_completed', $tasks_completed_array);
             // ==================================================================
 
             $tasks_deferred = ORM::for_table('sys_tasks')
@@ -741,11 +748,13 @@ switch ($action){
                 ->where('tid', $id)
                 ->select('id')->select('created_at')
                 ->select('due_date')
-                ->select('created_by')
-                ->order_by_desc('id')
-                ->find_array();
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_deferred->where('aid', $user['id']);
+            }
+            $tasks_deferred_array = $tasks_deferred->order_by_desc('id')->find_array();
 
-            $ui->assign('tasks_deferred', $tasks_deferred);
+            $ui->assign('tasks_deferred', $tasks_deferred_array);
             // ==================================================================
 
             $tasks_waiting = ORM::for_table('sys_tasks')
@@ -759,10 +768,12 @@ switch ($action){
                 ->select('id')
                 ->select('created_at')
                 ->select('due_date')
-                ->select('created_by')
-                ->order_by_desc('id')
-                ->find_array();
-            $ui->assign('tasks_waiting', $tasks_waiting);
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_waiting->where('aid', $user['id']);
+            }
+            $tasks_waiting_array = $tasks_waiting->order_by_desc('id')->find_array();
+            $ui->assign('tasks_waiting', $tasks_waiting_array);
 
 
             // Task management End
@@ -1737,9 +1748,59 @@ switch ($action){
 
 
         $tid = route(3);
+        
+        $tasks = ORM::for_table('sys_tasks')
+            ->left_outer_join('sys_users', array('sys_tasks.aid', '=', 'sys_users.id'))
+            ->where('rel_type','Ticket')
+            ->where('rel_id',$tid)
+            ->select('sys_tasks.title')
+            ->select('sys_tasks.id')
+            ->select('sys_tasks.status')
+            ->select('sys_users.fullname')
+            ->order_by_desc('sys_tasks.id')
+            ->find_array();
+        
+        $table_data = "<table class='table table-bordered table-hover sys_table'>
+                                <thead>
+                                    <tr>
+                                        <th width='30px'>#</th>
+                                        <th width='50%'>Task Name</th>";
+                                        if($user['user_type'] == 'Admin'){
+                                            $table_data .= '<th>Assigned to</th>';
+                                        }
+                             $table_data .="<th style='text-align:center'> Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>";
 
-        $tasks = ORM::for_table('sys_tasks')->where('rel_type','Ticket')->where('rel_id',$tid)->select('title')->select('id')->select('status')->order_by_desc('id')->find_array();
+        foreach ($tasks as $key => $task) {
+            if ($task['status'] == 'Completed') {
+                $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
+                if($user['user_type'] == 'Admin') { $table_data .= "<td>".$task['fullname']."</td>"; }
+                $table_data .= "<td style='color:green; text-align:center'>" . $task['status'] . "</td></tr>";
+            } elseif ($task['status'] == 'In Progress') {
+                $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
+                if ($user['user_type'] == 'Admin') {
+                    $table_data .= "<td>" . $task['fullname'] . "</td>";
+                }
+                $table_data .= "<td style='color:blue; text-align:center'>" . $task['status'] . "</td></tr>";
+            } else {
+                $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
+                if ($user['user_type'] == 'Admin') {
+                    $table_data .= "<td>" . $task['fullname'] . "</td>";
+                }
+                $table_data .= "<td style='color:red;text-align:center'>" . $task['status'] . "</td></tr>";
+            }
+        }
 
+        $table_data .= "</tbody></table>";
+
+        if ($tasks) {
+            echo $table_data;
+        } else { }
+
+
+        /*
         $li = '';
 
         foreach ($tasks as $task){
@@ -1763,6 +1824,7 @@ switch ($action){
                             
                         </ul>';
         }
+        */
 
 
 

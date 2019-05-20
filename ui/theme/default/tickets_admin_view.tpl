@@ -1912,7 +1912,7 @@
 
                 $("#tasks_list").html(block_msg);
 
-                $.get(base_url + "client/tickets/tasks_list/" + tid, function (data) {
+                $.get(base_url + "tickets/admin/tasks_list/" + tid, function (data) {
 
                     $("#tasks_list").html(data);
 

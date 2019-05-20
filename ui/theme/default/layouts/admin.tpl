@@ -394,10 +394,14 @@
                             <ul class="nav nav-second-level">
 
                                 <li><a href="{$_url}tickets/admin/create/">{$_L['Open New Ticket']}</a></li>
+                                
+                                {if $user->user_type eq 'Admin'}
                                 <li><a href="{$_url}tickets/admin/list/">{$_L['Tickets']}</a></li>
                                 <li><a href="{$_url}tickets/admin/predefined_replies/">{$_L['Predefined Replies']}</a></li>
                                 <li><a href="{$_url}tickets/admin/departments/">{$_L['Departments']}</a></li>
-
+                                {else}
+                                <li><a href="{$_url}tickets/admin/list/">Assigned Submissions</a></li>
+                                {/if}
 
                             </ul>
                         </li>

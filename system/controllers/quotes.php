@@ -1349,7 +1349,7 @@ $(".cdelete").click(function (e) {
 
             $notes = _post('notes');
 
-$today = date('Y-m-d');
+            $today = date('Y-m-d');
 
 
             $idate = $today;
