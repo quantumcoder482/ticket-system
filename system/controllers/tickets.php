@@ -863,7 +863,10 @@ switch ($action){
     case 'list':
 
 
+        $admin_id = route(3)?:'';
+        $ui->assign('admin_id', $admin_id);
 
+        
         $ui->assign('xheader',Asset::css(array('popover/popover','select/select.min','s2/css/select2.min','dt/dt')));
 
 
@@ -1123,16 +1126,36 @@ switch ($action){
         }
 
         $status = _post('status');
-
+        
         if($status != ''){
 
             $d->where_like('status',"%$status%");
 
         }
 
+        $activation = _post('activation');
+
+        if($activation != ''){
+
+            $d->where_like('activation', "%$activation%");
+
+        }
 
 
+        $admin_id = _post('admin_id');
 
+        if($admin_id != ''){
+            
+            $d->where('admin', $admin_id);
+
+        }
+        else{
+
+            if (!has_access($user->roleid, 'transactions', 'all_data')) {
+                $d->where('aid', $user->id);
+            }
+            
+        }
 
 
 
@@ -1164,9 +1187,7 @@ switch ($action){
         }
 
 
-        if (!has_access($user->roleid, 'transactions', 'all_data')) {
-            $d->where('aid', $user->id);
-        }
+        
 
         $d->limit($iDisplayLength);
         $d->offset($iDisplayStart);
@@ -1528,6 +1549,23 @@ switch ($action){
         }
         
         echo '1';
+
+        break;
+
+    case 'update_activation':
+
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        $value =  _post('value');
+
+        if ($d) {
+            $d->activation = $value;
+            $d->save();
+        }
+
+        echo $value;
 
         break;
 

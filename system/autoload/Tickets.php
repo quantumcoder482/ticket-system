@@ -1,40 +1,42 @@
 <?php
-Class Tickets{
+class Tickets
+{
 
 
-    public function get_department($did){
+    public function get_department($did)
+    {
 
         $dname = '';
 
         $d = ORM::for_table('sys_ticketdepartments')->find_one($did);
 
-        if($d){
+        if ($d) {
             $dname = $d->dname;
         }
 
         return $dname;
-
     }
 
-    public static function sendReplyNotification($tid,$message){
+    public static function sendReplyNotification($tid, $message)
+    {
 
         $d = ORM::for_table('sys_tickets')->find_one($tid);
 
-        if($d){
+        if ($d) {
 
-            if($d->email == ''){
+            if ($d->email == '') {
                 return false;
             }
 
-            Ib_Email::_send($d->account,$d->email,'[TID '.$d->tid.']'.$d->subject,$message,$d->userid,$d->aid,$d->cc,$d->bcc);
+            Ib_Email::_send($d->account, $d->email, '[TID ' . $d->tid . ']' . $d->subject, $message, $d->userid, $d->aid, $d->cc, $d->bcc);
         }
 
         return false;
-
     }
 
 
-    public function create($cid=0,$admin=0,$flag=0,$source='Web',$data=false,$extras = false,$ticket_prefix=false){
+    public function create($cid = 0, $admin = 0, $flag = 0, $source = 'Web', $data = false, $extras = false, $ticket_prefix = false)
+    {
 
         global $config;
         $msg = '';
@@ -51,24 +53,19 @@ Class Tickets{
 
         $d = ORM::for_table('sys_tickets')->order_by_desc('id')->find_one();
 
-        if(!$d || is_numeric($d->tid) == false){
+        if (!$d || is_numeric($d->tid) == false) {
             $tid = 1001;
-        }else {
+        } else {
             $tid = $d->tid + 1;
         }
 
-        if(isset($data['did']))
-        {
-        	if($data['did'] == '')
-	        {
-	        	$did = 0;
-	        }
-	        else{
-		        $did = $data['did'];
-	        }
-
-        }
-        else{
+        if (isset($data['did'])) {
+            if ($data['did'] == '') {
+                $did = 0;
+            } else {
+                $did = $data['did'];
+            }
+        } else {
             $did = _post('department');
         }
 
@@ -80,18 +77,16 @@ Class Tickets{
         $client_phone_number = '';
 
 
-        if($cid != 0){
+        if ($cid != 0) {
             $d = ORM::for_table('crm_accounts')->find_one($cid);
 
-            if($d){
+            if ($d) {
                 $account = $d->account;
                 $email = $d->email;
                 $last_reply = $d->account;
                 $client_phone_number = $d->phone;
-
             }
-        }
-        else{
+        } else {
 
             // create lead
 
@@ -104,34 +99,33 @@ Class Tickets{
 
             $email = _post('email');
             $last_reply = $account;
-          
-            if($account == ''){
-            // $msg .= 'Full Name is required. <br>';
-            // return array(
-            // "success" => "No",
-            // "msg" => $msg
-            // );
+
+            if ($account == '') {
+                // $msg .= 'Full Name is required. <br>';
+                // return array(
+                // "success" => "No",
+                // "msg" => $msg
+                // );
 
                 $account = Ib_Str::randomName();
             }
 
-            $account_e = explode(' ',$account);
+            $account_e = explode(' ', $account);
 
-            if(isset($account_e[0])){
+            if (isset($account_e[0])) {
                 $first_name = $account_e[0];
-
             }
 
-            if(isset($account_e[1])){
+            if (isset($account_e[1])) {
                 $last_name = $account_e[1];
             }
 
-            if(isset($account_e[3])){
+            if (isset($account_e[3])) {
                 $middle_name = $last_name;
                 $last_name = $account_e[3];
             }
 
-            if($last_name == ''){
+            if ($last_name == '') {
                 $last_name = $first_name;
             }
 
@@ -144,12 +138,11 @@ Class Tickets{
             //                );
             //            }
 
-            $e_user = ORM::for_table('crm_accounts')->where('email',$email)->find_one();
+            $e_user = ORM::for_table('crm_accounts')->where('email', $email)->find_one();
 
-            if($e_user && $email != ''){
+            if ($e_user && $email != '') {
                 $cid = $e_user->id;
-            }
-            else{
+            } else {
                 //                if($account == ''){
                 //                    $msg .= 'Full Name is required. <br>';
                 //                }
@@ -189,63 +182,56 @@ Class Tickets{
 
 
             }
-
         }
 
-        if(isset($data['message']))
-        {
+        if (isset($data['message'])) {
             $message = $data['message'];
-        }
-        else{
+        } else {
             $message = ib_post('message');
         }
 
-        if(isset($data['subject']))
-        {
+        if (isset($data['subject'])) {
             $subject = $data['subject'];
-        }
-        else{
+        } else {
             $subject = ib_post('subject');
         }
 
-        if($subject == ''){
+        if ($subject == '') {
             $msg .= 'Subject is required. <br>';
-        }else {
+        } else {
             $check_subject = ORM::for_table('sys_tickets')->where('subject', $subject)->find_one();
-            if($check_subject) {
+            if ($check_subject) {
                 $msg .= 'This manuscript title already submitted. <br>';
             }
         }
 
-        if($message == ''){
+        if ($message == '') {
             $msg .= 'Message is required. <br>';
         }
 
-        if( ib_post('attachments') == ''){
+        if (ib_post('attachments') == '') {
             $msg .= 'Attachments is required. <br>';
         }
 
-        if(isset($data['urgency']))
-        {
+        if (isset($data['urgency'])) {
             $urgency = $data['urgency'];
-        }
-        else{
+        } else {
             $urgency = _post('urgency');
         }
 
 
-        if($msg == ''){
+        if ($msg == '') {
 
             // upload file path change
 
-            $upload_path = 'storage/tickets/'.$tid;
+            $upload_path = 'storage/tickets/' . $tid;
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0777, true);
             }
             $attachment_array = explode(',', ib_post('attachments'));
-            foreach($attachment_array as $a){
-                $origin_path = 'storage/tickets/'.$a;
-                $new_path = 'storage/tickets/' . $tid.'/'.$a;
+            foreach ($attachment_array as $a) {
+                $origin_path = 'storage/tickets/' . $a;
+                $new_path = 'storage/tickets/' . $tid . '/' . $a;
                 $fileMoved = rename($origin_path, $new_path);
             }
 
@@ -283,10 +269,8 @@ Class Tickets{
             $dep = ORM::for_table('sys_ticketdepartments')->find_one($did);
             $dname = $dep['dname'];
 
-            if($extras)
-            {
-                foreach ($extras as $key => $value)
-                {
+            if ($extras) {
+                foreach ($extras as $key => $value) {
                     $d->$key = $value;
                 }
             }
@@ -322,54 +306,54 @@ Class Tickets{
 
             );
 
-                            // Send Email to Client
+            // Send Email to Client
 
 
-                //            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
-                //            if($eml){
-                //
-                //
-                //
-                //                $eml_subject = new Template($eml->subject);
-                //                $eml_subject->set('business_name', $config['CompanyName']);
-                //                $eml_subject->set('subject', $subject);
-                //                $eml_subject->set('ticket_subject', $subject);
-                //                $subj = $eml_subject->output();
-                //
-                //                $eml_message = new Template($eml->message);
-                //                $eml_message->set('client_name', $account);
-                //                $eml_message->set('client_email', $email);
-                //                $eml_message->set('priority', $urgency);
-                //                $eml_message->set('urgency', $urgency);
-                //                $eml_message->set('ticket_urgency', $urgency);
-                //                $eml_message->set('ticket_priority', $urgency);
-                //                $eml_message->set('ticket_id', '#'.$tid);
-                //                $eml_message->set('message', $message);
-                //                $eml_message->set('business_name', $config['CompanyName']);
-                //                $message_o = $eml_message->output();
-                //
-                //                $mail = Notify_Email::_init();
-                //                $mail->AddAddress($email, $account);
-                //                $mail->Subject = $subj;
-                //                $mail->MsgHTML($message_o);
-                //
-                //                if(APP_STAGE == 'Live'){
-                //                    $mail->Send();
-                //                }
-                //
-                //
-                //            }
+            //            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
+            //            if($eml){
+            //
+            //
+            //
+            //                $eml_subject = new Template($eml->subject);
+            //                $eml_subject->set('business_name', $config['CompanyName']);
+            //                $eml_subject->set('subject', $subject);
+            //                $eml_subject->set('ticket_subject', $subject);
+            //                $subj = $eml_subject->output();
+            //
+            //                $eml_message = new Template($eml->message);
+            //                $eml_message->set('client_name', $account);
+            //                $eml_message->set('client_email', $email);
+            //                $eml_message->set('priority', $urgency);
+            //                $eml_message->set('urgency', $urgency);
+            //                $eml_message->set('ticket_urgency', $urgency);
+            //                $eml_message->set('ticket_priority', $urgency);
+            //                $eml_message->set('ticket_id', '#'.$tid);
+            //                $eml_message->set('message', $message);
+            //                $eml_message->set('business_name', $config['CompanyName']);
+            //                $message_o = $eml_message->output();
+            //
+            //                $mail = Notify_Email::_init();
+            //                $mail->AddAddress($email, $account);
+            //                $mail->Subject = $subj;
+            //                $mail->MsgHTML($message_o);
+            //
+            //                if(APP_STAGE == 'Live'){
+            //                    $mail->Send();
+            //                }
+            //
+            //
+            //            }
 
-            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Client Ticket Created')->where('send','Yes')->find_one();
-            if($eml){
+            $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Client Ticket Created')->where('send', 'Yes')->find_one();
+            if ($eml) {
 
-                $client_view_link = U.'client/tickets/view/'.$d->id.'/';
+                $client_view_link = U . 'client/tickets/view/' . $d->id . '/';
 
                 $eml_subject = new Template($eml->subject);
                 $eml_subject->set('business_name', $config['CompanyName']);
                 $eml_subject->set('subject', $subject);
                 $eml_subject->set('ticket_subject', $subject);
-                $eml_subject->set('ticket_id', '#'.$tid);
+                $eml_subject->set('ticket_id', '#' . $tid);
                 $subj = $eml_subject->output();
 
                 $eml_message = new Template($eml->message);
@@ -383,24 +367,23 @@ Class Tickets{
                 $eml_message->set('ticket_status', $d->status);
                 $eml_message->set('ticket_urgency', $urgency);
                 $eml_message->set('ticket_priority', $urgency);
-                $eml_message->set('ticket_id', '#'.$tid);
+                $eml_message->set('ticket_id', '#' . $tid);
                 $eml_message->set('message', $message);
                 $eml_message->set('business_name', $config['CompanyName']);
-                $eml_message->set('ticket_link',$client_view_link);
+                $eml_message->set('ticket_link', $client_view_link);
                 $eml_message->set('department', $dname);
                 $eml_message->set('processing', $urgency);
                 $message_o = $eml_message->output();
 
                 Notify_Email::_send($account, $email, $subj, $message_o, $cid);
-
             }
 
 
-            $eml = ORM::for_table('sys_email_templates')->where('tplname','Tickets:Admin Ticket Created')->where('send','Yes')->find_one();
+            $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Admin Ticket Created')->where('send', 'Yes')->find_one();
 
-            if($eml){
+            if ($eml) {
 
-                $admin_view_link = U.'tickets/admin/view/'.$d->id;
+                $admin_view_link = U . 'tickets/admin/view/' . $d->id;
 
                 $eml_subject = new Template($eml->subject);
                 $eml_subject->set('business_name', $config['CompanyName']);
@@ -419,10 +402,10 @@ Class Tickets{
                 $eml_message->set('ticket_urgency', $urgency);
                 $eml_message->set('ticket_priority', $urgency);
                 $eml_message->set('ticket_subject', $subject);
-                $eml_message->set('ticket_id', '#'.$tid);
+                $eml_message->set('ticket_id', '#' . $tid);
                 $eml_message->set('message', $message);
                 $eml_message->set('business_name', $config['CompanyName']);
-                $eml_message->set('admin_view_link',$admin_view_link);
+                $eml_message->set('admin_view_link', $admin_view_link);
                 $eml_message->set('department', $dname);
                 $eml_message->set('processing', $urgency);
                 $message_o = $eml_message->output();
@@ -432,19 +415,18 @@ Class Tickets{
                 $d = ORM::for_table('sys_ticketdepartments')->find_one($did);
 
 
-                if(isset($d->email) && ($d->email != ''))
-                {
+                if (isset($d->email) && ($d->email != '')) {
                     Notify_Email::_send('', $d->email, $subj, $message_o, $cid);
                 }
             }
 
             // SMS to Client
 
-            
+
 
             if ($client_phone_number != '') {
 
-                require 'system/lib/misc/smsdriver.php';
+                require_once('system/lib/misc/smsdriver.php');
 
                 $tpl = SMSTemplate::where('tpl', 'Ticket Created: Client Notification')->first();
 
@@ -452,7 +434,7 @@ Class Tickets{
                     $message = new Template($tpl->sms);
                     $message->set('ticket_id', $tid);
                     $message_o = $message->output();
-                    spSendSMS($client_phone_number, $message_o, 'PSCOPE',0,'text',4);
+                    spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
                 }
             }
 
@@ -476,12 +458,8 @@ Class Tickets{
             }
             */
 
-            Event::trigger('tickets/created/',$ret_val);
-
-
-
-        }
-        else{
+            Event::trigger('tickets/created/', $ret_val);
+        } else {
 
             $ret_val = array(
 
@@ -494,29 +472,25 @@ Class Tickets{
 
 
         return $ret_val;
-
-
-
     }
 
-    public static function gen_link_attachments($attachments){
+    public static function gen_link_attachments($attachments)
+    {
 
         $html = '';
 
-        $a = explode(',',$attachments);
+        $a = explode(',', $attachments);
 
-        foreach ($a as $l){
+        foreach ($a as $l) {
 
-            $html .= '<img src="'.APP_URL.'/storage/tickets/'.$l.'" class="img-thumbnail" alt="Cinque Terre" width="300"> ';
-
+            $html .= '<img src="' . APP_URL . '/storage/tickets/' . $l . '" class="img-thumbnail" alt="Cinque Terre" width="300"> ';
         }
 
         return $html;
-
     }
 
 
-    public function add_reply($admin=0,$sendEmail=true)
+    public function add_reply($admin = 0, $sendEmail = true)
     {
         global $config;
         $msg = '';
@@ -534,7 +508,7 @@ Class Tickets{
         $email = '';
         $last_reply = false;
         $replied_by = '';
-        $reply_type = _post('reply_type','public');
+        $reply_type = _post('reply_type', 'public');
 
 
         $message = ib_post('message');
@@ -549,9 +523,7 @@ Class Tickets{
             $t->save();
 
             $cid = $t->userid;
-
-        }
-        else{
+        } else {
             $cid = 0;
         }
 
@@ -565,7 +537,6 @@ Class Tickets{
             $last_reply = $adm->fullname;
             $reply_account = $adm->fullname;
             $reply_email = $adm->email;
-
         } else {
             $d = ORM::for_table('sys_ticketdepartments')->find_one($t->did);
             // $dep_user = ORM::for_table('sys_users')->where('username', $d->email)->find_one();
@@ -578,12 +549,11 @@ Class Tickets{
             $reply_account = $t->account;
             $reply_email = $t->email;
             $last_reply = $t->account;
-
         }
 
         if ($msg == '') {
 
-            if(ib_post('attachments')){
+            if (ib_post('attachments')) {
 
                 $upload_path = 'storage/tickets/' . $t->tid;
                 if (!is_dir($upload_path)) {
@@ -629,21 +599,19 @@ Class Tickets{
 
                     // Send reply to client
 
-                    if(ib_post('attachments')){
+                    if (ib_post('attachments')) {
 
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
-
                     } else {
 
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Admin Response')->where('send', 'Yes')->find_one();
-
                     }
 
                     $email = $t->email;
 
-                    if($eml){
+                    if ($eml) {
 
-                        $client_view_link = U.'client/tickets/view/'.$tid.'/';
+                        $client_view_link = U . 'client/tickets/view/' . $tid . '/';
 
                         $eml_subject = new Template($eml->subject);
                         $eml_subject->set('business_name', $config['CompanyName']);
@@ -665,51 +633,41 @@ Class Tickets{
                         $eml_message->set('ticket_id', $t->tid);
                         $eml_message->set('ticket_message', $message);
                         $eml_message->set('business_name', $config['CompanyName']);
-                        $eml_message->set('ticket_link',$client_view_link);
+                        $eml_message->set('ticket_link', $client_view_link);
                         $eml_message->set('department', $t->dname);
                         // $eml_message->set('processing', $urgency);
                         $message_o = $eml_message->output();
 
-                        if($reply_type != 'internal')
-                        {
+                        if ($reply_type != 'internal') {
                             Notify_Email::_send($t->account, $email, $subj, $message_o, $cid);
                         }
-
-
-
                     }
-
-
                 } else {
 
                     // Send notification to admin
 
                     if (ib_post('attachments')) {
 
-                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
-
+                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Admin')->where('send', 'Yes')->find_one();
                     } else {
 
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Client Response')->where('send', 'Yes')->find_one();
-
                     }
 
 
-                    if(APP_STAGE == 'Dev')
-                    {
+                    if (APP_STAGE == 'Dev') {
                         Logger::write('Sending email to admin.');
                     }
 
-                    if($eml){
+                    if ($eml) {
 
-                        if(APP_STAGE == 'Dev')
-                        {
+                        if (APP_STAGE == 'Dev') {
                             Logger::write('Sending email to admin..');
                         }
 
-                        $client_view_link = U.'client/tickets/view/'.$tid.'/';
+                        $client_view_link = U . 'client/tickets/view/' . $tid . '/';
 
-                        $ticket_link = U.'tickets/admin/view/'.$t->id;
+                        $ticket_link = U . 'tickets/admin/view/' . $t->id;
 
                         $eml_subject = new Template($eml->subject);
                         $eml_subject->set('business_name', $config['CompanyName']);
@@ -731,7 +689,7 @@ Class Tickets{
                         $eml_message->set('ticket_id', $t->tid);
                         $eml_message->set('ticket_message', $message);
                         $eml_message->set('business_name', $config['CompanyName']);
-                        $eml_message->set('ticket_link',$ticket_link);
+                        $eml_message->set('ticket_link', $ticket_link);
                         $eml_message->set('department', $t->dname);
                         $message_o = $eml_message->output();
 
@@ -747,19 +705,17 @@ Class Tickets{
 
                         if (ib_post('attachments')) {
 
-                            Notify_Email::_send($t->account, $t->email, $subj, $message_o, $cid);
+                            if ($d && $d->email != '' && $reply_type == 'public') {
+                                Notify_Email::_send($t->account, $t->email, $subj, $message_o, $cid);
+                            }
 
                         } else {
 
                             if ($d && $d->email != '' && $reply_type == 'public') {
                                 Notify_Email::_send($d->dname, $d->email, $subj, $message_o, $cid);
                             }
-
                         }
-
-                        
                     }
-
                 }
 
                 // Ib_Email::_send($account,$email,'['.$t->tid.'] '.$t->subject,$message,$cid,'0',$t->cc,$t->bcc);
@@ -767,7 +723,6 @@ Class Tickets{
                 // Mailer::send(array($t->email => $t->account),'[TID '.$t->tid.'] '.$t->subject,$message,'Ticket',$d->id());
 
             }
-
         } else {
             $ret_val = array(
                 "success" => "No",
@@ -776,30 +731,28 @@ Class Tickets{
         }
 
         return $ret_val;
-
     }
 
 
 
-    public static function addPredefinedReply($data=array()){
+    public static function addPredefinedReply($data = array())
+    {
 
         $msg = '';
         $id = '';
         $success = 'No';
 
-        if(!isset($data['title']) || $data['title'] == ''){
+        if (!isset($data['title']) || $data['title'] == '') {
 
             $msg .= 'Title is required. <br>';
-
         }
 
-        if(!isset($data['message']) || $data['message'] == ''){
+        if (!isset($data['message']) || $data['message'] == '') {
 
             $msg .= 'Message is required. <br>';
-
         }
 
-        if($msg == ''){
+        if ($msg == '') {
 
             $d = ORM::for_table('sys_canned_responses')->create();
 
@@ -812,7 +765,6 @@ Class Tickets{
             $id = $d->id();
 
             $msg = 'Added Successfully';
-
         }
 
 
@@ -824,28 +776,25 @@ Class Tickets{
     }
 
 
-    public static function deletePredefinedReply($id){
+    public static function deletePredefinedReply($id)
+    {
 
         $d = ORM::for_table('sys_canned_responses')->find_one($id);
 
-        if($d){
+        if ($d) {
 
             $d->delete();
 
             return true;
-
         }
 
         return false;
-
     }
 
 
-    public static function departments(){
-        $ds = ORM::for_table('sys_ticketdepartments')->select('dname','value')->find_array();
+    public static function departments()
+    {
+        $ds = ORM::for_table('sys_ticketdepartments')->select('dname', 'value')->find_array();
         return $ds;
-
     }
-
-
 }

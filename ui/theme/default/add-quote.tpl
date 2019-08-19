@@ -144,7 +144,45 @@
 
                             <div class="form-group">
                                 <label for="customer_notes">{$_L['Customer Notes']}</label>
-                                <textarea class="form-control" id="customer_notes" name="customer_notes" rows="6"></textarea>
+                                <textarea class="form-control" id="customer_notes" name="customer_notes" rows="6">
+                                    I/we certify that I/we have participated sufficiently in the intellectual content,
+                                    conception and design of this work or the analysis and interpretation of the data
+                                    (when applicable), as well as the writing of the manuscript, to take public
+                                    responsibility for it and have agreed to have my/our name listed as a contributor.
+                                    I/we believe the manuscript represents valid work. Neither this manuscript nor one
+                                    with substantially similar content under my/our authorship has been published or is
+                                    being considered for publication elsewhere, except as described in the covering
+                                    letter. I/we certify that all the data collected during the study is presented in
+                                    this manuscript and no data from the study has been or will be published separately.
+                                    I/we attest that, if requested by the editors, I/we will provide the
+                                    data/information or will cooperate fully in obtaining and providing the
+                                    data/information on which the manuscript is based, for examination by the editors or
+                                    their assignees. I/we also certify that we have taken all necessary permissions from
+                                    our institution and/or department for conducting and publishing the present work.
+
+                                    Financial interests, direct or indirect, that exist or may be perceived to exist for
+                                    individual contributors in connection with the content of this paper have been
+                                    disclosed in the cover letter. Sources of outside support of the project are named
+                                    in the cover letter.
+
+                                    I/We hereby transfer(s), assign(s), or otherwise convey(s) all copyright ownership,
+                                    including any and all rights incidental thereto, exclusively to the Journal, in the
+                                    event that such work is published by the Journal. The Journal shall own the work,
+                                    including 1) copyright; 2) the right to grant permission to republish the article in
+                                    whole or in part, with or without fee; 3) the right to produce preprints or reprints
+                                    and translate into languages other than English for sale or free distribution; and
+                                    4) the right to republish the work in a collection of articles in any other
+                                    mechanical or electronic format. We give the rights to the corresponding author to
+                                    make necessary changes as per the request of the journal, do the rest of the
+                                    correspondence on our behalf and he/she will act as the guarantor for the manuscript
+                                    on our behalf.
+
+                                    All persons who have made substantial contributions to the work reported in the
+                                    manuscript, but who are not contributors, are named in the Acknowledgment and have
+                                    given me/us their written permission to be named. If I/we do not include an
+                                    Acknowledgment that means I/we have not received substantial contributions from non
+                                    -contributors and no contributor has been omitted.
+                                </textarea>
                                 <span class="help-block">{$_L['quote_help_footer']}</span>
                             </div>
 

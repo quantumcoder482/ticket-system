@@ -33,6 +33,9 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <p>
+                                        <span class="label label-default inline-block"> Submission: <span id="inline_status">{$d->activation}</span></span>
+                                    </p>
+                                    <p>
                                         <span class="label label-default inline-block"> {$_L['Status']}: <span id="inline_status">{$d->status}</span></span>
                                     </p>
                                     <p>
@@ -554,6 +557,7 @@
     </div>
 
     <input type="hidden" name="tab_name" id="tab_name" value="{$tab}">
+    <input type="hidden" name="activation" id="activation" value="{$d->activation}">
     <input type="hidden" name="t_id" id="t_id" value="{$d->id}">
 
 </div>
@@ -570,30 +574,45 @@
     $(function(){
 
         $tab = $('#tab_name').val();
-        switch($tab){
-            case 'details':
-                $('.nav-tabs a[href="#details"]').tab('show');
-                break;
-            case 'tasks':
-                $('.nav-tabs a[href="#tasks"]').tab('show');
-                break;
-            case 'uploads':
-                $('.nav-tabs a[href="#uploads"]').tab('show');
-                break;
-            case 'downloads':
-                $('.nav-tabs a[href="#downloads"]').tab('show');
-                break;
-            case 'comments':
-                $('.nav-tabs a[href="#comments"]').tab('show');
-                read_client();
-                break;
-        }
 
+        $activation = $('#activation').val();
+
+        if($activation === "Active"){
+
+            switch($tab){
+                case 'details':
+                    $('.nav-tabs a[href="#details"]').tab('show');
+                    break;
+                case 'tasks':
+                    $('.nav-tabs a[href="#tasks"]').tab('show');
+                    break;
+                case 'uploads':
+                    $('.nav-tabs a[href="#uploads"]').tab('show');
+                    break;
+                case 'downloads':
+                    $('.nav-tabs a[href="#downloads"]').tab('show');
+                    break;
+                case 'comments':
+                    $('.nav-tabs a[href="#comments"]').tab('show');
+                    read_client();
+                    break;
+            }
+
+        } else {
+             $('.nav-tabs a[href="#details"]').tab('show');
+        }
+        
         
         $('a[data-toggle="tab"]').on('click', function(e){
-            var tab_name = $(e.target).attr('href');
-            if(tab_name == "#comments"){
-                read_client();
+            if($activation == 'InActive'){
+                toastr.error("This Submission was inactived");
+                e.preventDefault();
+                return false;
+            }else{
+                var tab_name = $(e.target).attr('href');
+                if(tab_name == "#comments"){
+                    read_client();
+                }
             }
         });
 

@@ -63,18 +63,28 @@
                                     <label for="filter_status">{$_L['Status']}</label>
                                     <select class="form-control" id="filter_status" name="filter_status" size="1">
                                         <option value="">All</option>
-                                        <option value="Open">Open</option>
+                                        <option value="Open">New</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Accepted">Accepted</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="Withdrawn">Withdrawn</option>
                                         <option value="Published">Published</option>
+                                        <option value="Awaiting Publication">Awaiting Publication</option>
 
                                     </select>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="filter_activation">Submission</label> 
+                                     <select class="form-control" id="filter_activation" name="filter_activation" size="1">
+                                         <option value="">All</option>
+                                         <option value="Active">Active</option>
+                                         <option value="InActive">InActive</option>
+                                     </select>
+                                </div>
 
 
+                                <input type="hidden" id="admin_id" name="admin_id" value="{$admin_id}">
                                 <button type="submit" id="ib_filter" class="btn btn-primary">{$_L['Filter']}</button>
 
                                 <br>
@@ -138,7 +148,7 @@
         $(function() {
 
             var _url = $("#_url").val();
-
+            var admin_id = $('#admin_id').val();
             var $ib_data_panel = $("#ib_data_panel");
 
             $ib_data_panel.block({ message:block_msg });
@@ -170,8 +180,8 @@
                         d.company = $('#filter_company').val();
                         d.status = $('#filter_status').val();
                         d.subject = $('#filter_subject').val();
-
-
+                        d.activation = $('#filter_activation').val();
+                        d.admin_id = admin_id;
 
                     }
                 },

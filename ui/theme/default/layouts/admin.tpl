@@ -244,57 +244,86 @@
                     {$admin_extra_nav[3]}
 
 
-                    {if has_access($user->roleid,'sales')}
+                   {if (has_access($user->roleid,'sales')) && ($user->role neq 'Employee') }
 
                         {if ($config['invoicing'] eq '1') OR ($config['quotes'] eq '1')}
 
 
 
-                            <li class="{if $_application_menu eq 'invoices'}active{/if}">
-                                <a href="#"><i class="icon-credit-card-1"></i> <span class="nav-label">{$_L['Sales']}</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
+                        <li class="{if $_application_menu eq 'invoices'}active{/if}">
+                            <a href="#"><i class="icon-credit-card-1"></i> <span class="nav-label">{$_L['Sales']}</span><span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
 
-                                    {if $config['invoicing'] eq '1'}
-                                        <li><a href="{$_url}invoices/list/">{$_L['Invoices']}</a></li>
-                                        <li><a href="{$_url}invoices/add/">{$_L['New Invoice']}</a></li>
-
-
-                                        <li><a href="{$_url}invoices/add/1/0/pos">{$_L['POS']}</a></li>
+                                {if $config['invoicing'] eq '1'}
+                                <li><a href="{$_url}invoices/list/">{$_L['Invoices']}</a></li>
+                                <li><a href="{$_url}invoices/add/">{$_L['New Invoice']}</a></li>
 
 
-                                        <li><a href="{$_url}invoices/list-recurring/">{$_L['Recurring Invoices']}</a></li>
-                                        <li><a href="{$_url}invoices/add/recurring/">{$_L['New Recurring Invoice']}</a></li>
-                                    {/if}
-
-                                    {if isset($config['delivery_challans']) && ($config['delivery_challans'] == 1)}
-
-                                        <li><a href="{$_url}sales/delivery_challans">{$_L['Delivery Challans']}</a></li>
-
-                                    {/if}
-
-                                    {if $config['quotes'] eq '1'}
-                                        <li><a href="{$_url}quotes/list/">{$_L['Quotes']}</a></li>
-                                        <li><a href="{$_url}quotes/new/">{$_L['Create New Quote']}</a></li>
-                                    {/if}
-
-                                    <li><a href="{$_url}invoices/payments/">{$_L['Payments']}</a></li>
+                                <li><a href="{$_url}invoices/add/1/0/pos">{$_L['POS']}</a></li>
 
 
+                                <li><a href="{$_url}invoices/list-recurring/">{$_L['Recurring Invoices']}</a></li>
+                                <li><a href="{$_url}invoices/add/recurring/">{$_L['New Recurring Invoice']}</a></li>
+                                {/if}
 
-                                    {foreach $sub_menu_admin['sales'] as $sm_sales}
+                                {if isset($config['delivery_challans']) && ($config['delivery_challans'] == 1)}
 
-                                        {$sm_sales}
+                                <li><a href="{$_url}sales/delivery_challans">{$_L['Delivery Challans']}</a></li>
+
+                                {/if}
+
+                                {if $config['quotes'] eq '1'}
+                                <li><a href="{$_url}quotes/list/">{$_L['Quotes']}</a></li>
+                                <li><a href="{$_url}quotes/new/">{$_L['Create New Quote']}</a></li>
+                                {/if}
+
+                                <li><a href="{$_url}invoices/payments/">{$_L['Payments']}</a></li>
 
 
-                                    {/foreach}
 
-                                </ul>
-                            </li>
+                                {foreach $sub_menu_admin['sales'] as $sm_sales}
+
+                                {$sm_sales}
+
+
+                                {/foreach}
+
+                            </ul>
+                        </li>
 
                         {/if}
 
-                    {/if}
+                   {/if}
 
+                   {if (has_access($user->roleid,'sales')) && ($user->role eq 'Employee') }
+
+                        {if ($config['invoicing'] eq '1') OR ($config['quotes'] eq '1')}
+
+                        <li class="{if $_application_menu eq 'invoices'}active{/if}">
+                            <a href="#"><i class="icon-credit-card-1"></i> <span class="nav-label"> Acceptance </span><span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+
+                                {if $config['quotes'] eq '1'}
+                                <li><a href="{$_url}quotes/list/">{$_L['Quotes']}</a></li>
+                                <li><a href="{$_url}quotes/new/">{$_L['Create New Quote']}</a></li>
+                                {/if}
+
+
+                                {foreach $sub_menu_admin['sales'] as $sm_sales}
+
+                                {$sm_sales}
+
+
+                                {/foreach}
+
+                            </ul>
+                        </li>
+
+                        {/if}
+
+                   {/if}
 
                     {if has_access($user->roleid,'suppliers') && ($config['suppliers'])}
 
@@ -401,6 +430,7 @@
                                 <li><a href="{$_url}tickets/admin/departments/">{$_L['Departments']}</a></li>
                                 {else}
                                 <li><a href="{$_url}tickets/admin/list/">Assigned Submissions</a></li>
+                                <li><a href="{$_url}tickets/admin/list/{$user->id}">{$_L['Tickets']}</a></li>
                                 {/if}
 
                             </ul>
@@ -1074,7 +1104,7 @@
 
         function notification(){
             $.get(_url+'util/notification_count', function(data){
-                if(data != 0){
+                if(data != 0 && !isNaN(data)){
                     $('.notification-counter').text(data);
                 }else{
                     $('.notification-counter').text('');
