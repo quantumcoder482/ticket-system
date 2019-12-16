@@ -3604,9 +3604,9 @@ vMax: \'9999999999999999.00\',
                         foreach ($ticket_file_array as $key => $tf) {
                             $t = explode('.', $tf);
                             if ($key != 0) {
-                                $message = 'Submission attachfile [' . $key . ']';
+                                $message = 'First Submitted File [' . $key . ']';
                             } else {
-                                $message = 'Submission attachfile';
+                                $message = 'First Submitted File';
                             }
                             $attachment_file = array(
                                 "id" => $d['id'],

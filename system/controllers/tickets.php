@@ -615,9 +615,9 @@ switch ($action){
                 foreach ($ticket_file_array as $key => $tf) {
                     $t = explode('.', $tf);
                     if ($key != 0) {
-                        $message = 'Submission attachfile [' . $key . ']';
+                        $message = 'First Submitted File [' . $key . ']';
                     } else {
-                        $message = 'Submission attachfile';
+                        $message = 'First Submitted File';
                     }
                     $attachment_file = array(
                         "id" => $d['id'],
@@ -1230,6 +1230,24 @@ switch ($action){
             	$staff_name = $staffs[$xs['aid']]->fullname;
             }
 
+            $status_string = '';
+            switch ($xs['status']){
+                case 'New':
+                case 'Accepted':
+                case 'Published':
+                    $status_string = '<span class="label label-success inline-block"> ' . $xs['status'] . ' </span>';
+                    break;
+                case 'In Progress':
+                case 'Awaiting Publication':
+                    $status_string = '<span class="label label-primary inline-block"> ' . $xs['status'] . ' </span>';
+                    break;
+                case 'Rejected':
+                case 'Withdrawn':
+                    $status_string = '<span class="label label-danger inline-block"> ' . $xs['status'] . ' </span>';
+                    break;
+                default: 
+
+            }
 
             $records["data"][] = array(
                 0 => $xs['tid'],
@@ -1237,9 +1255,7 @@ switch ($action){
                 2 => $xs['subject'],
                 3 => $xs['account'],
                 4 => $staff_name,
-                5 =>  '
-                <span class="label label-default inline-block"> '.$xs['status'].' </span>
-                ',
+                5 => $status_string,
                 6 => $xs['id'],
                 7 => $xs['userid'],
 

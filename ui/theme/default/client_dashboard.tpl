@@ -93,11 +93,13 @@
                             <tr>
                                 <td class="text-center" style="width: 140px;"><a href="{$_url}client/tickets/view/{$d['id']}/">#{$d['tid']}</a></td>
                                 <td class="hidden-xs hidden-sm hidden-md text-center" style="width: 100px;">
-                                    <span class="label label-success">{if isset($_L[$d['status']])}
-                                    {$_L[$d['status']]}
-                                    {else}
-                                    {$d['status']}
-                                    {/if}</span>
+                                    {if $d['status'] eq 'New' || $d['status'] eq 'Accepted' || $d['status'] eq 'Published'}
+                                        <span class="label label-success">{$d['status']}</span>
+                                    {elseif $d['status'] eq 'In Progress' || $d['status'] eq 'Awaiting Publication'}
+                                        <span class="label label-primary">{$d['status']}</span>
+                                    {elseif $d['status'] eq 'Rejected' || $d['status'] eq 'Withdrawn' }
+                                        <span class="label label-danger">{$d['status']}</span>
+                                    {/if}
                                 </td>
                                 <td>
                                     <a href="{$_url}client/tickets/view/{$d['id']}/">{$d['subject']}</a>

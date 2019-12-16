@@ -29,12 +29,38 @@
 
                 <div class="tab-content">
                     <div id="details" class="tab-pane fade in active ib-tab-box">
-
+                       
+                        <p></p>
                         <span class="label label-default inline-block"> {$_L['Priority']}: <span
                                 id='priority_status'>{$d->urgency}</span> </span> &nbsp;
 
-                        <span class="label label-default inline-block"> {$_L['Status']}: <span
-                                id="inline_status">{$d->status}</span></span>
+                        {if $d->status eq 'New' || $d->status eq 'Accepted' || $d->status eq 'Published' }
+
+                            <span class="label label-success" style="font-size: 2rem; border-radius: 99999px">
+                                <span id="inline_status">{$d->status}</span>
+                            </span>
+
+                        {elseif $d->status eq 'In Progress' || $d->status eq 'Awaiting Publication'}
+
+                            <span class="label label-primary" style="font-size: 2rem; border-radius: 99999px">
+                                <span id="inline_status">{$d->status}</span>
+                            </span>
+
+                        {elseif $d->status eq 'Rejected' || $d->status eq 'Withdrawn'}
+
+                            <span class="label label-danger" style="font-size: 2rem; border-radius: 99999px">
+                                <span id="inline_status">{$d->status}</span>
+                            </span>
+
+                        {else}
+
+                            <span class="label label-success" style="font-size: 2rem; border-radius: 99999px">
+                                <span id="inline_status">{$d->status}</span>
+                            </span>
+
+                        {/if}
+                        
+
                         <hr>
                         <p><strong>Ticket:</strong> {$d->tid}</p>
                         <p><strong>Customer:</strong> <a href="{$_url}contacts/view/{$d->userid}">{$d->account}</a></p>
@@ -44,44 +70,40 @@
                         <hr>
 
 
-                        <div class="form-group" style="margin-bottom:10px">
-                            <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <div class="form-material floating">
-                                        <select class="form-control" id="priority" name="priority" size="1">
-                                            <option value="Normal" {if $d->urgency eq 'Normal'} selected {/if}>Normal
-                                            </option>
-                                            <option value="Fast" {if $d->urgency eq 'Fast'} selected {/if}>Fast
-                                            </option>
-                                        </select>
-                                        <label for="priority">{$_L['Priority']}</label>
-                                    </div>
+                                    <select class="form-control" id="priority" name="priority"  style="margin-bottom:20px">
+                                        <option value="Normal" {if $d->urgency eq 'Normal'} selected {/if}>Normal
+                                        </option>
+                                        <option value="Fast" {if $d->urgency eq 'Fast'} selected {/if}>Fast
+                                        </option>
+                                    </select>
+                                    <label for="priority">{$_L['Priority']}</label>
                                 </div>
                             </div>
                         </div>
                         <br>
 
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-10 col-xs-12">
                                 <div class="form-material floating">
-                                    <div class="form-material floating">
-                                        <select class="form-control" id="editable_department" name="editable_department"
-                                            size="1">
-                                            <option value="None">None</option>
-                                            {foreach $departments as $dep}
-                                            <option value="{$dep['id']}" {if $department eq $dep['dname']}
-                                                selected{/if}>{$dep['dname']} </option> {/foreach} </select> <label
-                                                for="editable_department">{$_L['Department']}</label>
-                                    </div>
+                                    <select class="form-control" id="editable_department" name="editable_department"  style="margin-bottom:20px">
+                                        <option value="None">None</option>
+                                        {foreach $departments as $dep}
+                                            <option value="{$dep['id']}" {if $department eq $dep['dname']} selected{/if}>{$dep['dname']} </option>
+                                            {/foreach} 
+                                    </select> 
+                                    <label for="editable_department">{$_L['Department']}</label>
                                 </div>
                             </div>
                         </div>
 
 
                         <div class="form-group">
-                            <div class="col-xs-6">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <select class="form-control" name="ttype" id="ttype" size="1">
+                                    <select class="form-control" name="ttype" id="ttype"  style="margin-bottom:20px">
                                         <option value="Original Article" {if $d->ttype eq 'Original Article'} selected
                                             {/if}>Original Article</option>
                                         <option value="Review Article" {if $d->ttype eq 'Review Article'} selected
@@ -99,67 +121,59 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <div class="form-group">
-                                        <label for="editable_assigned_to">Assigned to</label>
-                                        <select class="form-control" id="editable_assigned_to"
-                                            name="editable_assigned_to" size="1">
-                                            <option value="None">None</option>
-                                            {foreach $ads as $ad}
-                                            <option value="{$ad['id']}" {if $d->aid eq $ad['id']}
-                                                selected{/if}>{$ad['fullname']} </option>
-                                            {/foreach}
-                                        </select>
-                                    </div>
+                                    <select class="form-control" id="editable_assigned_to" name="editable_assigned_to"  style="margin-bottom:20px">
+                                        <option value="None">None</option>
+                                        {foreach $ads as $ad}
+                                        <option value="{$ad['id']}" {if $d->aid eq $ad['id']}
+                                            selected{/if}>{$ad['fullname']} </option>
+                                        {/foreach}
+                                    </select>
+                                    <label for="editable_assigned_to">Assigned to</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <div class="form-material floating">
-                                        <select class="form-control" id="editable_status" name="editable_status"
-                                            size="1">
-                                            <option value="Open" {if $d->status eq 'Open'} selected{/if}>New</option>
-                                            <option value="In Progress" {if $d->status eq 'In Progress'}
-                                                selected{/if}>In Progress</option>
-                                            <option value="Accepted" {if $d->status eq 'Accepted'}
-                                                selected{/if}>Accetped</option>
-                                            <option value="Rejected" {if $d->status eq 'Rejected'}
-                                                selected{/if}>Rejected</option>
-                                            <option value="Withdrawn" {if $d->status eq 'Withdrawn'}
-                                                selected{/if}>Withdrawn</option>
-                                            <option value="Published" {if $d->status eq 'Published'}
-                                                selected{/if}>Published</option>
-                                            <option value="Awaiting Publication" {if $d->status eq 'Awaiting Publication'}
-                                                selected{/if}>Awaiting Publication</option>
-                                        </select>
-                                        <label for="editable_status">Status</label>
-                                    </div>
+                                    <select class="form-control" id="editable_status" name="editable_status"  style="margin-bottom:20px">
+                                        <option value="New" {if $d->status eq 'New'} selected{/if}>New</option>
+                                        <option value="In Progress" {if $d->status eq 'In Progress'}
+                                            selected{/if}>In Progress</option>
+                                        <option value="Accepted" {if $d->status eq 'Accepted'}
+                                            selected{/if}>Accepted</option>
+                                        <option value="Rejected" {if $d->status eq 'Rejected'}
+                                            selected{/if}>Rejected</option>
+                                        <option value="Withdrawn" {if $d->status eq 'Withdrawn'}
+                                            selected{/if}>Withdrawn</option>
+                                        <option value="Published" {if $d->status eq 'Published'}
+                                            selected{/if}>Published</option>
+                                        <option value="Awaiting Publication" {if $d->status eq 'Awaiting Publication'}
+                                            selected{/if}>Awaiting Publication</option>
+                                    </select>
+                                    <label for="editable_status">Status</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom:10px">
-                            <div class="col-md-3">
+                        <div class="form-group"  style="margin-bottom:20px">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <div class="form-material floating">
-                                        <select class="form-control" id="activation" name="activation" size="1">
-                                            <option value="Active" {if $d->activation eq 'Active'} selected {/if}>Active
-                                            </option>
-                                            <option value="InActive" {if $d->activation eq 'InActive'} selected {/if}>InActive
-                                            </option>
-                                        </select>
-                                        <label for="activation">Submission</label>
-                                    </div>
+                                    <select class="form-control" id="activation" name="activation"  style="margin-bottom:20px">
+                                        <option value="Active" {if $d->activation eq 'Active'} selected {/if}>Active
+                                        </option>
+                                        <option value="InActive" {if $d->activation eq 'InActive'} selected {/if}>InActive
+                                        </option>
+                                    </select>
+                                    <label for="activation">Submission</label>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
                                     <input class="form-control" type="text" id="editable_email" name="editable_email"
                                         value="{$d->email}">
@@ -168,20 +182,19 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <input class="form-control" type="text" id="editable_cc" name="editable_cc"
-                                        value="{$d->cc}">
-                                    <label for="editable_cc">CC</label>
-
+                                    <input class="form-control" type="text" id="editable_phone" name="editable_phone"
+                                        value="{if $c}{$c->phone}{/if}">
+                                    <label for="editable_phone">Phone</label>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
                                     <input class="form-control" type="text" id="editable_bcc" name="editable_bcc"
                                         value="{$d->bcc}">
@@ -192,11 +205,12 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-xs-12">
+                            <div class="col-md-6 col-xs-12">
                                 <div class="form-material floating">
-                                    <input class="form-control" type="text" id="editable_phone" name="editable_phone"
-                                        value="{if $c}{$c->phone}{/if}">
-                                    <label for="editable_phone">Phone</label>
+                                    <input class="form-control" type="text" id="editable_cc" name="editable_cc"
+                                        value="{$d->cc}">
+                                    <label for="editable_cc">CC</label>
+
                                 </div>
                             </div>
                         </div>
@@ -206,7 +220,6 @@
 
 
                         <input type="hidden" name="tid" id="tid" value="{$d->id}">
-
 
 
                         <div class="row">
@@ -231,7 +244,7 @@
 
                         <hr>
 
-                        <h4>Previous Conversations</h4>
+                        <h4>Other Submissions</h4>
 
                         <table class="table table-hover">
 
@@ -247,13 +260,29 @@
                                     <td>
                                         <em class="mmnt">{strtotime($o_ticket['created_at'])}</em>
                                         <br>
-                                        <p><a
-                                                href="{$_url}tickets/admin/view/{$o_ticket['id']}">{$o_ticket['subject']}</a>
+                                        <p>
+                                            <a href="{$_url}tickets/admin/view/{$o_ticket['id']}">{$o_ticket['subject']}</a>
                                         </p>
-                                        <span class="label label-default inline-block"> {$_L['Status']}: {$d->status}
-                                        </span> &nbsp;
-                                        <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency}
-                                        </span> &nbsp;
+
+                                        {if $o_ticket['status'] eq 'New' || $o_ticket['status'] eq 'Accepted' || $o_ticket['status'] eq 'Published' }
+
+                                            <span class="label label-success inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                        {elseif $o_ticket['status'] eq 'In Progress' || $o_ticket['status'] eq 'Awaiting Publication'}
+
+                                            <span class="label label-primary inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                        {elseif $o_ticket['status'] eq 'Rejected' || $o_ticket['status'] eq 'Withdrawn'}
+
+                                            <span class="label label-danger inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                        {else}
+
+                                            <span class="label label-default inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                        {/if}
+
+                                        <span class="label label-default inline-block"> {$_L['Priority']}: {$o_ticket['urgency']}</span> &nbsp;
 
                                     </td>
                                 </tr>
@@ -318,11 +347,11 @@
                                     <p style="">
                                         <h3>Task Overview</h3>
                                     </p>
-                                    <p>1. Editorial Review</p>
-                                    <p>2. Plagiarism Check</p>
-                                    <p>3. Peer-review</p>
-                                    <p>4. Proofreading</p>
-                                    <p>5. Layout Editing</p>
+                                    <p>1. Plagiarism Check</p>
+                                    <p>2. Peer-Review</p>
+                                    <p>3. Layout Editing</p>
+                                    <p>4. Galley Correction</p>
+                                    <p>5. Publishing</p>
                                 </div>
                             </div>
                         </div>
@@ -643,7 +672,7 @@
                                             style="border-right: 1px solid #ffffff;">
                                             <div class="panel-heading">
 
-                                                Waiting on someone else
+                                                Waiting on editor approval
 
                                             </div>
                                             <div class="panel-body">
@@ -1355,34 +1384,46 @@
     $(function () {
 
                 var _url = $("#_url").val();
-
+                var $activation = $("#activation").val();
 
                 // Tab 
 
                 $tab = $('#tab_name').val();
-                switch ($tab) {
-                    case 'details':
-                        $('.nav-tabs a[href="#details"]').tab('show');
-                        break;
-                    case 'tasks':
-                        $('.nav-tabs a[href="#tasks"]').tab('show');
-                        break;
-                    case 'uploads':
-                        $('.nav-tabs a[href="#uploads"]').tab('show');
-                        break;
-                    case 'downloads':
-                        $('.nav-tabs a[href="#downloads"]').tab('show');
-                        break;
-                    case 'comments':
-                        $('.nav-tabs a[href="#comments"]').tab('show');
-                        read_admin();
-                        break;
+
+                if($activation === "Active"){
+                    switch ($tab) {
+                        case 'details':
+                            $('.nav-tabs a[href="#details"]').tab('show');
+                            break;
+                        case 'tasks':
+                            $('.nav-tabs a[href="#tasks"]').tab('show');
+                            break;
+                        case 'uploads':
+                            $('.nav-tabs a[href="#uploads"]').tab('show');
+                            break;
+                        case 'downloads':
+                            $('.nav-tabs a[href="#downloads"]').tab('show');
+                            break;
+                        case 'comments':
+                            $('.nav-tabs a[href="#comments"]').tab('show');
+                            read_admin();
+                            break;
+                    }
+                } else {
+                    $('.nav-tabs a[href="#details"]').tab('show');
                 }
 
-                $('a[data-toggle="tab"]').on('click', function (e) {
-                    var tab_name = $(e.target).attr('href');
-                    if (tab_name == "#comments") {
-                        read_admin();
+                
+                $('a[data-toggle="tab"]').on('click', function(e){
+                    if($activation == 'InActive'){
+                        toastr.error("This Submission was inactived");
+                        e.preventDefault();
+                        return false;
+                    }else{
+                        var tab_name = $(e.target).attr('href');
+                        if(tab_name == "#comments"){
+                            read_admin();
+                        }
                     }
                 });
 
@@ -1468,7 +1509,6 @@
                     }
 
                 });
-
 
 
                 $ib_form_submit.on('click', function (e) {
@@ -1892,6 +1932,7 @@
                         if (data == 'Active' || data == 'InActive') {
                             
                             toastr.success(_L['Saved Successfully']);
+                            $activation = data;
                         } else {
 
                             toastr.error(data);
@@ -1899,10 +1940,7 @@
                     })
                 });
 
-                $('#editable_assigned_to').select2({
-                    theme: "bootstrap",
-                })
-                .on("change", function (e) {
+                $('#editable_assigned_to').on("change", function (e) {
 
                     $.post(base_url + 'tickets/admin/update_assigned_to', {
                         id: tid,
@@ -1920,10 +1958,6 @@
                 });
 
 
-                // $("#editable_assigned_to").on("change",function(e){
-                //
-                // });
-
                 $("#editable_status").on("change", function (e) {
                     $.post(base_url + 'tickets/admin/update_status', {
                         id: tid,
@@ -1934,6 +1968,7 @@
                             toastr.success(_L['Saved Successfully']);
 
                             $("#inline_status").html($("#editable_status option:selected").text());
+                            window.location.reload();
 
                         } else {
 
@@ -2070,6 +2105,8 @@
                             start_date: $('#start_date').val(),
                             due_date: $('#due_date').val(),
                             cid: $('#cid').val(),
+                            aid: $('#aid').val(),
+                            tid: tid,
                             description: tinyMCE.activeEditor.getContent(),
                             status: $('#task_status').val(),
                             task_id: $('#task_id').val()
@@ -2168,6 +2205,10 @@
 
 
                         $("#cid").select2({
+                            theme: "bootstrap"
+                        });
+                        
+                        $("#aid").select2({
                             theme: "bootstrap"
                         });
 

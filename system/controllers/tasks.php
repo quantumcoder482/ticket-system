@@ -267,18 +267,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
         $edit = false;
 
-//        $related_to = array(
-//          'Customer',
-//          'Project',
-//          'Invoice',
-//          'Order',
-//          'Estimate',
-//          'Contract',
-//          'Ticket',
-//          'Expense',
-//          'Lead',
-//          'Proposal'
-//        );
+        //        $related_to = array(
+        //          'Customer',
+        //          'Project',
+        //          'Invoice',
+        //          'Order',
+        //          'Estimate',
+        //          'Contract',
+        //          'Ticket',
+        //          'Expense',
+        //          'Lead',
+        //          'Proposal'
+        //        );
 
         $relations = array(
             'Customer',
@@ -298,6 +298,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             $task['id'] = '';
             $task['cid'] = '';
+            $task['aid'] = '';
             $task['title'] = '';
             $task['description'] = '';
             $task['status'] = 'Not Started';
@@ -326,6 +327,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             }
 
         }
+
+        $ads = ORM::for_table('sys_users')->select('id')->select('fullname')->find_array();
+        $ui->assign('ads', $ads);
 
         $predefined_replies = TicketPredefinedReply::orderBy('sorder', 'asc')
             ->select(['id', 'title'])->get();
@@ -362,18 +366,23 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             $data = ib_posted_data();
 
-            // get assigned admin(stuff)
-
-            $rel_ticket = ORM::for_table('sys_tickets')->find_one($data['tid']);
-
-            if($rel_ticket->aid){
-                $data['aid'] = $rel_ticket->aid;
-            }
-            else{
-                $data['aid'] = $user->id;
-                $data['created_by'] = $user->fullname;
-            }
+            // get assigned admin(staff)
             
+            $rel_ticket = null;
+            
+            if(isset($data['tid'])){
+                $rel_ticket = ORM::for_table('sys_tickets')->find_one($data['tid']);
+            }
+
+            if(!isset($data['aid'])){
+
+                if (isset($rel_ticket->aid)) {
+                    $data['aid'] = $rel_ticket->aid;    
+                } else{
+                    $data['aid'] = $user->id;
+                    $data['created_by'] = $user->fullname;
+                }
+            }            
 
             $task = Tasks::create($data);
 

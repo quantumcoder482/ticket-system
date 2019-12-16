@@ -19,18 +19,12 @@
             <td><a href="{$_url}tickets/admin/view/{$ds['id']}/">{$ds['subject']}</a> </td>
             <td>{date( $config['df'], strtotime($ds['created_at']))}</td>
             <td>
-                {if $ds['status'] eq 'Open'}
-                    <span class="label label-default">Open</span>
-                {elseif $ds['status'] eq 'In Progress'}
-                    <span class="label label-info">In Progress</span>
-                {elseif $ds['status'] eq 'Accepted'}
-                    <span class="label label-success">{$_L['Accepted']}</span>
-                {elseif $ds['status'] eq 'Rejected'}
-                    <span class="label label-danger">Rejected</span>
-                {elseif $ds['status'] eq 'Withdrawn'}
-                    <span class="label label-info">Withdrawn</span>
-                {elseif $ds['status'] eq 'Published'}
-                    <span class="label label-info">Published</span>
+                {if $ds['status'] eq 'New' || $ds['status'] eq 'Accepted' || $ds['status'] eq 'Published'}
+                    <span class="label label-success">{$ds['status']}</span>
+                {elseif $ds['status'] eq 'In Progress' || $ds['status'] eq 'Awaiting Publication'}
+                    <span class="label label-primary">{$ds['status']}</span>
+                {elseif $ds['status'] eq 'Rejected' || $ds['status'] eq 'Withdrawn' }
+                    <span class="label label-danger">{$ds['status']}</span>
                 {/if}
 
             </td>

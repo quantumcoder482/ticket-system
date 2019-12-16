@@ -43,7 +43,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class='form-group'>
-                    <label for="cid">Related customer</label>
+                    <label for="cid">Related Author</label>
 
                     <select id="cid" name="cid" class="form-control">
                         <option value="">{$_L['Select Contact']}...</option>
@@ -57,7 +57,17 @@
                 </div>
             </div>
             <div class="col-md-6">
+                <div class='form-group'>
+                    <label for="aid">Related Staff</label>
 
+                    <select id="aid" name="aid" class="form-control">
+                        {foreach $ads as $aid}
+                        <option value="{$aid['id']}" {if $task['aid'] eq ($aid['id'])}selected="selected" {/if}>{$aid['fullname']}</option>
+                        {/foreach}
+
+                    </select>
+
+                </div>
             </div>
         </div>
 

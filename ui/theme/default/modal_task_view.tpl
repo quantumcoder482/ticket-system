@@ -30,7 +30,7 @@
 
                     <p><strong>{$_L['Due Date']}:</strong> {date( $config['df'], strtotime($d->due_date))}</p>
                     {if $contact}
-                        <p><strong>Related customer:</strong> <a href="{$_url}contacts/view/{$contact->id}">{$contact->account}</a></p>
+                        <p><strong>Related Author:</strong> <a href="{$_url}contacts/view/{$contact->id}">{$contact->account}</a></p>
                     {/if}
 
                     {if $ticket}

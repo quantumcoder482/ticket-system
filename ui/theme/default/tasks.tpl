@@ -345,7 +345,7 @@
                 <div class="panel panel-grey kanban-col" style="border-right: 1px solid #ffffff;">
                     <div class="panel-heading">
 
-                        Waiting on someone else
+                        Waiting on editor approval
 
                     </div>
                     <div class="panel-body">
@@ -549,6 +549,10 @@
                     theme: "bootstrap"
                 });
 
+                $("#aid").select2({
+                    theme: "bootstrap"
+                });
+
             });
 
 
@@ -606,6 +610,7 @@
                     start_date:$('#start_date').val(), 
                     due_date: $('#due_date').val(),
                     cid:$('#cid').val(), 
+                    aid:$('#aid').val(),
                     description: tinyMCE.activeEditor.getContent(), 
                     status:$('#task_status').val(),
                     task_id:$('#task_id').val()
@@ -706,6 +711,10 @@
 
 
                 $("#cid").select2({
+                    theme: "bootstrap"
+                });
+
+                $("#aid").select2({
                     theme: "bootstrap"
                 });
 

@@ -246,7 +246,7 @@ class Tickets
             $d->updated_at = $ib_now;
             $d->subject = $subject;
             $d->message = $message;
-            $d->status = 'Open';
+            $d->status = 'New';
             $d->urgency = $urgency;
             $d->admin = $admin;
             $d->attachments = ib_post('attachments');
@@ -703,13 +703,7 @@ class Tickets
 
                         $d = ORM::for_table('sys_ticketdepartments')->find_one($t->did);
 
-                        if (ib_post('attachments')) {
-
-                            if ($d && $d->email != '' && $reply_type == 'public') {
-                                Notify_Email::_send($t->account, $t->email, $subj, $message_o, $cid);
-                            }
-
-                        } else {
+                        if ($d){
 
                             if ($d && $d->email != '' && $reply_type == 'public') {
                                 Notify_Email::_send($d->dname, $d->email, $subj, $message_o, $cid);

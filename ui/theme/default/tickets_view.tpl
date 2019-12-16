@@ -30,13 +30,40 @@
                     <div id="details" class="tab-pane fade in active ib-tab-box">
 
                         <div class="row" style="margin:20px 20px">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row">
+                                    
                                     <p>
-                                        <span class="label label-default inline-block"> Submission: <span id="inline_status">{$d->activation}</span></span>
+                                        {if $d->status eq 'New' || $d->status eq 'Accepted' || $d->status eq 'Published' }
+
+                                            <span class="label label-success" style="font-size: 2rem; border-radius: 99999px">
+                                                <span id="inline_status">{$d->status}</span>
+                                            </span>
+
+                                        {elseif $d->status eq 'In Progress' || $d->status eq 'Awaiting Publication'}
+
+                                            <span class="label label-primary" style="font-size: 2rem; border-radius: 99999px">
+                                                <span id="inline_status">{$d->status}</span>
+                                            </span>
+
+                                        {elseif $d->status eq 'Rejected' || $d->status eq 'Withdrawn'}
+
+                                            <span class="label label-danger" style="font-size: 2rem; border-radius: 99999px">
+                                                <span id="inline_status">{$d->status}</span>
+                                            </span>
+
+                                        {else}
+
+                                            <span class="label label-success" style="font-size: 2rem; border-radius: 99999px">
+                                                <span id="inline_status">{$d->status}</span>
+                                            </span>
+
+                                        {/if}
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span style="font-size: 12pt;"> Click tasks tab for current task status</span>
                                     </p>
                                     <p>
-                                        <span class="label label-default inline-block"> {$_L['Status']}: <span id="inline_status">{$d->status}</span></span>
+                                        <span class="label label-default inline-block"> Submission: <span id="inline_status">{$d->activation}</span></span>
                                     </p>
                                     <p>
                                         <span class="label label-default inline-block"> {$_L['Priority']}: {$d->urgency} </span>
@@ -48,19 +75,11 @@
                                     <p><strong>Created on:</strong> {$d->created_at}</p>
                                     <p><strong>Updated on:</strong> {$d->updated_at}</p>
                                 </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="row" style="margin:20px 20px">
                             <hr>
-                            <h4>Previous Conversations</h4>
+                            <h4>Other Submissions</h4>
 
                             <table class="table table-hover">
                                 <tbody>
@@ -74,11 +93,27 @@
                                             <em class="mmnt">{strtotime($o_ticket['created_at'])}</em>
                                             <br>
                                             <p>
-                                                <a href="#">{$o_ticket['subject']}</a>
+                                                <a href="{$_url}client/tickets/view/{$o_ticket['id']}">{$o_ticket['subject']}</a>
                                             </p>
 
-                                            <span class="label label-default inline-block"> {$_L['Status']}:
-                                                {$d->status} </span> &nbsp;
+                                             {if $o_ticket['status'] eq 'New' || $o_ticket['status'] eq 'Accepted' || $o_ticket['status'] eq 'Published' }
+
+                                                <span class="label label-success inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                            {elseif $o_ticket['status'] eq 'In Progress' || $o_ticket['status'] eq 'Awaiting Publication'}
+
+                                                <span class="label label-primary inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                            {elseif $o_ticket['status'] eq 'Rejected' || $o_ticket['status'] eq 'Withdrawn'}
+
+                                                <span class="label label-danger inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                            {else}
+
+                                                <span class="label label-default inline-block"> {$_L['Status']}: {$o_ticket['status']}</span> &nbsp;
+
+                                            {/if}
+
                                             <span class="label label-default inline-block"> {$_L['Priority']}:
                                                 {$d->urgency} </span> &nbsp;
 
@@ -109,11 +144,11 @@
                                     <p style="">
                                         <h3>Task Overview</h3>
                                     </p>
-                                    <p>1. Editorial Review</p>
-                                    <p>2. Plagiarism Check</p>
-                                    <p>3. Peer-review</p>
-                                    <p>4. Proofreading</p>
-                                    <p>5. Layout Editing</p>
+                                    <p>1. Plagiarism Check</p>
+                                    <p>2. Peer-Review</p>
+                                    <p>3. Layout Editing</p>
+                                    <p>4. Galley Correction</p>
+                                    <p>5. Publishing</p>
                                 </div>
                             </div>
                         </div>
