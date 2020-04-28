@@ -27,16 +27,25 @@ switch ($action) {
         $date_range = _post('date_range')?:"";
         $status = _post('status')?:"";
         $ticket_id = _post('ticket_id')?:"";
+        $task_name = _post('task_name')?:"";
+        $staff_id = _post('staff_id')?:"";
+
 
         $ui->assign('ticket_id', $ticket_id);
         $ui->assign('status', $status);
         $ui->assign('date_range', $date_range);
+        $ui->assign('task_name', $task_name);
+        $ui->assign('staff_id', $staff_id);
 
         if($date_range != ''){
             $date_range = explode('-', $date_range);
             $from_date = str_replace('/', '-', trim($date_range[0])).' 00:00:00';
             $to_date = str_replace('/', '-', trim($date_range[1])).' 23:59:59';
-
+        }else {
+            $to_date = date("Y-m-d").' 00:00:00';
+            $date= new DateTime(date("Y-m-d"));
+            $date->modify('-7 day');
+            $from_date = $date->format('Y-m-d').' 23:59:59';
         }
 
         if($ticket_id != ''){
@@ -49,11 +58,14 @@ switch ($action) {
             }
 
         }
-        
 
         $contacts = Contact::select(['id','account'])->get()->groupBy('id')->all();
         $tickets = Ticket::select(['id','tid'])->get()->groupBy('id')->all();
 
+        $staffs = ORM::for_table('sys_users')->find_array();
+        $ui->assign('staffs', $staffs);
+
+        $ui->assign('user', $user);
 
 
         $lang_code = Ib_I18n::get_code($config['language']);
@@ -85,12 +97,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($ticket_id != ''){
             $tasks_not_started->where('tid', $tid);
         }
-        if($date_range){
+        // if($date_range){
             $tasks_not_started->where_gte('created_at', $from_date);
             $tasks_not_started->where_lte('created_at', $to_date);
-        }
+        // }
         if($credential != 'Admin'){
             $tasks_not_started->where('aid', $user['id']);
+        }
+        if($staff_id){
+            $tasks_not_started->where('aid', $staff_id);
+        }
+        if($task_name != ''){
+            $tasks_not_started->where('title', $task_name);
         }
         $tasks_not_started_array = $tasks_not_started->order_by_desc('id')->find_array();
 
@@ -117,12 +135,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($ticket_id != ''){
             $tasks_in_progress->where('tid', $tid);
         }
-        if ($date_range) {
+        // if ($date_range) {
             $tasks_in_progress->where_gte('created_at', $from_date);
             $tasks_in_progress->where_lte('created_at', $to_date);
-        }
+        // }
         if ($credential != 'Admin') {
             $tasks_in_progress->where('aid', $user['id']);
+        }
+        if($staff_id){
+            $tasks_in_progress->where('aid', $staff_id);
+        }
+        if($task_name != ''){
+            $tasks_in_progress->where('title', $task_name);
         }
         $tasks_in_progress_array = $tasks_in_progress->order_by_desc('id')->find_array();
 
@@ -149,12 +173,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($ticket_id != ''){
             $tasks_completed->where('tid', $tid);
         }
-        if ($date_range) {
+        // if ($date_range) {
             $tasks_completed->where_gte('created_at', $from_date);
             $tasks_completed->where_lte('created_at', $to_date);
-        }
+        // }
         if ($credential != 'Admin') {
             $tasks_completed->where('aid', $user['id']);
+        }
+        if($staff_id){
+            $tasks_completed->where('aid', $staff_id);
+        }
+        if($task_name != ''){
+            $tasks_completed->where('title', $task_name);
         }
         $tasks_completed_array = $tasks_completed->order_by_desc('id')->find_array();
         
@@ -180,12 +210,18 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
         if($ticket_id != ''){
             $tasks_deferred->where('tid', $tid);
         }
-        if($date_range){
+        // if($date_range){
             $tasks_deferred->where_gte('created_at', $from_date);
             $tasks_deferred->where_lte('created_at', $to_date);
-        }
+        // }
         if ($credential != 'Admin') {
             $tasks_deferred->where('aid', $user['id']);
+        }
+        if($staff_id){
+            $tasks_deferred->where('aid', $staff_id);
+        }
+        if($task_name != ''){
+            $tasks_deferred->where('title', $task_name);
         }
         $tasks_deferred_array = $tasks_deferred->order_by_desc('id')->find_array();
 
@@ -213,13 +249,19 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_waiting->where('tid', $tid);
         }
 
-        if ($date_range) {
+        // if ($date_range) {
             $tasks_waiting->where_gte('created_at', $from_date);
             $tasks_waiting->where_lte('created_at', $to_date);
-        }
+        // }
 
         if ($credential != 'Admin') {
             $tasks_waiting->where('aid', $user['id']);
+        }
+        if($staff_id){
+            $tasks_waiting->where('aid', $staff_id);
+        }
+        if($task_name != ''){
+            $tasks_waiting->where('title', $task_name);
         }
         $tasks_waiting_array = $tasks_waiting->order_by_desc('id')->find_array();
         
@@ -463,9 +505,9 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         // $eml_message->set('processing', $urgency);
                         $message_o = $eml_message->output();
 
-                        if ($reply_type != 'internal') {
+                        // if ($reply_type != 'internal') {
                             Notify_Email::_send($ticket->account, $email, $subj, $message_o, $cid = $ticket->userid);
-                        }
+                        // }
 
                         // SMS 
 
@@ -572,6 +614,12 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
 
             // =========================================
 
+            case 'under_proofreading':
+
+                $status = 'Under Proofreading';
+
+
+                break;
             default:
 
                 $status = 'Not Started';
@@ -655,7 +703,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                     // $eml_message->set('processing', $urgency);
                     $message_o = $eml_message->output();
 
-                    if ($reply_type != 'internal') {
+                    // if ($reply_type != 'internal') {
                         
                         Notify_Email::_send($ticket->account, $email, $subj, $message_o, $cid = $ticket->userid);
                         // SMS 
@@ -674,7 +722,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                                 spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
                             }
                         }
-                    }
+                    // }
                     
                 }
             }

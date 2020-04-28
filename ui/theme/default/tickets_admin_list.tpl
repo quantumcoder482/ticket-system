@@ -6,75 +6,71 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-
                 <div class="panel-body">
-
                     <a href="{$_url}tickets/admin/create/" class="btn btn-primary"><i class="fa fa-plus"></i> {$_L['Open Ticket']}</a>
-
-
-
-
                 </div>
             </div>
         </div>
 
         <div class="col-md-12">
             <div class="panel panel-default">
-
                 <div class="panel-body">
-
-
-
                     <div class="row">
-
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-12 col-sm-12">
 
                             <form>
 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_id">ID</label>
                                     <input type="text" id="filter_id" name="filter_id" class="form-control">
                                 </div>
 
                                 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_account">{$_L['Customer']}</label>
                                     <input type="text" id="filter_account" name="filter_account" class="form-control">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_company">{$_L['Company']}</label>
                                     <input type="text" id="filter_company" name="filter_company" class="form-control">
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_email">{$_L['Email']}</label>
                                     <input type="email" id="filter_email" name="filter_email" class="form-control">
                                 </div>
 
 
-                                <div class="form-group">
+                                <div class="form-group col-md-6">
                                     <label for="filter_subject">{$_L['Subject']}</label>
                                     <input type="text" id="filter_subject" name="filter_subject" class="form-control">
                                 </div>
 
 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_status">{$_L['Status']}</label>
                                     <select class="form-control" id="filter_status" name="filter_status" size="1">
                                         <option value="">All</option>
                                         <option value="Open">New</option>
                                         <option value="In Progress">In Progress</option>
+                                        <option value="Under Plagiarism Check">Under Plagiarism Check</option>
+                                        <option value="Under Peer-Review">Under Peer-Review</option>
                                         <option value="Accepted">Accepted</option>
+                                        <option value="Under Proofreading">Under Proofreading</option>
+                                        <option value="Under Layout Editing">Under Layout Editing</option>
+                                        <option value="Under Galley Correction">Under Galley Correction</option>
+                                        <option value="Scheduled for Current Issue">Scheduled for Current Issue</option>
+                                        <option value="Scheduled for Next Issue">Scheduled for Next Issue</option>
+                                        <option value="Scheduled for Special Issue">Scheduled for Special Issue</option>
+                                        <option value="Published">Published</option>
                                         <option value="Rejected">Rejected</option>
                                         <option value="Withdrawn">Withdrawn</option>
-                                        <option value="Published">Published</option>
                                         <option value="Awaiting Publication">Awaiting Publication</option>
-
                                     </select>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group col-md-3">
                                     <label for="filter_activation">Submission</label> 
                                      <select class="form-control" id="filter_activation" name="filter_activation" size="1">
                                          <option value="">All</option>
@@ -83,16 +79,20 @@
                                      </select>
                                 </div>
 
-
-                                <input type="hidden" id="admin_id" name="admin_id" value="{$admin_id}">
-                                <button type="submit" id="ib_filter" class="btn btn-primary">{$_L['Filter']}</button>
+                                <div class="form-group col-md-12" style="text-align:right">
+                                    <input type="hidden" id="admin_id" name="admin_id" value="{$admin_id}">
+                                    <button type="submit" id="ib_filter" class="btn btn-primary"> {$_L['Filter']} </button>
+                                </div>
 
                                 <br>
                             </form>
 
 
                         </div>
-                        <div class="col-md-9 col-sm-6 ib_right_panel">
+                    </div>
+
+                    <div class="row" style="padding:20px">
+                        <div class="col-md-12 col-sm-12">
 
                             <div id="ib_act_hidden" style="display: none;">
 
@@ -105,30 +105,26 @@
 
                             <div class="table-responsive" id="ib_data_panel">
 
-
                                 <table class="table table-bordered display" id="ib_dt" width="100%">
                                     <thead>
                                     <tr class="heading">
-                                        <th width="100px;">#</th>
-                                        <th width="60px;">{$_L['Image']}</th>
-                                        <th width="50%">{$_L['Subject']}</th>
-                                        <th>{$_L['Customer']}</th>
-                                        <th>{$_L['Assigned To']}</th>
-                                        <th class="text-right" style="width: 80px;">{$_L['Status']}</th>
+                                        <th >#</th>
+{*                                        <th width="60px;">{$_L['Image']}</th>*}
+                                        <th width="45%" style="text-align: center">{$_L['Subject']}</th>
+                                        <th style="text-align: center">{$_L['Customer']}</th>
+                                        <th style="text-align: center">{$_L['Assigned To']}</th>
+                                        <th style="text-align: center">Assigned Date</th>
+                                        <th style="width: 80px; text-align: center">{$_L['Status']}</th>
+                                        <th style="text-align: center">Task</th>
+                                        <th style="text-align: center">Created Date</th>
                                     </tr>
                                     </thead>
-
-
-
 
                                 </table>
                             </div>
 
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
@@ -262,20 +258,21 @@
                 "columnDefs": [
                     {
                         "render": function ( data, type, row ) {
-                            return '<a href="' + base_url +'tickets/admin/view/'+ row[6] +'">'+ data +'</a>';
+                            return '<a href="' + base_url +'tickets/admin/view/'+ row[8] +'">'+ data +'</a>';
                         },
-                        "targets": 2
+                        "targets": 1
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return '<a href="' + base_url +'contacts/view/'+ row[7] +'">'+ data +'</a>';
+                            return '<a href="' + base_url +'contacts/view/'+ row[9] +'">'+ data +'</a>';
                         },
-                        "targets": 3
+                        "targets": 2
                     },
 
                     { "orderable": false, "targets": 5 },
-                    { "orderable": false, "targets": 1 },
-                    { className: "text-center", "targets": [ 1 ] }
+                    { "orderable": false, "targets": 6 },
+                    { "orderable": false, "targets": 7 },
+                    { className: "text-left", "targets": [ 1 ] }
                 ],
                 "order": [[ 0, 'desc' ]],
                 "scrollX": true,

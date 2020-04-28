@@ -33,7 +33,7 @@
     <link href="{$theme}default/css/{$config['nstyle']}.css" rel="stylesheet">
 
     <style>
-    .notification-counter {
+    .notification-counter, .inter-notification-counter {
         border-radius: 50%;
         position: absolute;
         top: 7px;
@@ -423,14 +423,13 @@
                             <ul class="nav nav-second-level">
 
                                 <li><a href="{$_url}tickets/admin/create/">{$_L['Open New Ticket']}</a></li>
-                                
                                 {if $user->user_type eq 'Admin'}
-                                <li><a href="{$_url}tickets/admin/list/">{$_L['Tickets']}</a></li>
-                                <li><a href="{$_url}tickets/admin/predefined_replies/">{$_L['Predefined Replies']}</a></li>
-                                <li><a href="{$_url}tickets/admin/departments/">{$_L['Departments']}</a></li>
+                                    <li><a href="{$_url}tickets/admin/list/">{$_L['Tickets']}</a></li>
+                                    <li><a href="{$_url}tickets/admin/predefined_replies/">{$_L['Predefined Replies']}</a></li>
+                                    <li><a href="{$_url}tickets/admin/departments/">{$_L['Departments']}</a></li>
                                 {else}
-                                <li><a href="{$_url}tickets/admin/list/">Assigned Submissions</a></li>
-                                <li><a href="{$_url}tickets/admin/list/{$user->id}">{$_L['Tickets']}</a></li>
+                                    <li><a href="{$_url}tickets/admin/list/">Assigned Submissions</a></li>
+                                    <li><a href="{$_url}tickets/admin/list/{$user->id}">{$_L['Tickets']}</a></li>
                                 {/if}
 
                             </ul>
@@ -802,25 +801,37 @@
                         </li>
 
 
-                        {if has_access($user->roleid,'reports')}
 
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" id="get_activity" href="#" aria-expanded="true">
-                                    <i class="fa fa-bell"></i>
-                                    <span class="label label-warning notification-counter"></span>
-                                </a>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" id="get_inter_notification" href="#" aria-expanded="true">
+                                <i class="fa fa-bell" style="color:yellow"></i>
+                                <span class="label label-warning inter-notification-counter"></span>
+                            </a>
 
-                                <ul class="dropdown-menu dropdown-alerts" id="activity_loaded">
+                            <ul class="dropdown-menu dropdown-alerts" id="inter_notification_loaded">
+
+                                <li style="text-align: center;">
+                                    <div class="md-preloader text-center"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="32" width="32" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="6"/></svg></div>
+                                </li>
+                            </ul>
+                        </li>
 
 
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" id="get_notification" href="#" aria-expanded="true">
+                                <i class="fa fa-bell"></i>
+                                <span class="label label-warning notification-counter"></span>
+                            </a>
 
-                                    <li style="text-align: center;">
-                                        <div class="md-preloader text-center"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="32" width="32" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="6"/></svg></div>
-                                    </li>
-                                </ul>
-                            </li>
+                            <ul class="dropdown-menu dropdown-alerts" id="notification_loaded">
 
-                        {/if}
+                                <li style="text-align: center;">
+                                    <div class="md-preloader text-center"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="32" width="32" viewbox="0 0 75 75"><circle cx="37.5" cy="37.5" r="33.5" stroke-width="6"/></svg></div>
+                                </li>
+                            </ul>
+                        </li>
+
+{*                        {/if}*}
 
 
 
@@ -1012,6 +1023,7 @@
 <input type="hidden" id="_url" name="_url" value="{$_url}">
 <input type="hidden" id="_df" name="_df" value="{$config['df']}">
 <input type="hidden" id="_lan" name="_lan" value="{$config['language']}">
+<input type="hidden" id="user_type" name="user_type" value="{$user->user_type}">
 <!-- END PRELOADER -->
 <!-- Mainly scripts -->
 
@@ -1046,8 +1058,6 @@
 
 
 {*<script src="{$app_url}ui/lib/cloudonex.js"></script>*}
-
-
 
 
 
@@ -1099,27 +1109,53 @@
         {/if}
 
         var _url = $("#_url").val();
+        var user_type = $('#user_type').val();
 
         // $('.notification-counter').text('5');
 
-        function notification(){
-            $.get(_url+'util/notification_count', function(data){
-                if(data != 0 && !isNaN(data)){
+        function notification() {
+            var noti_count_path = (user_type == 'Admin') ? "util/notification_count" : "util_staff/notification_count";
+            var inter_noti_count_path = (user_type == 'Admin') ? "util/inter_notification_count" : "util_staff/inter_notification_count";
+
+            $.get(_url + noti_count_path, function (data) {
+                if (data != 0 && !isNaN(data)) {
                     $('.notification-counter').text(data);
-                }else{
+                } else {
                     $('.notification-counter').text('');
+                }
+            });
+
+            $.get(_url + inter_noti_count_path, function (data) {
+                if (data != 0 && !isNaN(data)) {
+                    $('.inter-notification-counter').text(data);
+                } else {
+                    $('.inter-notification-counter').text('');
                 }
             });
         }
 
         notification();
-
-        setInterval(function(){
+        setInterval(function () {
             notification();
-        }, 30000);
-    });
+        }, 5000);
 
-    
+        $("#get_notification").click(function (e) {
+            var noti_path = (user_type == 'Admin') ? "util/notification-ajax" : "util_staff/notification-ajax";
+
+            $.post(_url + noti_path, {}).done(function (data) {
+                $("#notification_loaded").html(data);
+            });
+        });
+
+        $("#get_inter_notification").click(function (e) {
+            var inter_noti_path = (user_type == 'Admin') ? "util/inter-notification-ajax/" : "util_staff/inter-notification-ajax/";
+
+            $.post(_url + inter_noti_path, {}).done(function (data) {
+                $("#inter_notification_loaded").html(data);
+            });
+        });
+
+    });
 
 </script>
 

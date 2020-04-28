@@ -52,14 +52,24 @@ switch ($action) {
 
     case 'admin_notification':
 
+        $notification_type = route(2)?:'public';
+
         $notifications = ORM::for_table('sys_ticketreplies')
             ->left_outer_join('crm_accounts', array('crm_accounts.id', '=', 'sys_ticketreplies.userid'))
+            ->left_outer_join('sys_tickets', array('sys_tickets.id', '=', 'sys_ticketreplies.tid'))
+            ->left_outer_join('sys_users', array('sys_users.id', '=', 'sys_tickets.aid'))
             ->select('sys_ticketreplies.*')
-            ->select('crm_accounts.img', 'img')
-            ->where('attachments', '')
-            ->where('admin', 0)
-            ->order_by_desc('id')
-            ->find_many();
+            ->select('sys_tickets.tid', 'ticket_id')
+            ->select('sys_users.fullname', 'assigned_name');
+
+        if($notification_type == 'public'){
+            $notifications = $notifications->select('crm_accounts.img', 'img')->where('reply_type', 'public')->where('admin', 0)->where_not_equal('admin_read', 'yes');
+        }
+        if($notification_type == "internal"){
+            $notifications = $notifications->select('sys_users.img', 'img')->where('reply_type', 'internal')->where_not_equal('admin', $user['id'])->where_not_equal('admin_read', 'yes');
+        }
+
+        $notifications = $notifications->order_by_desc('sys_ticketreplies.id')->find_many();
 
 
         $ui->assign('xheader', Asset::css(array('modal', 'dp/dist/datepicker.min', 'footable/css/footable.core.min', 'dropzone/dropzone', 'redactor/redactor', 's2/css/select2.min')));
@@ -70,7 +80,8 @@ switch ($action) {
 
 
         view('util-admin-notification', [
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            'notification_type' => $notification_type
         ]);
 
 
@@ -78,11 +89,23 @@ switch ($action) {
 
     case 'mark_all_read':
 
-        $ticket_replies = ORM::for_table('sys_ticketreplies')
-            ->where('attachments', '')
-            ->where_not_equal('admin_read', 'yes')
-            ->where('admin', 0)
-            ->find_many();
+        $notification_type = route(2);
+
+        if($notification_type == 'public'){
+            $ticket_replies = ORM::for_table('sys_ticketreplies')
+                ->where_not_equal('admin_read', 'yes')
+                ->where('reply_type', 'public')
+                ->where('admin', 0)
+                ->find_many();
+        }
+
+        if($notification_type == 'internal'){
+            $ticket_replies = ORM::for_table('sys_ticketreplies')
+                ->where_not_equal('admin_read', 'yes')
+                ->where('reply_type', 'internal')
+                ->where_not_equal('admin', $user['id'])
+                ->find_many();
+        }
 
         if ($ticket_replies) {
             foreach ($ticket_replies as $t) {
@@ -97,12 +120,10 @@ switch ($action) {
 
 
     case 'notification_count':
-
-
         $d = ORM::for_table('sys_ticketreplies')
-            ->where('attachments', '')
-            ->where('admin', 0)
+            ->where('reply_type', 'public')
             ->where_not_equal('admin_read', 'yes')
+            ->where('admin', 0)
             ->count();
 
         $count = array('count' => $d);
@@ -112,17 +133,26 @@ switch ($action) {
 
         break;
 
+    case 'inter_notification_count':
+        $d = ORM::for_table('sys_ticketreplies')
+            ->where('reply_type', 'internal')
+            ->where_not_equal('admin_read', 'yes')
+            ->where_not_equal('admin', $user['id'])
+            ->count();
+        echo $d;
+        break;
+
     case 'ajax_logs':
 
         $table = 'sys_logs';
 
-// Table's primary key
-        $primaryKey = 'id';
+        // Table's primary key
+                $primaryKey = 'id';
 
-// Array of database columns which should be read and sent back to DataTables.
-// The `db` parameter represents the column name in the database, while the `dt`
-// parameter represents the DataTables column identifier. In this case simple
-// indexes
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
         $df = $config['df'].' H:i:s';
 
         $columns = array(
@@ -144,7 +174,7 @@ switch ($action) {
 
         );
 
-// SQL server connection information
+        // SQL server connection information
         $sql_details = array(
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
@@ -178,7 +208,6 @@ switch ($action) {
 
         break;
 
-
     case 'sent-emails':
 
         $paginator = Paginator::bootstrap('sys_email_logs');
@@ -205,13 +234,13 @@ switch ($action) {
 
         $table = 'sys_email_logs';
         $df = $config['df'].' H:i:s';
-// Table's primary key
-        $primaryKey = 'id';
+        // Table's primary key
+                $primaryKey = 'id';
 
-// Array of database columns which should be read and sent back to DataTables.
-// The `db` parameter represents the column name in the database, while the `dt`
-// parameter represents the DataTables column identifier. In this case simple
-// indexes
+        // Array of database columns which should be read and sent back to DataTables.
+        // The `db` parameter represents the column name in the database, while the `dt`
+        // parameter represents the DataTables column identifier. In this case simple
+        // indexes
         $columns = array(
             array( 'db' => 'id', 'dt' => 0 ),
             array(
@@ -239,7 +268,7 @@ switch ($action) {
 
         );
 
-// SQL server connection information
+        // SQL server connection information
         $sql_details = array(
             'user' => DB_USER,
             'pass' => DB_PASSWORD,
@@ -263,9 +292,6 @@ switch ($action) {
         echo $x;
 
         break;
-
-
-
 
     case 'dbstatus':
         $dbc = new mysqli(DB_HOST,DB_USER ,DB_PASSWORD,DB_NAME);
@@ -407,7 +433,6 @@ switch ($action) {
 
         break;
 
-
     case 'view-email':
 
         $id = $routes['2'];
@@ -426,13 +451,60 @@ switch ($action) {
 
         break;
 
-
-    case 'activity-ajax':
+    case 'notification-ajax':
 
         $d = ORM::for_table('sys_ticketreplies')
-            ->where('attachments', '')
+            ->where('reply_type', 'public')
             ->where('admin', 0)
             ->where_not_equal('admin_read','yes')
+            ->order_by_desc('id')
+            ->limit(5)
+            ->find_many();
+
+        $html = '';
+        $df = $config['df'].' H:i:s';
+
+        foreach($d as $ds){
+            $path = U. 'tickets/admin/view/'.$ds['tid'].'/comments';
+            $message = ' has replied';
+            $icon = "<i class='fa fa-commenting-o' style='font-size: 2rem'></i>&nbsp;";
+            if($ds['attachments'] != ""){
+                $path = U. 'tickets/admin/view/'.$ds['tid'].'/downloads';
+                $message = ' has attached file';
+                $icon = "<i class='fa fa-paperclip' style='font-size: 2rem'></i>&nbsp;";
+            }
+
+            $html .= ' <li>
+                            <a href="'.$path.'">
+                                <div>
+                                    '.$icon.'
+                                    <span style="color:#2196F3">'.$ds['account'].'</span>'.$message.' 
+                                    <span class="pull-right text-muted small">'.date( $df, strtotime($ds['updated_at'])).'</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>';
+        }
+
+        $html .= '<li>
+                        <div class="text-center link-block">
+                            <a href="'.U.'util/admin_notification/public">
+                                <strong>'.$_L['See All Activity'].' </strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </div>
+                    </li>';
+
+        echo $html;
+
+        break;
+
+    case 'inter-notification-ajax':
+
+        $d = ORM::for_table('sys_ticketreplies')
+            ->where('reply_type', 'internal')
+            ->where_not_equal('admin_read', 'yes')
+            ->where_not_equal('admin', $user['id'])
             ->order_by_desc('id')
             ->limit(5)
             ->find_many();
@@ -444,7 +516,8 @@ switch ($action) {
             $html .= ' <li>
                             <a href="'.U. 'tickets/admin/view/'.$ds['tid'].'/comments'.'">
                                 <div>
-                                    <span style="color:#2196F3">'.$ds['account']. '</span> has replied to your submission
+                                    <i class="fa fa-commenting-o" style="font-size: 2rem"></i>&nbsp;
+                                    <span style="color:#2196F3">'.$ds['account']. '</span> has replied
                                     <span class="pull-right text-muted small">'.date( $df, strtotime($ds['updated_at'])).'</span>
                                 </div>
                             </a>
@@ -453,13 +526,13 @@ switch ($action) {
         }
 
         $html .= '<li>
-                        <div class="text-center link-block">
-                            <a href="'.U.'util/admin_notification/">
-                                <strong>'.$_L['See All Activity'].' </strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </div>
-                    </li>';
+                    <div class="text-center link-block">
+                        <a href="'.U.'util/admin_notification/internal">
+                            <strong>'.$_L['See All Activity'].' </strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </div>
+                </li>';
 
         echo $html;
 

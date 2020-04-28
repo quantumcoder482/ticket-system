@@ -582,6 +582,7 @@ class Tickets
             $d->attachments = ib_post('attachments');
             $d->client_read = '';
             $d->admin_read = '';
+            $d->staff_read = '';
             $d->save();
 
             $ret_val = array(
@@ -601,7 +602,12 @@ class Tickets
 
                     if (ib_post('attachments')) {
 
-                        $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
+                        if($reply_type == 'admin_attachement'){
+                            $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Acknowledgement')->where('send', 'Yes')->find_one();
+                        }else {
+                            $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Attachment - Client')->where('send', 'Yes')->find_one();
+                        }
+
                     } else {
 
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Admin Response')->where('send', 'Yes')->find_one();
@@ -638,7 +644,7 @@ class Tickets
                         // $eml_message->set('processing', $urgency);
                         $message_o = $eml_message->output();
 
-                        if ($reply_type != 'internal') {
+                        if ($reply_type == 'public') {
                             Notify_Email::_send($t->account, $email, $subj, $message_o, $cid);
                         }
                     }

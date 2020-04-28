@@ -24,12 +24,14 @@
                             <tr>
                                 <td class="text-center" style="width: 140px;"><a href="{$_url}client/tickets/view/{$d['id']}/">{$d['tid']}</a></td>
                                 <td class="hidden-xs hidden-sm hidden-md text-center" style="width: 100px;">
-                                    {if $d['status'] eq 'New' || $d['status'] eq 'Accepted' || $d['status'] eq 'Published'}
+                                    {if $d['status'] eq 'New' || $d['status'] eq 'Accepted' || $d['status'] eq 'Published' || $d['status'] eq 'Under Layout Editing' || $d['status'] eq 'Under Galley Correction'}
                                         <span class="label label-success">{$d['status']}</span>
-                                    {elseif $d['status'] eq 'In Progress' || $d['status'] eq 'Awaiting Publication'}
+                                    {elseif $d['status'] eq 'In Progress' || $d['status'] eq 'Awaiting Publication' || $d['status'] eq 'Under Plagiarism Check' || $d['status'] eq 'Under Peer-Review' || $d['status'] eq 'Under Proofreading'}
                                         <span class="label label-primary">{$d['status']}</span>
                                     {elseif $d['status'] eq 'Rejected' || $d['status'] eq 'Withdrawn' }
                                         <span class="label label-danger">{$d['status']}</span>
+                                    {elseif $d['status'] eq 'Scheduled for Current Issue' || $d['status'] eq 'Scheduled for Next Issue' || $d['status'] eq 'Scheduled for Special Issue'}
+                                        <span class="label label-warning">{$d['status']}</span>
                                     {/if}
                                 </td>
                                 <td>

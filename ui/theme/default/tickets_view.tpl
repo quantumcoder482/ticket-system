@@ -72,7 +72,7 @@
                                         <span class="label label-default inline-block"> Type of Submission: {$d->ttype} </span>
                                     </p>
                                     <br>
-                                    <p><strong>Created on:</strong> {$d->created_at}</p>
+                                    <p><strong>Received on:</strong> {$d->created_at}</p>
                                     <p><strong>Updated on:</strong> {$d->updated_at}</p>
                                 </div>
                             </div>
@@ -146,9 +146,10 @@
                                     </p>
                                     <p>1. Plagiarism Check</p>
                                     <p>2. Peer-Review</p>
-                                    <p>3. Layout Editing</p>
-                                    <p>4. Galley Correction</p>
-                                    <p>5. Publishing</p>
+                                    <p>3. Proofreading</p>
+                                    <p>4. Layout Editing</p>
+                                    <p>5. Galley Correction</p>
+                                    <p>6. Publishing</p>
                                 </div>
                             </div>
                         </div>

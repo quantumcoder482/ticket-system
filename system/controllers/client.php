@@ -3643,7 +3643,7 @@ vMax: \'9999999999999999.00\',
                                     "attachment" => $a,
                                     "file_mime_type" => $f[1]
                                 );
-                                if ($rep['admin'] == 0) {
+                                if ($rep['admin'] == 0 || $rep['reply_type'] == 'admin_attachement') {
                                     $upload_files[] = $attachment_file;
                                 } else {
                                     $download_files[] = $attachment_file;
@@ -3772,6 +3772,7 @@ vMax: \'9999999999999999.00\',
                 $ticket_replies = ORM::for_table('sys_ticketreplies')
                     ->where('tid', $id)
                     ->where('attachments', '')
+                    ->where('reply_type', 'public')
                     ->where_not_equal('client_read', 'yes')
                     ->where_not_equal('admin', 0)
                     ->find_many();
@@ -3843,6 +3844,7 @@ vMax: \'9999999999999999.00\',
                     ->select('sys_users.img', 'img')
                     ->where('userid', $c_id)
                     ->where('attachments', '')
+                    ->where('reply_type', 'public')
                     ->where_not_equal('admin', 0)
                     ->order_by_desc('id')
                     ->find_many();
@@ -3894,6 +3896,7 @@ vMax: \'9999999999999999.00\',
                 $d = ORM::for_table('sys_ticketreplies')
                     ->where('userid', $c_id)
                     ->where('attachments', '')
+                    ->where('reply_type', 'public')
                     ->where_not_equal('admin', 0)
                     ->where_not_equal('client_read', 'yes')
                     ->count();
@@ -3943,9 +3946,6 @@ vMax: \'9999999999999999.00\',
 
 
             case 'create':
-
-
-
 
                 $rc = '';
 

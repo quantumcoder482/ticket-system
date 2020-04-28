@@ -12,45 +12,85 @@
         <div class="panel">
             <div class="panel-body">
                 <form method="POST" id="frm_filter">
-                  
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="date_range">Date range</label>
-                            <input class="form-control" id="date_range" name="date_range" value="{$date_range}">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="date_range">Date range</label>
+                                <input class="form-control" id="date_range" name="date_range" value="{$date_range}">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="status">Status</label>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="status">Status</label>
                                 <select id="status" name="status" class="form-control">
-                                <option value="">{$_L['All']}</option>
-                                <option value="Not Started" {if $status eq 'Not Started'}selected{/if}>Not Started</option>
-                                <option value="In Progress" {if $status eq 'In Progress'}selected{/if}>In Progress</option>
-                                <option value="Completed" {if $status eq 'Completed'}selected{/if}>Completed</option>
-                                <option value="Deferred" {if $status eq 'Deferred'}selected{/if}>Deferred</option>
-                                <option value="Waiting" {if $status eq 'Waiting'}selected{/if}>Waiting</option>
-                            </select>
+                                    <option value="">{$_L['All']}</option>
+                                    <option value="Not Started" {if $status eq 'Not Started'}selected{/if}>Not Started</option>
+                                    <option value="In Progress" {if $status eq 'In Progress'}selected{/if}>In Progress</option>
+                                    <option value="Completed" {if $status eq 'Completed'}selected{/if}>Completed</option>
+                                    <option value="Deferred" {if $status eq 'Deferred'}selected{/if}>Deferred</option>
+                                    <option value="Waiting" {if $status eq 'Waiting'}selected{/if}>Waiting</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ticket_id">Ticket ID</label>
+                                <input class="form-control" id="ticket_id" name="ticket_id" value="{$ticket_id}">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="task_name">Task Name</label>
+                                <select id="task_name" name="task_name" class="form-control">
+                                    <option value="">{$_L['All']}</option>
+                                    <option value="Plagiarism Check" {if $task_name eq 'Plagiarism Check'}selected{/if}>Plagiarism Check</option>
+                                    <option value="Peer-Review" {if $task_name eq 'Peer-Review'}selected{/if}>Peer-Review</option>
+                                    <option value="Proofreading" {if $task_name eq 'Proofreading'}selected{/if}>Proofreading</option>
+                                    <option value="Layout Editing" {if $task_name eq 'Layout Editing'}selected{/if}>Layout Editing</option>
+                                    <option value="Galley Correction" {if $task_name eq 'Galley Correction'}selected{/if}>Galley Correction</option>
+                                    <option value="Publishing" {if $task_name eq 'Publishing'}selected{/if}>Publishing</option>
+                                </select>
+                            </div>
+                        </div>
+                        {if $user['user_type'] eq 'Admin'}
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="staff_id">Staff</label>
+                                <select id="staff_id" name="staff_id" class="form-control">
+                                    <option value="">{$_L['All']}</option>
+                                    {foreach $staffs as $st}
+                                        <option value="{$st['id']}" {if $st['id'] eq $staff_id }selected{/if}>{$st['fullname']}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        {else}
+                        <div class="col-md-4">&nbsp;</div>
+                        {/if}
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="date_range_data" name="date_range_data" value="{$date_range}">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <button class="btn btn-primary" style="margin-top: 10px;" id="filter">Filter</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label for="ticket_id">Ticket ID</label>
-                            <input class="form-control" id="ticket_id" name="ticket_id" value="{$ticket_id}">
-                        </div>
-                    </div>
-                    <input type="hidden" id="date_range_data" name="date_range_data" value="{$date_range}">
                 </form>
-                    
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <button class="btn btn-primary" style="margin-top: 24px;" id="filter">Filter</button>
-                    </div>
-                </div>
-                   
-                
             </div>
+
         </div>
     </div>
 
@@ -436,13 +476,25 @@
 
         var $status = $('#status');
         var $ticket_id = $('#ticket_id');
+        var $task_name = $('#task_name');
+        var $staff_id = $('#staff_id');
 
         $status.select2({
             theme:"bootstrap"
         });
 
+        $task_name.select2({
+            theme:"bootstrap"
+        });
+
+        $staff_id.select2({
+            theme:"bootstrap"
+        });
+
+
+
         $('.footable').footable();
-        
+
         function cb(start, end) {
             $('#date_range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
@@ -450,7 +502,7 @@
         var $date_range_data = $('#date_range_data');
 
         if( $date_range_data.val() == '') {
-            var start = moment().subtract(29, 'days');
+            var start = moment().subtract(7, 'days');
             var end = moment();
             cb(start, end);
         } else{

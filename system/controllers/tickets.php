@@ -34,7 +34,6 @@ switch ($action){
 
         break;
 
-
     case 'departments_post':
 
         $msg = '';
@@ -77,7 +76,6 @@ switch ($action){
 
         break;
 
-
     case 'delete_department':
 
         $id = route(3);
@@ -108,85 +106,79 @@ switch ($action){
         if($d){
 
             echo '<form id="edit_form"><div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title">Edit Department</h4>
-    </div>
-    <div class="modal-body">
-        <div class="row">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Edit Department</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                   <div class="form-group">
+                        <label for="department_name">Department Name</label>
+                        <input type="text" name="department_name" class="form-control" id="department_name" value="'.$d->dname.'">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="email">Default Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="'.$d->email.'">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="host">IMAP Host</label>
+                        <input type="text" class="form-control" id="host" name="host" value="'.$d->host.'">
+                    </div>
 
-           <div class="form-group">
-                            <label for="department_name">Department Name</label>
-                            <input type="text" name="department_name" class="form-control" id="department_name" value="'.$d->dname.'">
-                        </div>
+                    <div class="form-group">
+                        <label for="port">IMAP Port</label>
+                        <input type="text" class="form-control" id="port" name="port" value="'.$d->port.'">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" value="'.$d->password.'">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="encryption">Encryption</label>
+                        <label class="radio-inline">
+                            <input type="radio" name="encryption" value="tls" '.(($d->encryption == 'tls')?'checked':"").'> TLS
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="encryption" value="ssl" '.(($d->encryption == 'ssl')?'checked':"").'> SSL
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="encryption" value="no" '.(($d->encryption == '')?'checked':"").'> No Encryption
+                        </label>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="email">Default Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="'.$d->email.'">
-                        </div>
+                    <hr>
 
-                        <div class="form-group">
-                            <label for="host">IMAP Host</label>
-                            <input type="text" class="form-control" id="host" name="host" value="'.$d->host.'">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="port">IMAP Port</label>
-                            <input type="text" class="form-control" id="port" name="port" value="'.$d->port.'">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" value="'.$d->password.'">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="encryption">Encryption</label>
-                            <label class="radio-inline">
-                                <input type="radio" name="encryption" value="tls" '.(($d->encryption == 'tls')?'checked':"").'> TLS
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"  name="hidden" id="hidden" value="1" '.(($d->hidden == '1')?'checked':"").'> Hide from client?
                             </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="encryption" value="ssl" '.(($d->encryption == 'ssl')?'checked':"").'> SSL
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="delete_after_import" id="delete_after_import" value="1" '.(($d->delete_after_import == '1')?'checked':"").'> Delete mail after import?
                             </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="encryption" value="no" '.(($d->encryption == '')?'checked':"").'> No Encryption
-                            </label>
                         </div>
-
-                        <hr>
-
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox"  name="hidden" id="hidden" value="1" '.(($d->hidden == '1')?'checked':"").'> Hide from client?
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="delete_after_import" id="delete_after_import" value="1" '.(($d->delete_after_import == '1')?'checked':"").'> Delete mail after import?
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        
-                        <button class="btn btn-primary test_imap">Test IMAP Connection</button>
-
-
-        </div>
-    </div>
-    <div class="modal-footer">
-    <input type="hidden" name="edit_dep" id="edit_dep" value="'.$d->id.'">
-        <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
-        <button type="button" id="btn_modal_edit_action" class="btn btn-primary edit_submit">Save</button>
-
-    </div></form>';
+                    </div>
+                    
+                    <hr>
+                    
+                    <button class="btn btn-primary test_imap">Test IMAP Connection</button>
+                
+                </div>
+            </div>
+            <div class="modal-footer">
+            <input type="hidden" name="edit_dep" id="edit_dep" value="'.$d->id.'">
+            <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>
+            <button type="button" id="btn_modal_edit_action" class="btn btn-primary edit_submit">Save</button>
+    
+            </div></form>';
 
         }
 
@@ -242,7 +234,6 @@ switch ($action){
         }
 
 
-
         break;
 
     case 'departments_reorder':
@@ -251,13 +242,11 @@ switch ($action){
         $ui->assign('ritem','Support Ticket Departments');
         $ui->assign('d',$d);
         $ui->assign('xheader', '
-<link rel="stylesheet" type="text/css" href="' . $_theme . '/css/liststyle.css"/>
-');
+            <link rel="stylesheet" type="text/css" href="' . $_theme . '/css/liststyle.css"/>
+            ');
         $ui->assign('display_name','dname');
         $ui->assign('xjq', Reorder::js('sys_ticketdepartments'));
         $ui->display('reorder.tpl');
-
-
 
         break;
 
@@ -272,8 +261,6 @@ switch ($action){
         $ui->assign('replies',db_find_array('sys_canned_responses',array('id','title'),'asc:sorder'));
 
         view('tickets_predefined_replies');
-
-
 
 
         break;
@@ -292,12 +279,7 @@ switch ($action){
             echo $ret['msg'];
         }
 
-
-
-
-
         break;
-
 
     case 'predefined_replies_reorder':
 
@@ -305,14 +287,13 @@ switch ($action){
         $ui->assign('ritem','Predefined Replies');
         $ui->assign('d',$d);
         $ui->assign('xheader', '
-<link rel="stylesheet" type="text/css" href="' . $_theme . '/css/liststyle.css"/>
-');
+            <link rel="stylesheet" type="text/css" href="' . $_theme . '/css/liststyle.css"/>
+        ');
         $ui->assign('display_name','title');
         $ui->assign('xjq', Reorder::js('sys_canned_responses'));
         $ui->display('reorder.tpl');
 
         break;
-
 
     case 'predefined_replies_delete':
 
@@ -324,8 +305,6 @@ switch ($action){
         Tickets::deletePredefinedReply($id);
 
         r2(U.'tickets/admin/predefined_replies/','s','Deleted Successfully');
-
-
 
         break;
 
@@ -350,11 +329,7 @@ switch ($action){
             ]);
         }
 
-
-
-
         break;
-
 
     case 'predefined_reply_edit_post':
 
@@ -365,8 +340,6 @@ switch ($action){
         $title = _post('title');
 
         $message = $_POST['message'];
-
-
 
         if($reply)
         {
@@ -382,8 +355,6 @@ switch ($action){
         }
 
         break;
-
-
 
     case 'create':
 
@@ -451,9 +422,7 @@ switch ($action){
 
         break;
 
-
     case 'add_post':
-
 
 
         header('Content-Type: application/json');
@@ -472,15 +441,10 @@ switch ($action){
 
         $t = $tickets->create($cid,$user->id);
 
-
-
-
         echo json_encode($t);
 
 
-
         break;
-
 
     case 'view':
 
@@ -566,9 +530,7 @@ switch ($action){
 
             $jed = json_encode($deps);
 
-
-            $ads = ORM::for_table('sys_users')->select('id')->select('fullname')->find_array();
-
+            $ads = ORM::for_table('sys_users')->select('id')->select('fullname')->where_not_equal('user_type', 'Reviewer')->find_array();
             $ui->assign('ads',$ads);
 
             $aas = array();
@@ -579,8 +541,10 @@ switch ($action){
                 $a_x++;
             }
 
-
             $jaa = json_encode($aas);
+
+            $reviewers = ORM::for_table('sys_users')->select('id')->select('fullname')->where_not_equal('user_type', 'Employee')->find_array();
+            $ui->assign('reviewers', $reviewers);
 
             $dd = ORM::for_table('sys_ticketdepartments')->select('dname')->find_one($d->did);
 
@@ -608,6 +572,7 @@ switch ($action){
 
             $upload_files = array();
             $download_files = array();
+            $internal_files = array();
 
             $ticket_files = $d->attachments;
             if ($ticket_files) {
@@ -654,10 +619,12 @@ switch ($action){
                             "file_mime_type" => $f[1]
                         );
 
-                        if($rep['admin'] == 0){
-                            $download_files[] = $attachment_file; 
-                        }else{
+                        if($rep['admin'] == 0 || $rep['reply_type'] == 'admin_attachement'){
+                            $download_files[] = $attachment_file;
+                        }elseif($rep['admin'] != 0 && $rep['reply_type'] == 'public' ){
                             $upload_files[] = $attachment_file;
+                        }elseif($rep['admin'] != 0 && $rep['reply_type'] == 'internal' ){
+                            $internal_files[] = $attachment_file;
                         }
                     }
                 }
@@ -665,6 +632,7 @@ switch ($action){
 
             $ui->assign('upload_files', $upload_files);
             $ui->assign('download_files', $download_files);
+            $ui->assign('internal_files', $internal_files);
 
             $attachment_path = APP_URL . '/storage/tickets/'.$d->tid.'/';
             $ui->assign('attachment_path', $attachment_path);
@@ -774,6 +742,25 @@ switch ($action){
             }
             $tasks_waiting_array = $tasks_waiting->order_by_desc('id')->find_array();
             $ui->assign('tasks_waiting', $tasks_waiting_array);
+            // ==================================================================
+
+            $tasks_proofreading = ORM::for_table('sys_tasks')
+                ->select('title')
+                ->select('aid')
+                ->select('cid')
+                ->select('tid')
+                ->select('priority')
+                ->where('status','Under Proofreading')
+                ->where('tid', $id)
+                ->select('id')
+                ->select('created_at')
+                ->select('due_date')
+                ->select('created_by');
+            if ($credential != 'Admin') {
+                $tasks_proofreading->where('aid', $user['id']);
+            }
+            $tasks_proofreading_array = $tasks_proofreading->order_by_desc('id')->find_array();
+            $ui->assign('tasks_proofreading', $tasks_proofreading_array);
 
 
             // Task management End
@@ -831,20 +818,15 @@ switch ($action){
 
         }
 
-
         break;
 
-
     case 'imap_test':
-
 
         $host = _post('host');
         $port = _post('port');
         $username = _post('email');
         $password = _post('password');
         $enc = _post('encryption');
-
-
 
         $imap = imap_open('{'.$host.':'.$port.'/imap/'.$enc.'}INBOX', $username, $password);
 
@@ -856,7 +838,6 @@ switch ($action){
         else{
             echo imap_last_error();
         }
-
 
         break;
 
@@ -877,10 +858,7 @@ switch ($action){
 
         view('tickets_admin_list');
 
-
-
         break;
-
 
     case 'add_reply':
 
@@ -899,6 +877,84 @@ switch ($action){
 
         break;
 
+    case 'make_public':
+
+        $id = _post('id');
+
+        $reply = ORM::for_table('sys_ticketreplies')->find_one($id);
+
+        if($reply){
+            $reply->reply_type = 'public';
+            $reply->save();
+        }
+
+        echo $id;
+
+        break;
+
+    case 'note_review':
+
+        $questions_list = [
+            "Is the title suitable for its content?",
+            "Is the abstract is informative, including main finding and significance?",
+            "Is the introduction part contain sufficient?",
+            "Is the introduction part Informative?",
+            "Are the materials and methods clear?",
+            "Are the materials and methods adequate?",
+            "Are the materials and methods ethical?",
+            "Are the results efficient?",
+            "Are the results satisfactory with statistical analysis?",
+            "Are the results well presented?",
+            "Are the tables Satisfactory?",
+            "Are the tables clear?",
+            "Are the tables necessary?",
+            "Are the tables adequate in number?",
+            "Are the figures satisfactory?",
+            "Are the figures clear/in good quality of art?",
+            "Are the figures necessary?",
+            "Are the figures adequate in number?",
+            "Does the discussion part include other relevant studies?",
+            "Are the references suitable?",
+            "Are the references sufficient?",
+            "Are the references up to date?",
+            "Are the references adequate in number?",
+            "Would you suggest reduction in any part of the manuscript?",
+            "Would you suggest addition in any part of the manuscript?",
+            "Is the quality of scientific language satisfactory?",
+            "Is the acknowledgement included?",
+            "Is the ethical consideration included?",
+            "Is the funding information included?",
+            "Is the conflict of interest expressed?",
+        ];
+
+        $general_remark = "General remarks and recommendations to Author:";
+        $final_recommendation = "Final Recommendations:";
+        $reason_rejection = "Reasons for Rejection:";
+
+        $response_string = "<p style='font-weight: 600'>Reviewer Comments - (to be revised if response stands \"No\")</p>";
+        $question_index = 0;
+
+        $post_reviews = $_POST['questions'];
+
+        foreach($questions_list as $index=>$q){
+            $question_index++;
+            $response_string .= "<p>".$question_index.". ".$q." <span style='font-weight: 600'>".$post_reviews[$index]."</span></p>";
+        }
+
+        // Textarea Posts
+        $post_general_remark = _post('general_remark')?_post('general_remark'): "";
+        $response_string .= "<p>".($question_index+1).". ".$general_remark." ".$post_general_remark."</p>";
+
+        $post_final_recommendation = _post('final_recommendation')?_post('final_recommendation'): "";
+        $response_string .= "<p>".($question_index+2).". ".$final_recommendation." ".$post_final_recommendation."</p>";
+        
+        $post_reason_rejection = _post('reason_rejection')?_post('reason_rejection'): "";
+        $response_string .= "<p>".($question_index+3).". ".$reason_rejection." ".$post_reason_rejection."</p>";
+
+
+        echo $response_string;
+
+        break;
 
     case 'save_note':
 
@@ -942,7 +998,6 @@ switch ($action){
         r2(U.'tickets/admin/list/','s',$_L['delete_successful']);
 
         break;
-
 
     case 'view_modal':
 
@@ -1037,13 +1092,7 @@ switch ($action){
 
         }
 
-
-
-
-
-
         break;
-
 
     case 'json_list':
 
@@ -1051,18 +1100,17 @@ switch ($action){
         $columns = array();
 
         $columns[] = 'id';
-        $columns[] = 'img';
+        // $columns[] = 'img';
         $columns[] = 'subject';
         $columns[] = 'account';
         $columns[] = 'admin';
-
-
+        $columns[] = 'assigned_at';
+        $columns[] = 'status';
+        $columns[] = 'tasks';
+        $columns[] = 'created_at';
 
 
         $order_by = $_POST['order'];
-
-
-
         $o_c_id = $order_by[0]['column'];
         $o_type = $order_by[0]['dir'];
 
@@ -1078,11 +1126,11 @@ switch ($action){
         $d->select('subject');
         $d->select('status');
         $d->select('aid');
+        $d->select('assigned_at');
+        $d->select('created_at');
 
 
         $staffs = User::all()->keyBy('id')->all();
-
-
 
         $tid = _post('id');
         if($tid != ''){
@@ -1150,11 +1198,14 @@ switch ($action){
 
         }
         else{
-
-            if (!has_access($user->roleid, 'transactions', 'all_data')) {
+//            if (!has_access($user->roleid, 'transactions', 'all_data')) {
+//                $d->where('aid', $user->id);
+//            }
+            if($user->user_type == 'Employee'){
                 $d->where('aid', $user->id);
+            }elseif($user->user_type == 'Reviewer'){
+                $d->where('rid', $user->id);
             }
-            
         }
 
 
@@ -1164,8 +1215,6 @@ switch ($action){
 
 
         $iTotalRecords =  $d->count();
-
-
 
         $iDisplayLength = intval($_REQUEST['length']);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
@@ -1235,29 +1284,91 @@ switch ($action){
                 case 'New':
                 case 'Accepted':
                 case 'Published':
+                case 'Under Layout Editing':
+                case 'Under Galley Correction':
                     $status_string = '<span class="label label-success inline-block"> ' . $xs['status'] . ' </span>';
                     break;
                 case 'In Progress':
                 case 'Awaiting Publication':
+                case 'Under Plagiarism Check':
+                case 'Under Peer-Review':
                     $status_string = '<span class="label label-primary inline-block"> ' . $xs['status'] . ' </span>';
                     break;
                 case 'Rejected':
                 case 'Withdrawn':
                     $status_string = '<span class="label label-danger inline-block"> ' . $xs['status'] . ' </span>';
                     break;
+                case 'Scheduled for Current Issue':
+                case 'Scheduled for Next Issue':
+                case 'Scheduled for Special Issue':
+                    $status_string = '<span class="label label-warning inline-block"> ' . $xs['status'] . ' </span>';
+                    break;
                 default: 
-
+                    $status_string = '<span class="label label-primary inline-block"> ' . $xs['status'] . ' </span>';
             }
+
+            $payment_status_string = "";
+
+            switch ($xs['payment_status']){
+                case 'Not generated':
+                    $payment_status_string .= "<p class='label-primary' style='border: 0px; font-size: 1.5rem; margin: 12px 2px;'>Not generated</p>";
+                    break;
+                case 'Paid':
+                    $payment_status_string .= "<p class='label-success' style='border: 0px; font-size: 1.5rem; margin: 12px 2px;'>Paid</p>";
+                    break;
+                case 'Unpaid':
+                    $payment_status_string .= "<p class='label-danger' style='border: 0px; font-size: 1.5rem; margin: 12px 2px;'>Unpaid</p>";
+                    break;
+                default:
+                     $payment_status_string .= "<p class='label-primary' style='border: 0px; font-size: 1.5rem; margin: 12px 2px;'>Not generated</p>";
+            }
+
+
+            $tasks_string = "";
+            $created_date = "";
+            $assigned_tasks = ORM::for_table('sys_tasks')->where('tid', $xs['id'])->find_array();
+            foreach($assigned_tasks as $at){
+                $status_class = "";
+                switch ($at['status']) {
+                    case 'Not Started':
+                        $status_class = "display:inline-block; color:#f44336; font-weight: 600; padding: 3px 8px; font-size:80%";
+                        break;
+                    case 'In Progress':
+                        $status_class = "display:inline-block; color:#2196f3; font-weight: 600; padding: 3px 8px;  font-size:80%";
+                        break;
+                    case 'Deferred':
+                    case 'Waiting for editor approval':
+                        $status_class = "display:inline-block; color:#3949ab; font-weight: 600; padding: 3px 8px;  font-size:80%";
+                        break;
+                    default:
+                        $status_class = "display:inline-block; color:#2196f3; font-weight: 600; padding: 3px 8px;  font-size:80%";
+                }
+
+                if($at['status'] != 'Completed'){
+                    $tasks_string .= "<div style='margin-bottom:10px'><span style='font-weight:600'>".$at['title']."</span><br/><span style='".$status_class."'>(".$at['status'].")</span></div>";
+                    $created_date .= "<div style='margin-bottom:10px'><span style='font-weight:600'>".date('Y-m-d', strtotime($at['created_at']))."</span><br/><span style='display:inline-block'>&nbsp;</span></div>";
+                }
+            }
+
+
+            $assigned_date ="";
+            if($xs['assigned_at']){
+                $assigned_date = date('Y-m-d', strtotime($xs['assigned_at']));
+            }
+
 
             $records["data"][] = array(
                 0 => $xs['tid'],
-                1 => '<a href="'.U.'contacts/view/'.$xs['id'].'">'.$img.'</a>',
-                2 => $xs['subject'],
-                3 => $xs['account'],
-                4 => $staff_name,
-                5 => $status_string,
-                6 => $xs['id'],
-                7 => $xs['userid'],
+            //    1 => '<a href="'.U.'contacts/view/'.$xs['id'].'">'.$img.'</a>',
+                1 => $xs['subject'],
+                2 => $xs['account'],
+                3 => $staff_name,
+                4 => $assigned_date,
+                5 => $status_string.$payment_status_string,
+                6 => $tasks_string,
+                7 => $created_date,
+                8 => $xs['id'],
+                9 => $xs['userid'],
 
                 "DT_RowId" => 'row_'.$xs['id']
 
@@ -1271,14 +1382,46 @@ switch ($action){
         $records["recordsTotal"] = $iTotalRecords;
         $records["recordsFiltered"] = $iTotalRecords;
 
-
         api_response($records);
-
-
-
 
         break;
 
+    case 'update_title':
+        $id = _post('id');
+        $title = _post('title');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        if($title == ''){
+            echo json_encode(array(
+                'status' => 'error',
+                'message' => 'Can not use empty title'
+            ));
+        }else {
+            $check_subject = ORM::for_table('sys_tickets')->where('subject', $title)->find_one();
+            if ($check_subject) {
+                echo json_encode(array(
+                   'status' => 'error',
+                   'message' => 'Can not use same title'
+                ));
+            }elseif($d){
+                $d->subject = $title;
+                $successed = $d->save();
+                if($successed){
+                    echo json_encode(array(
+                        'status' => 'success',
+                        'message' => $title
+                    ));
+                }else{
+                    echo json_encode(array(
+                        'status' => 'error',
+                        'message' => 'Something error occured'
+                    ));
+                }
+            }
+        }
+
+        break;
 
     case 'update_cc':
 
@@ -1303,7 +1446,6 @@ switch ($action){
 
 
         break;
-
 
     case 'update_hour':
 
@@ -1350,7 +1492,6 @@ switch ($action){
 
         break;
 
-
     case 'update_minute':
 
         $id = _post('id');
@@ -1395,8 +1536,6 @@ switch ($action){
 
 
         break;
-
-
 
     case 'update_bcc':
 
@@ -1475,7 +1614,7 @@ switch ($action){
             // $eml_message->set('processing', $urgency);
             $message_o = $eml_message->output();
 
-            if ($reply_type != 'internal') {
+            // if ($reply_type != 'internal') {
                 Notify_Email::_send($t->account, $email, $subj, $message_o, $cid = $t->userid);
 
                 // SMS 
@@ -1496,7 +1635,7 @@ switch ($action){
                         spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
                     }
                 }
-            }
+            // }
 
 
 
@@ -1511,25 +1650,60 @@ switch ($action){
     case 'admin_read':
 
         $id = _post('id');
+        $tab = _post('tab');
+        $user_type = $user['user_type'];
+        $user_id = $user['id'];
 
-        $ticket_replies = ORM::for_table('sys_ticketreplies')
-            ->where('tid', $id)
-            ->where('attachments','')
-            ->where_not_equal('admin_read', 'yes')
-            ->where('admin', 0)
-            ->find_many();
+        if($user_type == 'Admin'){
+            $ticket_replies = ORM::for_table('sys_ticketreplies')
+                ->where('tid', $id)
+                ->where_not_equal('admin_read', 'yes')
+                ->where_not_equal('admin', $user_id);
 
-        if($ticket_replies){
-            foreach ($ticket_replies as $t) {
-                $t->admin_read = 'yes';
-                $t->save();
+
+            if($tab == 'downloads'){
+                $ticket_replies = $ticket_replies->where_not_equal('attachments','');
             }
+            if($tab == 'comments'){
+                $ticket_replies = $ticket_replies->where('attachments','');
+            }
+
+            $ticket_replies = $ticket_replies->find_many();
+            if($ticket_replies){
+                foreach ($ticket_replies as $t) {
+                    $t->admin_read = 'yes';
+                    $t->save();
+                }
+            }
+
+        }else if($user_type == 'Employee') {
+            $ticket_replies = ORM::for_table('sys_ticketreplies')
+                ->where('tid', $id)
+                ->where_not_equal('staff_read', 'yes')
+                ->where_not_equal('admin',$user_id);
+
+            if($tab == 'downloads'){
+                $ticket_replies = $ticket_replies->where_not_equal('attachments','');
+            }
+            if($tab == 'comments'){
+                $ticket_replies = $ticket_replies->where('attachments','');
+            }
+            $ticket_replies = $ticket_replies->find_many();
+
+            if($ticket_replies){
+                foreach ($ticket_replies as $t) {
+                    $t->staff_read = 'yes';
+                    $t->admin_read = 'yes';
+                    $t->save();
+                }
+            }
+
         }
-        
+
         echo '1';
 
         break;
-    
+
     case 'update_department':
 
 
@@ -1640,7 +1814,7 @@ switch ($action){
             // $eml_message->set('processing', $urgency);
             $message_o = $eml_message->output();
 
-            if ($reply_type != 'internal') {
+            // if ($reply_type != 'internal') {
                 Notify_Email::_send($t->account, $email, $subj, $message_o, $cid = $t->userid);
 
 
@@ -1664,11 +1838,96 @@ switch ($action){
                 }
 
                 */
-            }
+            // }
         }
 
 
         echo $value;
+
+        break;
+
+    case 'update_processing_for':
+
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        $value = _post('value');
+
+        if ($d) {
+            $d->processing_for = $value;
+            $d->save();
+        }
+
+        echo $value;
+
+        break;
+
+    case 'update_payment_status':
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        $value = _post('value');
+
+        if($d) {
+            $d->payment_status = $value;
+            $d->save();
+        }
+        echo $value;
+        break;
+
+    case 'update_assigned_reviewer':
+        $id = _post('id');
+
+        $d = db_find_one('sys_tickets', $id);
+
+        $value = _post('value');
+
+        if(!is_numeric($value)){
+            $value = 0;
+        }
+
+        $staff = User::find($value);
+
+        if($staff)
+        {
+            // send email
+
+            // Assign task to this staff
+
+            Notify_Email::_send('', $staff->username, 'Submission assigned: '.$d->tid, 'Submission is assigned for review. View submission URL- '.U.'tickets/admin/view/'.$d->id);
+
+            // Send sms notification when ticket is assigned
+
+            if(isset($config['tickets_assigned_sms_notification']) && $config['tickets_assigned_sms_notification'] == 1 && $staff->phonenumber != '')
+            {
+                require 'system/lib/misc/smsdriver.php';
+
+                $tpl = SMSTemplate::where('tpl','Ticket Assigned: Admin Notification')->first();
+
+                if($tpl)
+                {
+                    $message = new Template($tpl->sms);
+                    $message->set('ticket_id', $d->tid);
+                    $message_o = $message->output();
+                    spSendSMS($staff->phonenumber,$message_o);
+                }
+            }
+
+            //
+        }
+
+        if($d) {
+            $d->rid = $value;
+            $d->save();
+        }
+
+        jsonResponse([
+            'id' => $d->id,
+            //'fullname' => $staff->fullname,
+            'success' => true
+        ]);
 
         break;
 
@@ -1681,6 +1940,9 @@ switch ($action){
 
         $value =  _post('value');
 
+        if(!is_numeric($value)){
+            $value = 0;
+        }
 
         // Find the user
 
@@ -1710,7 +1972,7 @@ switch ($action){
             //     ]);
             // }
 
-            Notify_Email::_send('', $staff->username, 'Ticket assigned: '.$d->tid, 'View Ticket- '.U.'tickets/admin/view/'.$d->id);
+            Notify_Email::_send('', $staff->username, 'Submission assigned: '.$d->tid, 'Submission is assigned to you. View submission URL- '.U.'tickets/admin/view/'.$d->id);
 
             // Send sms notification when ticket is assigned
 
@@ -1734,17 +1996,18 @@ switch ($action){
 
         if($d){
             $d->aid = $value;
+            if($value != 'None'){
+                $d->assigned_at = date('Y-m-d H:i:s');
+            }
             $d->save();
 
             jsonResponse([
             	'id' => $d->id,
-	            'fullname' => $staff->fullname,
+	            // 'fullname' => $staff->fullname,
 	            'success' => true
             ]);
 
         }
-
-
 
         break;
 
@@ -1775,18 +2038,64 @@ switch ($action){
 
     case 'reply_make_public':
 
+        global $config;
         $id = route(3);
         $id = str_replace('rp','',$id);
 
         $d = db_find_one('sys_ticketreplies',$id);
 
-
-
         if($d){
+            $prev_reply_type = $d->reply_type;
             $d->reply_type = 'public';
             $d->save();
 
-            Tickets::sendReplyNotification($d->tid,$d->message);
+            if($prev_reply_type == 'review'){
+
+                $tid = $d->tid;
+                $message = $d->message;
+
+                $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Tickets:Admin Response')->where('send', 'Yes')->find_one();
+                $t = ORM::for_table('sys_tickets')->find_one($tid);
+
+                if($t){
+
+                    if ($eml) {
+
+                        $client_view_link = U . 'client/tickets/view/' . $tid . '/';
+
+                        $eml_subject = new Template($eml->subject);
+                        $eml_subject->set('business_name', $config['CompanyName']);
+                        $eml_subject->set('subject', $t->subject);
+                        $eml_subject->set('ticket_subject', $t->subject);
+                        $eml_subject->set('ticket_id', '#' . $t->tid);
+                        $subj = $eml_subject->output();
+
+                        $eml_message = new Template($eml->message);
+                        $eml_message->set('client_name', $t->account);
+                        $eml_message->set('client_email', $t->email);
+                        $eml_message->set('priority', $t->urgency);
+                        $eml_message->set('urgency', $t->urgency);
+                        $eml_message->set('ticket_subject', $t->subject);
+                        $eml_message->set('status', $t->urgency);
+                        $eml_message->set('ticket_status', $t->status);
+                        $eml_message->set('ticket_urgency', $t->urgency);
+                        $eml_message->set('ticket_priority', $t->urgency);
+                        $eml_message->set('ticket_id', $t->tid);
+                        $eml_message->set('ticket_message', $message);
+                        $eml_message->set('business_name', $config['CompanyName']);
+                        $eml_message->set('ticket_link', $client_view_link);
+                        $eml_message->set('department', $t->dname);
+                        // $eml_message->set('processing', $urgency);
+                        $message_o = $eml_message->output();
+
+                        Notify_Email::_send($t->account, $t->email, $subj, $message_o, $t->userid);
+
+                    }
+                }
+
+            }
+
+            // Tickets::sendReplyNotification($d->tid, $d->message);
 
             r2(U.'tickets/admin/view/'.$d->tid,'s','Updated Successfully');
 
@@ -1796,10 +2105,7 @@ switch ($action){
 
         break;
 
-
     case 'tasks_list':
-
-
 
         $tid = route(3);
         
@@ -1884,8 +2190,6 @@ switch ($action){
 
 
         break;
-
-
 
     case 'do_task':
 
@@ -2097,7 +2401,7 @@ switch ($action){
                             // $eml_message->set('processing', $urgency);
                             $message_o = $eml_message->output();
 
-                            if ($reply_type != 'internal') {
+                            // if ($reply_type != 'internal') {
                                 
                                 Notify_Email::_send($ticket->account, $email, $subj, $message_o, $cid = $ticket->userid);
 
@@ -2116,7 +2420,7 @@ switch ($action){
                                         spSendSMS($client_phone_number, $message_o, 'PSCOPE', 0, 'text', 4);
                                     }
                                 }
-                            }
+                            // }
                         }
                     }
 
@@ -2159,7 +2463,6 @@ switch ($action){
 
         break;
 
-
     case 'update_phone':
 
         $id = _post('id');
@@ -2184,27 +2487,24 @@ switch ($action){
 
         break;
 
-
     case 'available_status':
 
-
         echo '<div class="form-group">
-                                <label for="bulk_status">Status</label>
-                                <select class="form-control" id="bulk_status" name="bulk_status" size="1">
-                                  
-                                    <option value="Open">Open</option>
-                                    <option value="On Hold">On Hold</option>
-                                    <option value="Escalated">Escalated</option>
-                                    <option value="Closed">Closed</option>
-
-                                </select>
-                            </div>';
+                    <label for="bulk_status">Status</label>
+                    <select class="form-control" id="bulk_status" name="bulk_status" size="1">
+                      
+                        <option value="Open">Open</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Escalated">Escalated</option>
+                        <option value="Closed">Closed</option>
+    
+                    </select>
+                </div>';
 
 
 
 
         break;
-
 
     case 'set_status':
 
@@ -2241,7 +2541,6 @@ switch ($action){
 
         break;
 
-
     case 'delete_multiple':
 
         if(!isset($_POST['ids'])){
@@ -2265,7 +2564,6 @@ switch ($action){
 
 
         break;
-
 
     case 'log_time':
 
