@@ -57,7 +57,7 @@
                                 </select>
                             </div>
                         </div>
-                        {if $user['user_type'] eq 'Admin'}
+                        {if $user['user_type'] eq 'Admin' || $user['user_type'] eq 'Manager' }
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="staff_id">Staff</label>
@@ -106,6 +106,7 @@
                     <div class="panel-heading">
 
                         Not Started
+                        <span id="not_started_count" style="display: inline-block; padding-left: 3em;">{count($tasks_not_started)}</span>
 
                     </div>
 
@@ -189,6 +190,7 @@
                     <div class="panel-heading">
 
                         In Progress
+                        <span id="in_progress_count" style="display: inline-block; padding-left: 3em;">{count($tasks_in_progress)}</span>
 
                     </div>
                     <div class="panel-body">
@@ -254,6 +256,7 @@
                     <div class="panel-heading">
 
                         Completed
+                        <span id="completed_count" style="display: inline-block; padding-left: 3em;">{count($tasks_completed)}</span>
 
                     </div>
                     <div class="panel-body">
@@ -320,6 +323,7 @@
                     <div class="panel-heading">
 
                         Deferred
+                        <span id="deferred_count" style="display: inline-block; padding-left: 3em;">{count($tasks_deferred)}</span>
 
                     </div>
                     <div class="panel-body">
@@ -386,6 +390,8 @@
                     <div class="panel-heading">
 
                         Waiting on editor approval
+
+                        <span id="waiting_on_editor_count" style="display: inline-block; padding-left: 3em;">{count($tasks_waiting)}</span>
 
                     </div>
                     <div class="panel-body">
@@ -548,13 +554,12 @@
         for (var a = dragula($(".kanban-droppable-area").toArray()), r = a.containers, o = r.length, l = 0; l < o; l++)$(r[l]).addClass("dragula dragula-vertical");
         a.on("drop", function (a, r, o, l) {
 
-
             var item = a.id;
             var target = r.id;
 
             $.post(base_url + 'tasks/set_status/', { task_id: item, target: target }, function (data) {
                 //   $(".kanban-col").unblock();
-
+                location.href = _url + 'tasks';
             })
 
         });

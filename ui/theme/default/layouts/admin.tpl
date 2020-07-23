@@ -484,24 +484,28 @@
                     {/if}
 
 
-                    {if has_access($user->roleid,'hrm') && ($config['hrm'])}
+                      {if has_access($user->roleid,'hr') && ($config['hr'])}
 
-                        {if ($config['hrm'] eq '1')}
+                      {if ($config['hr'] eq '1')}
 
-                            <li class="{if $_application_menu eq 'hrm'}active{/if}">
-                                <a href="#"><i class="fa fa-users"></i> <span class="nav-label">{$_L['HRM']}</span><span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li><a href="{$_url}hrm/employees">{$_L['Employees']}</a></li>
-                                    <li><a href="{$_url}hrm/attendance">{$_L['Attendance']}</a></li>
-                                    <li><a href="{$_url}hrm/payroll">{$_L['Payroll']}</a></li>
+                      <li class="{if $_application_menu eq 'hrm'}active{/if}">
+                          <a href="#"><i class="fa fa-users"></i> <span class="nav-label">{$_L['HRM']}</span><span
+                                  class="fa arrow"></span></a>
+                          <ul class="nav nav-second-level">
+                              {if $user->user_type eq 'Admin'}
+                              <li><a href="{$_url}hrm/employees">{$_L['Employees']}</a></li>
+                              <li><a href="{$_url}hrm/attendance">{$_L['Attendance']}</a></li>
+                              <li><a href="{$_url}hrm/payroll">{$_L['Payroll']}</a></li>
+                              <li><a href="{$_url}settings/users/">{$_L['Staff']}</a></li>
+                              {/if}
+                              <li><a href="{$_url}hrm/salary">Salary</a></li>
 
+                          </ul>
+                      </li>
 
-                                </ul>
-                            </li>
+                      {/if}
 
-                        {/if}
-
-                    {/if}
+                      {/if}
 
 
                     {*{if has_access($user->roleid,'projects') && ($config['projects'])}*}

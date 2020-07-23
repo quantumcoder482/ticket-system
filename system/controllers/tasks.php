@@ -71,16 +71,15 @@ switch ($action) {
         $lang_code = Ib_I18n::get_code($config['language']);
 
         $ui->assign('jsvar', '
-        _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
- var ib_lang = \''.$lang_code.'\';
-var ib_rtl = false;
-var ib_calendar_first_day = 0;
-var ib_date_format_picker = \''.ib_js_date_format($config['df'],'picker').'\';
-var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
- ');
+            _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
+            var ib_lang = \''.$lang_code.'\';
+            var ib_rtl = false;
+            var ib_calendar_first_day = 0;
+            var ib_date_format_picker = \''.ib_js_date_format($config['df'],'picker').'\';
+            var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
+        ');
 
         $credential = $user['user_type'];
-
 
        // $tasks = ORM::for_table('sys_tasks')->select('title')->select('aid')->select('status')->select('id')->find_array();
         $tasks_not_started = ORM::for_table('sys_tasks')
@@ -101,7 +100,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_not_started->where_gte('created_at', $from_date);
             $tasks_not_started->where_lte('created_at', $to_date);
         // }
-        if($credential != 'Admin'){
+        if($credential != 'Admin' && $credential != 'Manager' ){
             $tasks_not_started->where('aid', $user['id']);
         }
         if($staff_id){
@@ -116,7 +115,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $ui->assign('tasks_not_started', $tasks_not_started_array);
         }
         else {
-            $ui->assign('tasks_not_started', null);
+            $ui->assign('tasks_not_started', array());
         }
         
         // ==================================================================
@@ -139,7 +138,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_in_progress->where_gte('created_at', $from_date);
             $tasks_in_progress->where_lte('created_at', $to_date);
         // }
-        if ($credential != 'Admin') {
+        if ($credential != 'Admin' && $credential != 'Manager') {
             $tasks_in_progress->where('aid', $user['id']);
         }
         if($staff_id){
@@ -154,7 +153,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $ui->assign('tasks_in_progress', $tasks_in_progress_array);
         }
         else {
-            $ui->assign('tasks_in_progress', null);
+            $ui->assign('tasks_in_progress', array());
         }
         
         // ==================================================================
@@ -177,7 +176,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_completed->where_gte('created_at', $from_date);
             $tasks_completed->where_lte('created_at', $to_date);
         // }
-        if ($credential != 'Admin') {
+        if ($credential != 'Admin' && $credential != 'Manager') {
             $tasks_completed->where('aid', $user['id']);
         }
         if($staff_id){
@@ -192,7 +191,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $ui->assign('tasks_completed', $tasks_completed_array);
         } 
         else {
-            $ui->assign('tasks_completed', null);
+            $ui->assign('tasks_completed', array());
         }
         
         // ==================================================================
@@ -214,7 +213,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_deferred->where_gte('created_at', $from_date);
             $tasks_deferred->where_lte('created_at', $to_date);
         // }
-        if ($credential != 'Admin') {
+        if ($credential != 'Admin' && $credential != 'Manager') {
             $tasks_deferred->where('aid', $user['id']);
         }
         if($staff_id){
@@ -229,7 +228,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $ui->assign('tasks_deferred', $tasks_deferred_array);
         }
         else {
-            $ui->assign('tasks_deferred', null);
+            $ui->assign('tasks_deferred', array());
         }
         
         // ==================================================================
@@ -254,7 +253,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $tasks_waiting->where_lte('created_at', $to_date);
         // }
 
-        if ($credential != 'Admin') {
+        if ($credential != 'Admin' && $credential != 'Manager') {
             $tasks_waiting->where('aid', $user['id']);
         }
         if($staff_id){
@@ -269,7 +268,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
             $ui->assign('tasks_waiting', $tasks_waiting_array);
         }
         else {
-            $ui->assign('tasks_waiting', null);
+            $ui->assign('tasks_waiting', array());
         }
         
         // ==================================================================
@@ -463,7 +462,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         }
                     }
 
-                    if(@$data['task_id']){
+                    if(isset($data['task_id'])){
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket Task Updated - Client')->where('send', 'Yes')->find_one();
                     } else {
                         $eml = ORM::for_table('sys_email_templates')->where('tplname', 'Ticket New Task Created - Client')->where('send', 'Yes')->find_one();
@@ -514,7 +513,7 @@ var ib_date_format_moment = \''.ib_js_date_format($config['df']).'\';
                         if ($client_phone_number != '') {
                             require 'system/lib/misc/smsdriver.php';
 
-                            if($data['task_id']){
+                            if(isset($data['task_id'])){
                                 $tpl = SMSTemplate::where('tpl', 'Task Status: Client Notification')->first();
                             } else {
                                 $tpl = SMSTemplate::where('tpl', 'Ticket task created: Client Notification')->first();

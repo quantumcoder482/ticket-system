@@ -484,6 +484,8 @@
 
                                                 Not Started
 
+                                                <span id="not_started_count" style="display: inline-block; padding-left: 3em;" >{count($tasks_not_started)}</span>
+
                                             </div>
 
                                             <div class="panel-body">
@@ -575,6 +577,7 @@
 
                                                 In Progress
 
+                                                <span id="in_progress_count" style="display: inline-block; padding-left: 3em;">{count($tasks_in_progress)}</span>
                                             </div>
                                             <div class="panel-body">
                                                 <div id="in_progress" class="kanban-centered kanban-droppable-area">
@@ -643,7 +646,7 @@
                                             <div class="panel-heading">
 
                                                 Completed
-
+                                                <span id="completed_count" style="display: inline-block; padding-left: 3em;">{count($tasks_completed)}</span>
                                             </div>
                                             <div class="panel-body">
                                                 <div id="completed" class="kanban-centered kanban-droppable-area">
@@ -714,6 +717,8 @@
                                             <div class="panel-heading">
 
                                                 Deferred
+
+                                                <span id="deferred_count" style="display: inline-block; padding-left: 3em;">{count($tasks_deferred)}</span>
 
                                             </div>
                                             <div class="panel-body">
@@ -786,6 +791,7 @@
                                             <div class="panel-heading">
 
                                                 Waiting on editor approval
+                                                <span id="waiting_on_editor_count" style="display: inline-block; padding-left: 3em;">{count($tasks_waiting)}</span>
 
                                             </div>
                                             <div class="panel-body">
@@ -2930,8 +2936,8 @@
                 target: target
             }, function (data) {
                 // $(".kanban-col").unblock();
-                loadTasks();
-
+                // loadTasks();
+                location.href = _url + 'tickets/admin/view/' + tid + '/tasks';
             })
 
         });

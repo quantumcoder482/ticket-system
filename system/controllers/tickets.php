@@ -2121,32 +2121,32 @@ switch ($action){
             ->find_array();
         
         $table_data = "<table class='table table-bordered table-hover sys_table'>
-                                <thead>
-                                    <tr>
-                                        <th width='30px'>#</th>
-                                        <th width='50%'>Task Name</th>";
-                                        if($user['user_type'] == 'Admin'){
-                                            $table_data .= '<th>Assigned to</th>';
-                                        }
-                             $table_data .="<th style='text-align:center'> Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>";
+                        <thead>
+                            <tr>
+                                <th width='30px'>#</th>
+                                <th width='50%'>Task Name</th>";
+                                if($user['user_type'] == 'Admin' || $user['user_type'] == 'Manager'){
+                                    $table_data .= '<th>Assigned to</th>';
+                                }
+        $table_data .="<th style='text-align:center'> Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
 
         foreach ($tasks as $key => $task) {
             if ($task['status'] == 'Completed') {
                 $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
-                if($user['user_type'] == 'Admin') { $table_data .= "<td>".$task['fullname']."</td>"; }
+                if($user['user_type'] == 'Admin' || $user['user_type'] == 'Manager') { $table_data .= "<td>".$task['fullname']."</td>"; }
                 $table_data .= "<td style='color:green; text-align:center'>" . $task['status'] . "</td></tr>";
             } elseif ($task['status'] == 'In Progress') {
                 $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
-                if ($user['user_type'] == 'Admin') {
+                if ($user['user_type'] == 'Admin' || $user['user_type'] == 'Manager') {
                     $table_data .= "<td>" . $task['fullname'] . "</td>";
                 }
                 $table_data .= "<td style='color:blue; text-align:center'>" . $task['status'] . "</td></tr>";
             } else {
                 $table_data .= "<tr><td>" . ($key + 1) . "</td><td>" . $task['title'] . "</td>";
-                if ($user['user_type'] == 'Admin') {
+                if ($user['user_type'] == 'Admin' || $user['user_type'] == 'Manager') {
                     $table_data .= "<td>" . $task['fullname'] . "</td>";
                 }
                 $table_data .= "<td style='color:red;text-align:center'>" . $task['status'] . "</td></tr>";
