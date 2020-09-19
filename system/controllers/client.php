@@ -1595,9 +1595,29 @@ switch ($action) {
             //            $mail->MsgHTML('Your Password has been reset to: '. $password.' Go to this link to login with new password- '.U.'client/login/');
             //            $mail->Send();
 
-            $subject = 'Password Reset for ' . $config['CompanyName'];
-            $message = '<p>Your Password has been reset to: ' . $password . ' Go to this link to login with new password- ' . U . 'client/login/</p>';
-            Notify_Email::_send($fullname, $username, $subject, $message, $d->id());
+            $e = ORM::for_table('sys_email_templates')->where('tplname', 'Client:Password Change Request')->find_one();
+            if($e){
+                $subject = new Template($e['subject']);
+                $subject->set('business_name', $config['CompanyName']);
+                $subj = $subject->output();
+
+                $message = new Template($e['message']);
+                $message->set('client_name', $fullname);
+                $message->set('business_name', $config['CompanyName']);
+                $message->set('password_reset_link', U . 'client/login/');
+                $message->set('username', $d['account']);
+                $message->set('client_email', $d->email);
+                $message->set('password', $password);
+                $message->set('ip_address', $_SERVER["REMOTE_ADDR"]);
+                $message_o = $message->output();
+
+                Notify_Email::_send($fullname, $username, $subj, $message_o, $d->id());
+
+            }else {
+                $subject = 'Password Reset for '.$config['CompanyName'];
+                $message = '<p>Your Password has been reset to: '. $password.' Go to this link to login with new password- '.U.'client/login/</p>';
+                Notify_Email::_send($fullname, $username, $subject, $message, $d->id());
+            }
 
             r2(U . 'client/login/', 's', 'New Password has been sent to your email.');
         } else {

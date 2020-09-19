@@ -4473,15 +4473,11 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
 
     case 'add_currency_post':
 
-
-
         $msg = '';
 
         $iso_code = _post('iso_code');
         $cname = _post('iso_code');
-
         $symbol = _post('symbol');
-
         $rate = _post('rate');
 
 
@@ -4489,15 +4485,8 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
 
         // check create or not
 
-
-
-
-
-
         if(strlen($iso_code) != 3){
-
             $msg .= 'Invalid Currency Code <br>';
-
         }
 
 //        if($symbol == ''){
@@ -4514,12 +4503,13 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
         $f_type = _post('f_type');
 
 
-
         if($f_type == 'edit'){
 
 
             $cid = _post('cid');
-            $currency = M::factory('Models_Currency')->find_one($cid);
+            // $currency = M::factory('Models_Currency')->find_one($cid);
+
+            $currency = Currency::find($cid);
 
             if($currency){
 
@@ -4528,9 +4518,35 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
                 $currency->symbol = '';
                 $currency->rate = $rate;
 
+
+                $currencies_total = Currency::count();
+                $currencies = Currency::getAllCurrencies();
+
+
+                if($currencies_total == 1){
+
+                    update_option('home_currency', $iso_code);
+
+                    if(isset($currencies[$iso_code])){
+                        update_option('currency_code',$currencies[$iso_code]['symbol']);
+                        update_option('dec_point',$currencies[$iso_code]['decimal_mark']);
+                        update_option('thousands_sep',$currencies[$iso_code]['thousands_separator']);
+
+                        if($currencies[$iso_code]['symbol_first'] == true)
+                        {
+                            update_option('currency_symbol_position','p');
+                        }
+                        else{
+                            update_option('currency_symbol_position','s');
+                        }
+                    }
+
+                }
+
+                $currency->symbol = $currencies[$iso_code]['symbol'];
                 $currency->save();
 
-                $id = $currency->id();
+                $id = $currency->id;
 
                 echo $id;
 
@@ -4557,9 +4573,13 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
 
                 $currency = M::factory('Models_Currency')->create();
 
+                $currencies = Currency::getAllCurrencies();
+
                 $currency->cname = $iso_code;
                 $currency->iso_code = $iso_code;
-                $currency->symbol = $symbol;
+                if($currencies[$iso_code]){
+                    $currency->symbol = $currencies[$iso_code]['symbol'];
+                }
                 $currency->rate = $rate;
 
                 $currency->save();
@@ -4576,12 +4596,6 @@ _L[\'are_you_sure\'] = \''.$_L['are_you_sure'].'\';
             }
 
         }
-
-
-
-
-
-
 
         break;
 

@@ -52,7 +52,7 @@
                                     <label for="filter_status">{$_L['Status']}</label>
                                     <select class="form-control" id="filter_status" name="filter_status" size="1">
                                         <option value="">All</option>
-                                        <option value="Open">New</option>
+                                        <option value="New">New</option>
                                         <option value="In Progress">In Progress</option>
                                         <option value="Under Plagiarism Check">Under Plagiarism Check</option>
                                         <option value="Under Peer-Review">Under Peer-Review</option>
